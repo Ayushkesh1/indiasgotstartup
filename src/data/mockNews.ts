@@ -1,0 +1,133 @@
+export interface NewsItem {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  date: string;
+  source: string;
+  sourceUrl: string;
+  thumbnail?: string;
+}
+
+export const mockNews: NewsItem[] = [
+  {
+    id: "1",
+    title: "AI Startup Anthropic Raises $450M in Series C Funding",
+    description: "Anthropic, the AI safety startup, has secured $450 million in Series C funding led by Spark Capital, bringing its valuation to $5 billion. The company plans to use the funds to advance its Constitutional AI research.",
+    category: "Funding",
+    date: "2024-01-15",
+    source: "TechCrunch",
+    sourceUrl: "#",
+    thumbnail: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&auto=format&fit=crop",
+  },
+  {
+    id: "2",
+    title: "Vercel Launches v0: AI-Powered UI Generation Tool",
+    description: "Vercel introduces v0, a revolutionary AI tool that generates production-ready React components from text prompts. The tool aims to accelerate frontend development workflows.",
+    category: "Product Launch",
+    date: "2024-01-14",
+    source: "ProductHunt",
+    sourceUrl: "#",
+    thumbnail: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&auto=format&fit=crop",
+  },
+  {
+    id: "3",
+    title: "Stripe Acquires Payment Infrastructure Startup for $200M",
+    description: "Stripe has acquired a payment infrastructure startup to enhance its capabilities in real-time payment processing across emerging markets, particularly in Southeast Asia and Africa.",
+    category: "Acquisition",
+    date: "2024-01-13",
+    source: "VentureBeat",
+    sourceUrl: "#",
+    thumbnail: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&auto=format&fit=crop",
+  },
+  {
+    id: "4",
+    title: "Climate Tech Startup Raises $100M for Carbon Capture Technology",
+    description: "A climate technology startup has raised $100 million to scale its direct air capture technology, aiming to remove 1 million tons of CO2 annually by 2026.",
+    category: "Funding",
+    date: "2024-01-12",
+    source: "TechCrunch",
+    sourceUrl: "#",
+    thumbnail: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=800&auto=format&fit=crop",
+  },
+  {
+    id: "5",
+    title: "OpenAI Announces ChatGPT Enterprise with Advanced Security",
+    description: "OpenAI has launched ChatGPT Enterprise, offering enhanced security features, unlimited high-speed GPT-4 access, and custom data retention policies for businesses.",
+    category: "Product Launch",
+    date: "2024-01-11",
+    source: "The Verge",
+    sourceUrl: "#",
+    thumbnail: "https://images.unsplash.com/photo-1677756119517-756a188d2d94?w=800&auto=format&fit=crop",
+  },
+  {
+    id: "6",
+    title: "Fintech Unicorn Partners with Major Banks for Embedded Finance",
+    description: "A fintech unicorn has announced strategic partnerships with three major banks to provide embedded finance solutions, enabling seamless financial services integration.",
+    category: "Partnership",
+    date: "2024-01-10",
+    source: "Bloomberg",
+    sourceUrl: "#",
+    thumbnail: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&auto=format&fit=crop",
+  },
+  {
+    id: "7",
+    title: "Quantum Computing Startup Achieves 1000-Qubit Milestone",
+    description: "A quantum computing startup has successfully demonstrated a 1000-qubit quantum processor, marking a significant advancement in quantum computing scalability.",
+    category: "Tech News",
+    date: "2024-01-09",
+    source: "MIT Technology Review",
+    sourceUrl: "#",
+    thumbnail: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&auto=format&fit=crop",
+  },
+  {
+    id: "8",
+    title: "Healthcare AI Platform Secures $80M Series B",
+    description: "A healthcare AI platform that assists doctors with diagnostic support has raised $80 million in Series B funding, led by healthcare-focused venture capital firms.",
+    category: "Funding",
+    date: "2024-01-08",
+    source: "TechCrunch",
+    sourceUrl: "#",
+    thumbnail: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&auto=format&fit=crop",
+  },
+  {
+    id: "9",
+    title: "Notion Introduces AI-Powered Workspace Features",
+    description: "Notion has rolled out AI-powered features including automatic summarization, content generation, and intelligent search across workspaces, enhancing productivity.",
+    category: "Product Launch",
+    date: "2024-01-07",
+    source: "ProductHunt",
+    sourceUrl: "#",
+    thumbnail: "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&auto=format&fit=crop",
+  },
+  {
+    id: "10",
+    title: "SpaceX Starlink Partners with Airlines for In-Flight Internet",
+    description: "SpaceX's Starlink has announced partnerships with multiple airlines to provide high-speed satellite internet connectivity on commercial flights worldwide.",
+    category: "Partnership",
+    date: "2024-01-06",
+    source: "Reuters",
+    sourceUrl: "#",
+    thumbnail: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=800&auto=format&fit=crop",
+  },
+  {
+    id: "11",
+    title: "EdTech Startup Reaches 10 Million Students Globally",
+    description: "An educational technology startup has achieved a milestone of 10 million students using its AI-powered learning platform across 50 countries.",
+    category: "Tech News",
+    date: "2024-01-05",
+    source: "EdSurge",
+    sourceUrl: "#",
+    thumbnail: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&auto=format&fit=crop",
+  },
+  {
+    id: "12",
+    title: "Robotics Company Unveils Humanoid Robot for Warehouse Automation",
+    description: "A robotics company has unveiled its latest humanoid robot designed for warehouse automation, capable of handling complex logistics tasks with human-like dexterity.",
+    category: "Product Launch",
+    date: "2024-01-04",
+    source: "IEEE Spectrum",
+    sourceUrl: "#",
+    thumbnail: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&auto=format&fit=crop",
+  },
+];
