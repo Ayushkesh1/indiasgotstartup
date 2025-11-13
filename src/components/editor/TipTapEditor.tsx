@@ -4,7 +4,6 @@ import Placeholder from "@tiptap/extension-placeholder";
 import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
 import { Button } from "@/components/ui/button";
-import { VoiceInput } from "./VoiceInput";
 import {
   Bold,
   Italic,
@@ -128,11 +127,6 @@ const TipTapEditor = ({ content, onChange }: TipTapEditorProps) => {
           <ImageIcon className="h-4 w-4" />
         </Button>
         <div className="ml-auto flex gap-1">
-          <VoiceInput
-            onTranscript={(text) => {
-              editor.commands.insertContent(text);
-            }}
-          />
           <Button
             type="button"
             variant="ghost"

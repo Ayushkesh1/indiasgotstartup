@@ -56,7 +56,7 @@ const Index = () => {
   }, [filteredArticles, followedAuthorIds]);
 
   return (
-    <div className="min-h-screen bg-gradient-subtle">
+    <div className="min-h-screen bg-background">
       <Navbar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
       
       <TrendingHero />

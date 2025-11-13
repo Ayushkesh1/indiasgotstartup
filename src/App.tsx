@@ -13,9 +13,9 @@ import ArticleDetail from "./pages/ArticleDetail";
 import ReadingLists from "./pages/ReadingLists";
 import AdsManagement from "./pages/AdsManagement";
 import FollowingManagement from "./pages/FollowingManagement";
-import Monetization from "./pages/Monetization";
-import Earnings from "./pages/Earnings";
-
+import Analytics from "./pages/Analytics";
+import AdvancedSearch from "./pages/AdvancedSearch";
+import SeriesManagement from "./pages/SeriesManagement";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,9 +37,9 @@ const App = () => (
             <Route path="/article/:slug" element={<ArticleDetail />} />
             <Route path="/reading-lists" element={<ReadingLists />} />
             <Route path="/following" element={<FollowingManagement />} />
-            <Route path="/monetization" element={<Monetization />} />
-            <Route path="/earnings" element={<Earnings />} />
-            
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/search" element={<AdvancedSearch />} />
+            <Route path="/series" element={<SeriesManagement />} />
             <Route path="/ads" element={<AdsManagement />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

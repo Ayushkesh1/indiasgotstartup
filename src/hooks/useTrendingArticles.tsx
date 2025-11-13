@@ -1,75 +1,74 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Article } from "@/hooks/useArticles";
+import { subDays } from "date-fns";
 
-export const useTrendingArticles = (limit: number = 5) => {
+export function useTrendingArticles(limit: number = 5) {
   return useQuery({
     queryKey: ["trending-articles", limit],
     queryFn: async () => {
-      // Get article IDs with most views in the last 7 days
-      const sevenDaysAgo = new Date();
-      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      const sevenDaysAgo = subDays(new Date(), 7).toISOString();
 
-      const { data: viewsData, error: viewsError } = await supabase
-        .from("article_views" as any)
+      // Get articles with views in the last 7 days
+      const { data: recentViews } = await supabase
+        .from("article_views")
         .select("article_id")
-        .gte("viewed_at", sevenDaysAgo.toISOString());
-
-      if (viewsError) throw viewsError;
+        .gte("viewed_at", sevenDaysAgo);
 
       // Count views per article
-      const viewCounts = (viewsData as any[]).reduce((acc: Record<string, number>, view: any) => {
-        acc[view.article_id] = (acc[view.article_id] || 0) + 1;
-        return acc;
-      }, {});
+      const viewCounts = new Map<string, number>();
+      recentViews?.forEach((view) => {
+        viewCounts.set(view.article_id, (viewCounts.get(view.article_id) || 0) + 1);
+      });
 
-      // Sort by view count and get top article IDs
-      const topArticleIds = Object.entries(viewCounts)
-        .sort(([, a], [, b]) => (b as number) - (a as number))
+      // Get top article IDs
+      const sortedArticles = Array.from(viewCounts.entries())
+        .sort((a, b) => b[1] - a[1])
         .slice(0, limit)
-        .map(([id]) => id);
+        .map(([articleId]) => articleId);
 
-      if (topArticleIds.length === 0) {
-        // Fallback to most recent published articles
-        const { data: recentArticles, error: recentError } = await supabase
+      if (sortedArticles.length === 0) {
+        // Fallback to most viewed articles overall
+        const { data, error } = await supabase
           .from("articles")
           .select(`
             *,
             profiles:author_id (
-              id,
               full_name,
-              avatar_url
+              avatar_url,
+              bio
             )
           `)
           .eq("published", true)
-          .order("published_at", { ascending: false })
+          .order("views_count", { ascending: false })
           .limit(limit);
 
-        if (recentError) throw recentError;
-        return recentArticles || [];
+        if (error) throw error;
+        return data as Article[];
       }
 
       // Fetch full article data
-      const { data: articles, error: articlesError } = await supabase
+      const { data, error } = await supabase
         .from("articles")
         .select(`
           *,
           profiles:author_id (
-            id,
             full_name,
-            avatar_url
+            avatar_url,
+            bio
           )
         `)
-        .in("id", topArticleIds)
+        .in("id", sortedArticles)
         .eq("published", true);
 
-      if (articlesError) throw articlesError;
+      if (error) throw error;
 
-      // Sort articles by the original view count order
-      const sortedArticles = topArticleIds
-        .map(id => articles?.find((a: any) => a.id === id))
-        .filter(Boolean);
+      // Sort by the order we determined from view counts
+      const sortedData = sortedArticles
+        .map((id) => data?.find((article) => article.id === id))
+        .filter(Boolean) as Article[];
 
-      return sortedArticles;
+      return sortedData;
     },
   });
-};
+}
