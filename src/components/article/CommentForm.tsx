@@ -5,6 +5,13 @@ import { useAuth } from "@/hooks/useAuth";
 import { useAddComment } from "@/hooks/useComments";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface CommentFormProps {
   articleId: string;
@@ -62,13 +69,36 @@ export default function CommentForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <Textarea
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        placeholder={placeholder}
-        className="min-h-[100px] resize-none"
-        disabled={addComment.isPending}
-      />
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <label className="text-sm text-muted-foreground">
+            Markdown supported
+          </label>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button type="button" variant="ghost" size="sm">
+                  <Info className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
+                <div className="space-y-1 text-xs">
+                  <p>**bold** *italic* [link](url)</p>
+                  <p>`code` ```code block```</p>
+                  <p>- list item</p>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+        <Textarea
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder={placeholder}
+          className="min-h-[100px] resize-none font-mono text-sm"
+          disabled={addComment.isPending}
+        />
+      </div>
       <div className="flex justify-end">
         <Button type="submit" disabled={addComment.isPending || !content.trim()}>
           {addComment.isPending ? "Posting..." : buttonText}

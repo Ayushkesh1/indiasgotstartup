@@ -11,6 +11,7 @@ import AuthorProfile from "./pages/AuthorProfile";
 import ArticleDetail from "./pages/ArticleDetail";
 import ReadingLists from "./pages/ReadingLists";
 import AdsManagement from "./pages/AdsManagement";
+import FollowingManagement from "./pages/FollowingManagement";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/author/:id" element={<AuthorProfile />} />
           <Route path="/article/:slug" element={<ArticleDetail />} />
           <Route path="/reading-lists" element={<ReadingLists />} />
+          <Route path="/following" element={<FollowingManagement />} />
           <Route path="/ads" element={<AdsManagement />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

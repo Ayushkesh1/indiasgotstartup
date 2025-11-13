@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,10 +15,11 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import TipTapEditor from "@/components/editor/TipTapEditor";
+import TagSelector from "@/components/article/TagSelector";
 import { useToast } from "@/hooks/use-toast";
 import { generateSlug, calculateReadingTime, extractExcerpt } from "@/utils/articleUtils";
 import { ArticleCategory } from "@/hooks/useArticles";
-import { Loader2, Upload, Eye, Save, Send, ArrowLeft } from "lucide-react";
+import { Loader2, Upload, Eye, Save, Send, ArrowLeft, Clock } from "lucide-react";
 
 const CATEGORIES: ArticleCategory[] = [
   "Fintech",
@@ -46,6 +47,64 @@ const WriterDashboard = () => {
   const [metaDescription, setMetaDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Auto-save function
+  const autoSave = useCallback(async () => {
+    if (!user || !title || !id) return;
+
+    setIsSaving(true);
+    try {
+      const slug = generateSlug(title);
+      const readingTime = calculateReadingTime(content);
+      const autoExcerpt = excerpt || extractExcerpt(content);
+
+      const articleData = {
+        title,
+        content,
+        category,
+        excerpt: autoExcerpt,
+        featured_image_url: featuredImageUrl,
+        reading_time: readingTime,
+        author_id: user.id,
+        published: false,
+      };
+
+      const { error } = await supabase
+        .from("articles")
+        .update(articleData)
+        .eq("id", id);
+
+      if (!error) {
+        setLastSaved(new Date());
+      }
+    } catch (error) {
+      console.error("Auto-save error:", error);
+    } finally {
+      setIsSaving(false);
+    }
+  }, [user, title, content, category, excerpt, featuredImageUrl, id]);
+
+  // Set up auto-save on content changes
+  useEffect(() => {
+    if (!id || !title) return;
+
+    if (autoSaveTimerRef.current) {
+      clearTimeout(autoSaveTimerRef.current);
+    }
+
+    autoSaveTimerRef.current = setTimeout(() => {
+      autoSave();
+    }, 3000); // Auto-save after 3 seconds of inactivity
+
+    return () => {
+      if (autoSaveTimerRef.current) {
+        clearTimeout(autoSaveTimerRef.current);
+      }
+    };
+  }, [title, content, category, excerpt, autoSave, id]);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -279,9 +338,17 @@ const WriterDashboard = () => {
               >
                 <ArrowLeft className="h-5 w-5" />
               </Button>
-              <h1 className="font-serif text-3xl font-bold">
-                {id ? "Edit Article" : "Write New Article"}
-              </h1>
+              <div>
+                <h1 className="font-serif text-3xl font-bold">
+                  {id ? "Edit Article" : "Write New Article"}
+                </h1>
+                {id && lastSaved && (
+                  <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
+                    <Clock className="h-3 w-3" />
+                    {isSaving ? "Saving..." : `Last saved ${lastSaved.toLocaleTimeString()}`}
+                  </p>
+                )}
+              </div>
             </div>
             <div className="flex gap-2">
               <Button variant="outline" onClick={saveDraft} disabled={loading}>
@@ -378,6 +445,8 @@ const WriterDashboard = () => {
                     </div>
                   )}
                 </div>
+
+                {id && <TagSelector articleId={id} />}
               </CardContent>
             </Card>
 
