@@ -2,6 +2,7 @@ import { Clock } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import BookmarkButton from "@/components/bookmarks/BookmarkButton";
+import { Link } from "react-router-dom";
 
 interface NewsCardProps {
   title: string;
@@ -15,6 +16,7 @@ interface NewsCardProps {
   authorImage?: string;
   readTime?: string;
   articleId?: string;
+  authorId?: string;
 }
 
 const NewsCard = ({ 
@@ -28,11 +30,12 @@ const NewsCard = ({
   author = "Editorial Team",
   authorImage,
   readTime = "5 min read",
-  articleId
+  articleId,
+  authorId
 }: NewsCardProps) => {
   return (
     <Card className="group border-0 shadow-none bg-transparent overflow-hidden transition-smooth hover:opacity-80 cursor-pointer">
-      <a href={sourceUrl} className="block">
+      <Link to={sourceUrl} className="block">
         {thumbnail && (
           <div className="relative w-full aspect-[2/1] mb-4 overflow-hidden rounded-sm">
             <img
@@ -44,15 +47,31 @@ const NewsCard = ({
         )}
         
         <div className="space-y-3">
-          <div className="flex items-center gap-3">
-            <Avatar className="h-6 w-6">
-              <AvatarImage src={authorImage} />
-              <AvatarFallback className="text-xs bg-muted text-muted-foreground">
-                {author.charAt(0)}
-              </AvatarFallback>
-            </Avatar>
-            <span className="text-xs text-muted-foreground font-medium">{author}</span>
-          </div>
+          {authorId ? (
+            <Link 
+              to={`/author/${authorId}`} 
+              className="flex items-center gap-3 w-fit hover:opacity-80 transition-opacity"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Avatar className="h-6 w-6">
+                <AvatarImage src={authorImage} />
+                <AvatarFallback className="text-xs bg-muted text-muted-foreground">
+                  {author.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+              <span className="text-xs text-muted-foreground font-medium">{author}</span>
+            </Link>
+          ) : (
+            <div className="flex items-center gap-3">
+              <Avatar className="h-6 w-6">
+                <AvatarImage src={authorImage} />
+                <AvatarFallback className="text-xs bg-muted text-muted-foreground">
+                  {author.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+              <span className="text-xs text-muted-foreground font-medium">{author}</span>
+            </div>
+          )}
 
           <h2 className="font-serif text-xl md:text-2xl font-bold leading-tight line-clamp-2 text-foreground group-hover:text-foreground/80">
             {title}
@@ -81,7 +100,7 @@ const NewsCard = ({
             )}
           </div>
         </div>
-      </a>
+      </Link>
     </Card>
   );
 };

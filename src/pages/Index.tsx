@@ -110,6 +110,7 @@ const Index = () => {
                       author={article.profiles?.full_name || "Anonymous"}
                       authorImage={article.profiles?.avatar_url || undefined}
                       readTime={`${article.reading_time} min read`}
+                      authorId={article.author_id}
                     />
                   ))}
                 </div>
@@ -140,6 +141,7 @@ const Index = () => {
                       author={article.profiles?.full_name || "Anonymous"}
                       authorImage={article.profiles?.avatar_url || undefined}
                       readTime={`${article.reading_time} min read`}
+                      authorId={article.author_id}
                     />
                   ))}
                 </div>
@@ -176,6 +178,7 @@ const Index = () => {
                     author={article.profiles?.full_name || "Anonymous"}
                     authorImage={article.profiles?.avatar_url || undefined}
                     readTime={`${article.reading_time} min read`}
+                    authorId={article.author_id}
                   />
                 ))}
               </div>

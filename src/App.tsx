@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import WriterDashboard from "./pages/WriterDashboard";
 import Profile from "./pages/Profile";
+import AuthorProfile from "./pages/AuthorProfile";
 import ArticleDetail from "./pages/ArticleDetail";
 import ReadingLists from "./pages/ReadingLists";
 import AdsManagement from "./pages/AdsManagement";
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/write" element={<WriterDashboard />} />
           <Route path="/write/:id" element={<WriterDashboard />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/author/:id" element={<AuthorProfile />} />
           <Route path="/article/:slug" element={<ArticleDetail />} />
           <Route path="/reading-lists" element={<ReadingLists />} />
           <Route path="/ads" element={<AdsManagement />} />
