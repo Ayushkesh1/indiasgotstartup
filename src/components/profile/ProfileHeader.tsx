@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Profile } from "@/hooks/useProfile";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import FollowButton from "@/components/FollowButton";
 import { Camera, Loader2, Save } from "lucide-react";
 
 interface ProfileHeaderProps {
@@ -15,9 +16,10 @@ interface ProfileHeaderProps {
   userId: string;
   onUpdate: (updates: Partial<Profile>) => void;
   isUpdating: boolean;
+  isOwnProfile?: boolean;
 }
 
-const ProfileHeader = ({ profile, userId, onUpdate, isUpdating }: ProfileHeaderProps) => {
+const ProfileHeader = ({ profile, userId, onUpdate, isUpdating, isOwnProfile = true }: ProfileHeaderProps) => {
   const { toast } = useToast();
   const [fullName, setFullName] = useState(profile.full_name || "");
   const [bio, setBio] = useState(profile.bio || "");
@@ -68,8 +70,9 @@ const ProfileHeader = ({ profile, userId, onUpdate, isUpdating }: ProfileHeaderP
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Profile Information</CardTitle>
+        {!isOwnProfile && <FollowButton authorId={userId} />}
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="flex items-start gap-6">

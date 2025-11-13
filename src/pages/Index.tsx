@@ -4,7 +4,10 @@ import CategoryFilter from "@/components/CategoryFilter";
 import NewsCard from "@/components/NewsCard";
 import AdvertisementBanner from "@/components/AdvertisementBanner";
 import { useArticles, ArticleCategory } from "@/hooks/useArticles";
-import { TrendingUp, Loader2 } from "lucide-react";
+import { useFollowedAuthors } from "@/hooks/useFollows";
+import { useAuth } from "@/hooks/useAuth";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TrendingUp, Loader2, Heart } from "lucide-react";
 
 const PREDEFINED_CATEGORIES: ArticleCategory[] = [
   "Fintech",
@@ -20,8 +23,10 @@ const PREDEFINED_CATEGORIES: ArticleCategory[] = [
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | ArticleCategory>("All");
+  const { user } = useAuth();
   
   const { data: articles, isLoading } = useArticles(selectedCategory);
+  const { data: followedAuthorIds } = useFollowedAuthors(user?.id);
 
   const filteredArticles = useMemo(() => {
     if (!articles) return [];
@@ -33,6 +38,14 @@ const Index = () => {
       return matchesSearch;
     });
   }, [articles, searchQuery]);
+
+  const followedArticles = useMemo(() => {
+    if (!followedAuthorIds || followedAuthorIds.length === 0) return [];
+    
+    return filteredArticles.filter((article) => 
+      followedAuthorIds.includes(article.author_id)
+    );
+  }, [filteredArticles, followedAuthorIds]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -63,36 +76,118 @@ const Index = () => {
       </div>
 
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {isLoading ? (
-          <div className="flex items-center justify-center py-16">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          </div>
-        ) : filteredArticles && filteredArticles.length > 0 ? (
-          <div className="max-w-4xl mx-auto space-y-12">
-            {filteredArticles.map((article) => (
-              <NewsCard
-                key={article.id}
-                articleId={article.id}
-                title={article.title}
-                description={article.excerpt || ""}
-                category={article.category}
-                date={new Date(article.published_at || article.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                source="India Got Startup"
-                sourceUrl={`/article/${article.slug}`}
-                thumbnail={article.featured_image_url || undefined}
-                author={article.profiles?.full_name || "Anonymous"}
-                authorImage={article.profiles?.avatar_url || undefined}
-                readTime={`${article.reading_time} min read`}
-              />
-            ))}
-          </div>
+        {user && followedAuthorIds && followedAuthorIds.length > 0 ? (
+          <Tabs defaultValue="all" className="max-w-4xl mx-auto">
+            <TabsList className="mb-8">
+              <TabsTrigger value="all">
+                <TrendingUp className="h-4 w-4 mr-2" />
+                All Stories
+              </TabsTrigger>
+              <TabsTrigger value="following">
+                <Heart className="h-4 w-4 mr-2" />
+                Following ({followedArticles.length})
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="all">
+              {isLoading ? (
+                <div className="flex items-center justify-center py-16">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ) : filteredArticles && filteredArticles.length > 0 ? (
+                <div className="space-y-12">
+                  {filteredArticles.map((article) => (
+                    <NewsCard
+                      key={article.id}
+                      articleId={article.id}
+                      title={article.title}
+                      description={article.excerpt || ""}
+                      category={article.category}
+                      date={new Date(article.published_at || article.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                      source="India Got Startup"
+                      sourceUrl={`/article/${article.slug}`}
+                      thumbnail={article.featured_image_url || undefined}
+                      author={article.profiles?.full_name || "Anonymous"}
+                      authorImage={article.profiles?.avatar_url || undefined}
+                      readTime={`${article.reading_time} min read`}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-16 text-center max-w-md mx-auto">
+                  <h3 className="font-serif text-2xl font-bold mb-2">No stories yet</h3>
+                  <p className="text-muted-foreground mb-6">
+                    Be the first to share your startup story! Sign in and start writing.
+                  </p>
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="following">
+              {followedArticles.length > 0 ? (
+                <div className="space-y-12">
+                  {followedArticles.map((article) => (
+                    <NewsCard
+                      key={article.id}
+                      articleId={article.id}
+                      title={article.title}
+                      description={article.excerpt || ""}
+                      category={article.category}
+                      date={new Date(article.published_at || article.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                      source="India Got Startup"
+                      sourceUrl={`/article/${article.slug}`}
+                      thumbnail={article.featured_image_url || undefined}
+                      author={article.profiles?.full_name || "Anonymous"}
+                      authorImage={article.profiles?.avatar_url || undefined}
+                      readTime={`${article.reading_time} min read`}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-16 text-center max-w-md mx-auto">
+                  <Heart className="h-12 w-12 text-muted-foreground mb-4" />
+                  <h3 className="font-serif text-2xl font-bold mb-2">No articles yet</h3>
+                  <p className="text-muted-foreground">
+                    Follow authors to see their stories here. Articles from authors you follow will appear in this personalized feed.
+                  </p>
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
         ) : (
-          <div className="flex flex-col items-center justify-center py-16 text-center max-w-md mx-auto">
-            <h3 className="font-serif text-2xl font-bold mb-2">No stories yet</h3>
-            <p className="text-muted-foreground mb-6">
-              Be the first to share your startup story! Sign in and start writing.
-            </p>
-          </div>
+          <>
+            {isLoading ? (
+              <div className="flex items-center justify-center py-16">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            ) : filteredArticles && filteredArticles.length > 0 ? (
+              <div className="max-w-4xl mx-auto space-y-12">
+                {filteredArticles.map((article) => (
+                  <NewsCard
+                    key={article.id}
+                    articleId={article.id}
+                    title={article.title}
+                    description={article.excerpt || ""}
+                    category={article.category}
+                    date={new Date(article.published_at || article.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    source="India Got Startup"
+                    sourceUrl={`/article/${article.slug}`}
+                    thumbnail={article.featured_image_url || undefined}
+                    author={article.profiles?.full_name || "Anonymous"}
+                    authorImage={article.profiles?.avatar_url || undefined}
+                    readTime={`${article.reading_time} min read`}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-16 text-center max-w-md mx-auto">
+                <h3 className="font-serif text-2xl font-bold mb-2">No stories yet</h3>
+                <p className="text-muted-foreground mb-6">
+                  Be the first to share your startup story! Sign in and start writing.
+                </p>
+              </div>
+            )}
+          </>
         )}
       </main>
 

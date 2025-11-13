@@ -24,6 +24,7 @@ export interface Article {
   published_at: string | null;
   created_at: string;
   views_count: number;
+  author_id: string;
   profiles: {
     full_name: string | null;
     avatar_url: string | null;

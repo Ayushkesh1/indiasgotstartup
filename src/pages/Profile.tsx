@@ -3,17 +3,20 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
 import { useUserArticles } from "@/hooks/useUserArticles";
+import { useFollowerCount, useFollowingCount } from "@/hooks/useFollows";
 import Navbar from "@/components/Navbar";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import ArticlesList from "@/components/profile/ArticlesList";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, FileText, Eye, TrendingUp } from "lucide-react";
+import { Loader2, FileText, Eye, TrendingUp, Users } from "lucide-react";
 
 const Profile = () => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { data: profile, isLoading: profileLoading } = useProfile(user?.id);
   const { data: articles, isLoading: articlesLoading } = useUserArticles(user?.id);
+  const { data: followerCount } = useFollowerCount(user?.id);
+  const { data: followingCount } = useFollowingCount(user?.id);
   const updateProfile = useUpdateProfile();
 
   useEffect(() => {
@@ -62,7 +65,7 @@ const Profile = () => {
           </div>
 
           {/* Analytics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">Published Articles</CardTitle>
@@ -91,13 +94,24 @@ const Profile = () => {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Avg. Views</CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium">Followers</CardTitle>
+                <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">
-                  {publishedCount > 0 ? Math.round(totalViews / publishedCount) : 0}
-                </div>
+                <div className="text-2xl font-bold">{followerCount || 0}</div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  People following you
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">Following</CardTitle>
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{followingCount || 0}</div>
                 <p className="text-xs text-muted-foreground mt-1">
                   Per published article
                 </p>
@@ -111,6 +125,7 @@ const Profile = () => {
             userId={user?.id || ""}
             onUpdate={handleUpdateProfile}
             isUpdating={updateProfile.isPending}
+            isOwnProfile={true}
           />
 
           {/* Articles List */}
