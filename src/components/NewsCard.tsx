@@ -87,10 +87,10 @@ const NewsCard = ({
 
           {articleTags && articleTags.length > 0 && (
             <div className="flex flex-wrap gap-1">
-              {articleTags.slice(0, 3).map((articleTag) => (
-                <Badge key={articleTag.id} variant="outline" className="text-xs">
+              {articleTags.slice(0, 3).map((tag) => (
+                <Badge key={tag.id} variant="outline" className="text-xs">
                   <Tag className="h-3 w-3 mr-1" />
-                  {articleTag.tags.name}
+                  {tag.name}
                 </Badge>
               ))}
             </div>
