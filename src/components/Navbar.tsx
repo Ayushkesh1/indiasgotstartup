@@ -10,6 +10,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import logo from "@/assets/logo.png";
 
 interface NavbarProps {
   searchQuery: string;
@@ -31,9 +32,7 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-8">
             <a href="/" className="flex items-center gap-2 group">
-              <span className="font-serif text-2xl font-bold text-foreground tracking-tight">
-                India Got Startup
-              </span>
+              <img src={logo} alt="India's Startup" className="h-8 w-auto" />
             </a>
           </div>
           
