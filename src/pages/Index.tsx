@@ -1,9 +1,11 @@
 import { useState, useMemo } from "react";
 import Navbar from "@/components/Navbar";
 import CategoryFilter from "@/components/CategoryFilter";
+import TagFilter from "@/components/TagFilter";
 import NewsCard from "@/components/NewsCard";
 import AdvertisementBanner from "@/components/AdvertisementBanner";
 import { useArticles, ArticleCategory } from "@/hooks/useArticles";
+import { useArticlesByTag } from "@/hooks/useTags";
 import { useFollowedAuthors } from "@/hooks/useFollows";
 import { useAuth } from "@/hooks/useAuth";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -23,21 +25,26 @@ const PREDEFINED_CATEGORIES: ArticleCategory[] = [
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | ArticleCategory>("All");
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const { user } = useAuth();
   
   const { data: articles, isLoading } = useArticles(selectedCategory);
+  const { data: tagFilteredArticles, isLoading: isLoadingTagArticles } = useArticlesByTag(selectedTag || "");
   const { data: followedAuthorIds } = useFollowedAuthors(user?.id);
 
+  const displayArticles = selectedTag ? tagFilteredArticles : articles;
+  const isLoadingArticles = selectedTag ? isLoadingTagArticles : isLoading;
+
   const filteredArticles = useMemo(() => {
-    if (!articles) return [];
+    if (!displayArticles) return [];
     
-    return articles.filter((article) => {
+    return displayArticles.filter((article) => {
       const matchesSearch =
         article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         article.excerpt?.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesSearch;
     });
-  }, [articles, searchQuery]);
+  }, [displayArticles, searchQuery]);
 
   const followedArticles = useMemo(() => {
     if (!followedAuthorIds || followedAuthorIds.length === 0) return [];
@@ -54,8 +61,15 @@ const Index = () => {
       <CategoryFilter
         categories={PREDEFINED_CATEGORIES}
         selectedCategory={selectedCategory}
-        onCategoryChange={setSelectedCategory}
+        onCategoryChange={(cat) => {
+          setSelectedCategory(cat);
+          setSelectedTag(null);
+        }}
       />
+
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <TagFilter selectedTag={selectedTag} onTagChange={setSelectedTag} />
+      </div>
 
       <AdvertisementBanner />
 
@@ -90,7 +104,7 @@ const Index = () => {
             </TabsList>
 
             <TabsContent value="all">
-              {isLoading ? (
+              {isLoadingArticles ? (
                 <div className="flex items-center justify-center py-16">
                   <Loader2 className="h-8 w-8 animate-spin text-primary" />
                 </div>
@@ -158,7 +172,7 @@ const Index = () => {
           </Tabs>
         ) : (
           <>
-            {isLoading ? (
+            {isLoadingArticles ? (
               <div className="flex items-center justify-center py-16">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
               </div>

@@ -6,6 +6,8 @@ import { formatDistanceToNow } from "date-fns";
 import { MessageSquare, Trash2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import CommentForm from "./CommentForm";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -89,7 +91,11 @@ export default function CommentItem({ comment, articleId }: CommentItemProps) {
             )}
           </div>
 
-          <p className="text-foreground whitespace-pre-wrap">{comment.content}</p>
+          <div className="prose prose-sm max-w-none dark:prose-invert">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {comment.content}
+            </ReactMarkdown>
+          </div>
 
           <Button
             variant="ghost"

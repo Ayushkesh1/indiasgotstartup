@@ -1,8 +1,10 @@
-import { Clock } from "lucide-react";
+import { Clock, Tag } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import BookmarkButton from "@/components/bookmarks/BookmarkButton";
 import { Link } from "react-router-dom";
+import { useArticleTags } from "@/hooks/useTags";
 
 interface NewsCardProps {
   title: string;
@@ -33,6 +35,8 @@ const NewsCard = ({
   articleId,
   authorId
 }: NewsCardProps) => {
+  const { data: articleTags } = useArticleTags(articleId || "");
+
   return (
     <Card className="group border-0 shadow-none bg-transparent overflow-hidden transition-smooth hover:opacity-80 cursor-pointer">
       <Link to={sourceUrl} className="block">
@@ -80,6 +84,17 @@ const NewsCard = ({
           <p className="text-muted-foreground text-sm md:text-base line-clamp-2 leading-relaxed">
             {description}
           </p>
+
+          {articleTags && articleTags.length > 0 && (
+            <div className="flex flex-wrap gap-1">
+              {articleTags.slice(0, 3).map((articleTag) => (
+                <Badge key={articleTag.id} variant="outline" className="text-xs">
+                  <Tag className="h-3 w-3 mr-1" />
+                  {articleTag.tags.name}
+                </Badge>
+              ))}
+            </div>
+          )}
 
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-center gap-4 text-xs text-muted-foreground">
