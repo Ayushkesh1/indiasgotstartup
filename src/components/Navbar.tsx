@@ -90,21 +90,9 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
                       <User className="mr-2 h-4 w-4" />
                       Profile
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate("/analytics")}>
-                      <BarChart3 className="mr-2 h-4 w-4" />
-                      Analytics
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate("/series")}>
-                      <BookOpen className="mr-2 h-4 w-4" />
-                      Article Series
-                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate("/monetization")}>
                       <DollarSign className="mr-2 h-4 w-4" />
                       Earn Money
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate("/search")}>
-                      <SearchIcon className="mr-2 h-4 w-4" />
-                      Advanced Search
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate("/reading-lists")}>
                       <BookMarked className="mr-2 h-4 w-4" />

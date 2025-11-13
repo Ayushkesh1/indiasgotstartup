@@ -446,7 +446,7 @@ const WriterDashboard = () => {
                   )}
                 </div>
 
-                {id && <TagSelector articleId={id} />}
+                {id && <TagSelector articleId={id} selectedTags={[]} onTagsChange={() => {}} />}
               </CardContent>
             </Card>
 
