@@ -3,8 +3,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Comment, useDeleteComment } from "@/hooks/useComments";
 import { formatDistanceToNow } from "date-fns";
-import { MessageSquare, Trash2 } from "lucide-react";
+import { MessageSquare, Trash2, ThumbsUp } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useCommentVoteCount, useUserCommentVote, useToggleCommentVote } from "@/hooks/useCommentVotes";
 import CommentForm from "./CommentForm";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -30,8 +31,24 @@ export default function CommentItem({ comment, articleId }: CommentItemProps) {
   const { user } = useAuth();
   const [showReplyForm, setShowReplyForm] = useState(false);
   const deleteComment = useDeleteComment();
+  const { data: voteCount } = useCommentVoteCount(comment.id);
+  const { data: userVote } = useUserCommentVote(comment.id, user?.id);
+  const toggleVote = useToggleCommentVote();
 
   const isOwner = user?.id === comment.user_id;
+  const hasVoted = !!userVote;
+
+  const handleVote = () => {
+    if (!user) {
+      return;
+    }
+
+    toggleVote.mutate({
+      commentId: comment.id,
+      userId: user.id,
+      hasVoted,
+    });
+  };
 
   const handleDelete = () => {
     deleteComment.mutate(
@@ -97,15 +114,30 @@ export default function CommentItem({ comment, articleId }: CommentItemProps) {
             </ReactMarkdown>
           </div>
 
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowReplyForm(!showReplyForm)}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            <MessageSquare className="h-4 w-4 mr-2" />
-            Reply
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleVote}
+              disabled={!user || toggleVote.isPending}
+              className={`text-muted-foreground hover:text-foreground ${
+                hasVoted ? "text-primary" : ""
+              }`}
+            >
+              <ThumbsUp className={`h-4 w-4 mr-1 ${hasVoted ? "fill-current" : ""}`} />
+              {voteCount || 0}
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowReplyForm(!showReplyForm)}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <MessageSquare className="h-4 w-4 mr-2" />
+              Reply
+            </Button>
+          </div>
 
           {showReplyForm && (
             <div className="mt-4">
