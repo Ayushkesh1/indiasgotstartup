@@ -28,6 +28,8 @@ export interface Article {
     full_name: string | null;
     avatar_url: string | null;
     bio: string | null;
+    twitter_handle?: string | null;
+    linkedin_url?: string | null;
   };
 }
 

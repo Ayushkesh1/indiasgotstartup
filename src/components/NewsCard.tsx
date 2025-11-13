@@ -29,7 +29,7 @@ const NewsCard = ({
 }: NewsCardProps) => {
   return (
     <Card className="group border-0 shadow-none bg-transparent overflow-hidden transition-smooth hover:opacity-80 cursor-pointer">
-      <a href={sourceUrl} target="_blank" rel="noopener noreferrer" className="block">
+      <a href={sourceUrl} className="block">
         {thumbnail && (
           <div className="relative w-full aspect-[2/1] mb-4 overflow-hidden rounded-sm">
             <img
