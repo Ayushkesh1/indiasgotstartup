@@ -165,7 +165,7 @@ export default function Monetization() {
               <Button
                 size="lg"
                 variant="secondary"
-                onClick={() => navigate("/dashboard")}
+                onClick={() => navigate("/write")}
                 className="font-semibold"
               >
                 Start Writing
@@ -173,10 +173,10 @@ export default function Monetization() {
               <Button
                 size="lg"
                 variant="outline"
-                onClick={() => navigate("/ads")}
+                onClick={() => navigate("/rewards")}
                 className="bg-white/10 border-white/20 text-white hover:bg-white/20"
               >
-                Manage Ads
+                View Rewards
               </Button>
             </div>
           </div>
