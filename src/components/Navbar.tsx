@@ -1,4 +1,4 @@
-import { Search, Edit3, LogOut, User, BookMarked, TrendingUp, ArrowLeft, Users, BarChart3, SearchIcon, BookOpen } from "lucide-react";
+import { Search, Edit3, LogOut, User, BookMarked, TrendingUp, ArrowLeft, Users, BarChart3, SearchIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -93,10 +93,6 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
                     <DropdownMenuItem onClick={() => navigate("/analytics")}>
                       <BarChart3 className="mr-2 h-4 w-4" />
                       Analytics
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate("/series")}>
-                      <BookOpen className="mr-2 h-4 w-4" />
-                      Article Series
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate("/search")}>
                       <SearchIcon className="mr-2 h-4 w-4" />
