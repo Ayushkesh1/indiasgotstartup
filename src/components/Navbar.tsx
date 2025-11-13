@@ -1,6 +1,15 @@
-import { Search, Edit3 } from "lucide-react";
+import { Search, Edit3, LogOut, User } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 interface NavbarProps {
   searchQuery: string;
@@ -8,6 +17,14 @@ interface NavbarProps {
 }
 
 const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
+
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -34,16 +51,49 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
           </div>
 
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-              Our story
-            </Button>
-            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-              Membership
-            </Button>
-            <Button size="sm" className="gap-2 bg-primary hover:bg-primary-hover rounded-full">
-              <Edit3 className="h-4 w-4" />
-              Write
-            </Button>
+            {user ? (
+              <>
+                <Button size="sm" className="gap-2 bg-primary hover:bg-primary-hover rounded-full">
+                  <Edit3 className="h-4 w-4" />
+                  Write
+                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="rounded-full h-9 w-9 p-0">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={user.user_metadata?.avatar_url} />
+                        <AvatarFallback className="bg-primary text-primary-foreground">
+                          {user.email?.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => navigate("/profile")}>
+                      <User className="mr-2 h-4 w-4" />
+                      Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleSignOut}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            ) : (
+              <>
+                <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+                  Our story
+                </Button>
+                <Button 
+                  size="sm" 
+                  className="gap-2 bg-primary hover:bg-primary-hover rounded-full"
+                  onClick={() => navigate("/auth")}
+                >
+                  Sign In
+                </Button>
+              </>
+            )}
           </div>
         </div>
 

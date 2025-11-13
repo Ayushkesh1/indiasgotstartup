@@ -2,26 +2,30 @@ import { useState, useMemo } from "react";
 import Navbar from "@/components/Navbar";
 import CategoryFilter from "@/components/CategoryFilter";
 import NewsCard from "@/components/NewsCard";
-import { mockNews } from "@/data/mockNews";
-import { TrendingUp } from "lucide-react";
+import { useArticles } from "@/hooks/useArticles";
+import { TrendingUp, Loader2 } from "lucide-react";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  
+  const { data: articles, isLoading } = useArticles(selectedCategory);
 
   const categories = useMemo(() => {
-    return Array.from(new Set(mockNews.map((news) => news.category)));
-  }, []);
+    if (!articles) return [];
+    return Array.from(new Set(articles.map((article) => article.category)));
+  }, [articles]);
 
-  const filteredNews = useMemo(() => {
-    return mockNews.filter((news) => {
+  const filteredArticles = useMemo(() => {
+    if (!articles) return [];
+    
+    return articles.filter((article) => {
       const matchesSearch =
-        news.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        news.description.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesCategory = selectedCategory === "All" || news.category === selectedCategory;
-      return matchesSearch && matchesCategory;
+        article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        article.excerpt?.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesSearch;
     });
-  }, [searchQuery, selectedCategory]);
+  }, [articles, searchQuery]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -50,29 +54,33 @@ const Index = () => {
       </div>
 
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {filteredNews.length > 0 ? (
+        {isLoading ? (
+          <div className="flex items-center justify-center py-16">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : filteredArticles && filteredArticles.length > 0 ? (
           <div className="max-w-4xl mx-auto space-y-12">
-            {filteredNews.map((news) => (
+            {filteredArticles.map((article) => (
               <NewsCard
-                key={news.id}
-                title={news.title}
-                description={news.description}
-                category={news.category}
-                date={news.date}
-                source={news.source}
-                sourceUrl={news.sourceUrl}
-                thumbnail={news.thumbnail}
-                author={news.author}
-                authorImage={news.authorImage}
-                readTime={news.readTime}
+                key={article.id}
+                title={article.title}
+                description={article.excerpt || ""}
+                category={article.category}
+                date={new Date(article.published_at || article.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                source="India Got Startup"
+                sourceUrl={`/article/${article.slug}`}
+                thumbnail={article.featured_image_url || undefined}
+                author={article.profiles?.full_name || "Anonymous"}
+                authorImage={article.profiles?.avatar_url || undefined}
+                readTime={`${article.reading_time} min read`}
               />
             ))}
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-16 text-center max-w-md mx-auto">
-            <h3 className="font-serif text-2xl font-bold mb-2">No stories found</h3>
-            <p className="text-muted-foreground">
-              Try adjusting your search or browse all categories
+            <h3 className="font-serif text-2xl font-bold mb-2">No stories yet</h3>
+            <p className="text-muted-foreground mb-6">
+              Be the first to share your startup story! Sign in and start writing.
             </p>
           </div>
         )}
