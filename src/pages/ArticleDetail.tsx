@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { useArticleBySlug, incrementArticleViews } from "@/hooks/useArticleBySlug";
+import { supabase } from "@/integrations/supabase/client";
+import { useArticleBySlug } from "@/hooks/useArticleBySlug";
 import { useRelatedArticles } from "@/hooks/useRelatedArticles";
 import { useReadingProgress, useTrackReadingProgress } from "@/hooks/useReadingProgress";
 import { useAuth } from "@/hooks/useAuth";
@@ -36,9 +37,22 @@ const ArticleDetail = () => {
   useTrackReadingProgress(article?.id || "", user?.id, !!article?.id && !!user?.id);
 
   useEffect(() => {
-    if (article?.id) {
-      incrementArticleViews(article.id, user?.id);
-    }
+    const recordView = async () => {
+      if (article?.id) {
+        const { error } = await supabase
+          .from("article_views" as any)
+          .insert({ 
+            article_id: article.id,
+            viewer_id: user?.id || null
+          });
+        
+        if (error && error.code !== '23505') { // Ignore duplicate errors
+          console.error("Error recording view:", error);
+        }
+      }
+    };
+    
+    recordView();
   }, [article?.id, user?.id]);
 
   // Restore reading position
