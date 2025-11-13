@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useArticleBySlug, incrementArticleViews } from "@/hooks/useArticleBySlug";
@@ -13,6 +13,7 @@ import SocialShare from "@/components/article/SocialShare";
 import RelatedArticles from "@/components/article/RelatedArticles";
 import CommentsList from "@/components/article/CommentsList";
 import BookmarkButton from "@/components/bookmarks/BookmarkButton";
+import TranslateButton from "@/components/article/TranslateButton";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Calendar, Clock, Eye } from "lucide-react";
 
@@ -25,6 +26,9 @@ const ArticleDetail = () => {
     article?.category || "Tech",
     article?.id || ""
   );
+  
+  const [translatedContent, setTranslatedContent] = useState<string | null>(null);
+  const [translatedLanguage, setTranslatedLanguage] = useState<string | null>(null);
   
   const { data: savedProgress } = useReadingProgress(article?.id || "", user?.id);
   
@@ -174,6 +178,13 @@ const ArticleDetail = () => {
                 </span>
               </div>
               <div className="flex items-center gap-2">
+                <TranslateButton 
+                  content={contentHtml}
+                  onTranslate={(translated, lang) => {
+                    setTranslatedContent(translated);
+                    setTranslatedLanguage(lang);
+                  }}
+                />
                 <BookmarkButton articleId={article.id} variant="outline" />
                 <SocialShare title={article.title} url={shareUrl} />
               </div>
@@ -189,10 +200,17 @@ const ArticleDetail = () => {
 
             {/* Article Content */}
             <div className="lg:col-span-6">
+              {translatedLanguage && (
+                <div className="mb-6 p-4 bg-primary/10 rounded-lg border border-primary/20">
+                  <p className="text-sm font-medium text-primary">
+                    Translated to {translatedLanguage}
+                  </p>
+                </div>
+              )}
               <div
                 id="article-content"
                 className="prose prose-lg max-w-none"
-                dangerouslySetInnerHTML={{ __html: contentHtml }}
+                dangerouslySetInnerHTML={{ __html: translatedContent || contentHtml }}
               />
             </div>
 
