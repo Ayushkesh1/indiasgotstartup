@@ -102,10 +102,6 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
                       <DollarSign className="mr-2 h-4 w-4" />
                       Earn Money
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate("/rewards")}>
-                      <Wallet className="mr-2 h-4 w-4" />
-                      Rewards Dashboard
-                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate("/search")}>
                       <SearchIcon className="mr-2 h-4 w-4" />
                       Advanced Search
