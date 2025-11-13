@@ -9,6 +9,7 @@ import { Profile } from "@/hooks/useProfile";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import FollowButton from "@/components/FollowButton";
+import AIProfileAssistant from "@/components/profile/AIProfileAssistant";
 import { Camera, Loader2, Save } from "lucide-react";
 
 interface ProfileHeaderProps {
@@ -113,7 +114,15 @@ const ProfileHeader = ({ profile, userId, onUpdate, isUpdating, isOwnProfile = t
               />
             </div>
             <div>
-              <Label htmlFor="bio">Bio</Label>
+              <div className="flex items-center justify-between mb-2">
+                <Label htmlFor="bio">Bio</Label>
+                {isOwnProfile && (
+                  <AIProfileAssistant
+                    currentBio={bio}
+                    onApply={(newBio) => setBio(newBio)}
+                  />
+                )}
+              </div>
               <Textarea
                 id="bio"
                 value={bio}

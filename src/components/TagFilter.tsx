@@ -1,46 +1,56 @@
 import { useTags } from "@/hooks/useTags";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Tag } from "lucide-react";
+import { Button } from "./ui/button";
+import { X } from "lucide-react";
+import { Skeleton } from "./ui/skeleton";
 
 interface TagFilterProps {
   selectedTag: string | null;
   onTagChange: (tag: string | null) => void;
 }
 
-export default function TagFilter({ selectedTag, onTagChange }: TagFilterProps) {
+const TagFilter = ({ selectedTag, onTagChange }: TagFilterProps) => {
   const { data: tags, isLoading } = useTags();
 
-  if (isLoading || !tags || tags.length === 0) return null;
+  if (isLoading) {
+    return (
+      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+        {[...Array(8)].map((_, i) => (
+          <Skeleton key={i} className="h-8 w-20 rounded-full" />
+        ))}
+      </div>
+    );
+  }
+
+  if (!tags || tags.length === 0) {
+    return null;
+  }
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center gap-2 text-sm font-medium">
-        <Tag className="h-4 w-4" />
-        Filter by Tag
-      </div>
-      <ScrollArea className="w-full whitespace-nowrap">
-        <div className="flex gap-2 pb-2">
-          <Badge
-            variant={selectedTag === null ? "default" : "outline"}
-            className="cursor-pointer"
-            onClick={() => onTagChange(null)}
-          >
-            All
-          </Badge>
-          {tags.map((tag) => (
-            <Badge
-              key={tag.id}
-              variant={selectedTag === tag.slug ? "default" : "outline"}
-              className="cursor-pointer"
-              onClick={() => onTagChange(tag.slug)}
-            >
-              {tag.name}
-            </Badge>
-          ))}
-        </div>
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
+    <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+      {selectedTag && (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onTagChange(null)}
+          className="rounded-full gap-1 shrink-0"
+        >
+          <X className="h-3 w-3" />
+          Clear
+        </Button>
+      )}
+      {tags.slice(0, 15).map((tag) => (
+        <Button
+          key={tag.id}
+          variant={selectedTag === tag.slug ? "default" : "outline"}
+          size="sm"
+          onClick={() => onTagChange(tag.slug)}
+          className="rounded-full shrink-0"
+        >
+          #{tag.name}
+        </Button>
+      ))}
     </div>
   );
-}
+};
+
+export default TagFilter;

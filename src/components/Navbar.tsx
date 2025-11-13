@@ -1,6 +1,7 @@
-import { Search, Edit3, LogOut, User, BookMarked, TrendingUp, ArrowLeft, Users, BarChart3, SearchIcon } from "lucide-react";
+import { Search, Edit3, LogOut, User, BookMarked, TrendingUp, ArrowLeft, Users, DollarSign } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -63,7 +64,8 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
             {user ? (
               <>
                 <Button 
@@ -90,13 +92,13 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
                       <User className="mr-2 h-4 w-4" />
                       Profile
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate("/analytics")}>
-                      <BarChart3 className="mr-2 h-4 w-4" />
-                      Analytics
+                    <DropdownMenuItem onClick={() => navigate("/monetization")}>
+                      <DollarSign className="mr-2 h-4 w-4" />
+                      Earn Money
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate("/search")}>
-                      <SearchIcon className="mr-2 h-4 w-4" />
-                      Advanced Search
+                    <DropdownMenuItem onClick={() => navigate("/earnings")}>
+                      <TrendingUp className="mr-2 h-4 w-4" />
+                      My Earnings
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate("/reading-lists")}>
                       <BookMarked className="mr-2 h-4 w-4" />

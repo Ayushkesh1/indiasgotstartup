@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import Navbar from "@/components/Navbar";
 import CategoryFilter from "@/components/CategoryFilter";
 import TagFilter from "@/components/TagFilter";
+import TrendingHero from "@/components/TrendingHero";
 import NewsCard from "@/components/NewsCard";
 import AdvertisementBanner from "@/components/AdvertisementBanner";
 import { useArticles, ArticleCategory } from "@/hooks/useArticles";
@@ -55,8 +56,10 @@ const Index = () => {
   }, [filteredArticles, followedAuthorIds]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-subtle">
       <Navbar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+      
+      <TrendingHero />
       
       <CategoryFilter
         categories={PREDEFINED_CATEGORIES}
@@ -72,22 +75,6 @@ const Index = () => {
       </div>
 
       <AdvertisementBanner />
-
-      {/* Featured Banner */}
-      <div className="border-b border-border bg-gradient-to-r from-primary/5 to-primary/10">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="flex items-center gap-2 mb-6">
-            <TrendingUp className="h-5 w-5 text-primary" />
-            <span className="text-sm font-medium text-primary">TRENDING ON INDIA GOT STARTUP</span>
-          </div>
-          <h1 className="font-serif text-4xl md:text-6xl font-bold mb-4 max-w-4xl leading-tight">
-            Stories of Indian entrepreneurship, innovation, and the people building tomorrow
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl">
-            Discover the untold stories of founders, insights from industry leaders, and deep dives into India's most exciting startups.
-          </p>
-        </div>
-      </div>
 
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {user && followedAuthorIds && followedAuthorIds.length > 0 ? (
