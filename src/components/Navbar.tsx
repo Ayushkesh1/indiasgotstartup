@@ -96,6 +96,10 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
                       <DollarSign className="mr-2 h-4 w-4" />
                       Earn Money
                     </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/earnings")}>
+                      <TrendingUp className="mr-2 h-4 w-4" />
+                      My Earnings
+                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate("/reading-lists")}>
                       <BookMarked className="mr-2 h-4 w-4" />
                       Reading Lists

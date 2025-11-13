@@ -14,6 +14,7 @@ import ReadingLists from "./pages/ReadingLists";
 import AdsManagement from "./pages/AdsManagement";
 import FollowingManagement from "./pages/FollowingManagement";
 import Monetization from "./pages/Monetization";
+import Earnings from "./pages/Earnings";
 
 import NotFound from "./pages/NotFound";
 
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/reading-lists" element={<ReadingLists />} />
             <Route path="/following" element={<FollowingManagement />} />
             <Route path="/monetization" element={<Monetization />} />
+            <Route path="/earnings" element={<Earnings />} />
             
             <Route path="/ads" element={<AdsManagement />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
