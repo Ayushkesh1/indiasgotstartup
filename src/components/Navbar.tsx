@@ -1,4 +1,4 @@
-import { Search, TrendingUp } from "lucide-react";
+import { Search, Edit3 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -9,14 +9,15 @@ interface NavbarProps {
 
 const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
+    <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2 rounded-lg bg-primary px-3 py-2">
-              <TrendingUp className="h-5 w-5 text-primary-foreground" />
-              <span className="text-lg font-bold text-primary-foreground">StartupPulse</span>
-            </div>
+          <div className="flex items-center gap-8">
+            <a href="/" className="flex items-center gap-2 group">
+              <span className="font-serif text-2xl font-bold text-foreground tracking-tight">
+                India Got Startup
+              </span>
+            </a>
           </div>
           
           <div className="hidden md:flex flex-1 max-w-md mx-8">
@@ -24,20 +25,24 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="search"
-                placeholder="Search startup news..."
-                className="w-full pl-10 bg-background"
+                placeholder="Search stories..."
+                className="w-full pl-10 bg-background border-border rounded-full"
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
               />
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm">
-              Categories
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+              Our story
             </Button>
-            <Button variant="default" size="sm" className="hidden sm:flex">
-              Submit News
+            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+              Membership
+            </Button>
+            <Button size="sm" className="gap-2 bg-primary hover:bg-primary-hover rounded-full">
+              <Edit3 className="h-4 w-4" />
+              Write
             </Button>
           </div>
         </div>
@@ -48,8 +53,8 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search startup news..."
-              className="w-full pl-10 bg-background"
+              placeholder="Search stories..."
+              className="w-full pl-10 bg-background border-border rounded-full"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
             />

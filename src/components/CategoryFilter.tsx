@@ -1,5 +1,3 @@
-import { Badge } from "@/components/ui/badge";
-
 interface CategoryFilterProps {
   categories: string[];
   selectedCategory: string;
@@ -8,24 +6,34 @@ interface CategoryFilterProps {
 
 const CategoryFilter = ({ categories, selectedCategory, onCategoryChange }: CategoryFilterProps) => {
   return (
-    <div className="flex flex-wrap gap-2 p-4 bg-card border-b border-border">
-      <Badge
-        variant={selectedCategory === "All" ? "default" : "outline"}
-        className="cursor-pointer transition-smooth hover:scale-105"
-        onClick={() => onCategoryChange("All")}
-      >
-        All
-      </Badge>
-      {categories.map((category) => (
-        <Badge
-          key={category}
-          variant={selectedCategory === category ? "default" : "outline"}
-          className="cursor-pointer transition-smooth hover:scale-105"
-          onClick={() => onCategoryChange(category)}
-        >
-          {category}
-        </Badge>
-      ))}
+    <div className="border-b border-border bg-background">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex gap-6 overflow-x-auto py-4 scrollbar-hide">
+          <button
+            onClick={() => onCategoryChange("All")}
+            className={`text-sm whitespace-nowrap pb-2 border-b-2 transition-colors ${
+              selectedCategory === "All"
+                ? "border-foreground text-foreground font-medium"
+                : "border-transparent text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            For you
+          </button>
+          {categories.map((category) => (
+            <button
+              key={category}
+              onClick={() => onCategoryChange(category)}
+              className={`text-sm whitespace-nowrap pb-2 border-b-2 transition-colors ${
+                selectedCategory === category
+                  ? "border-foreground text-foreground font-medium"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
