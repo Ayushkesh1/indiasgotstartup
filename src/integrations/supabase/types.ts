@@ -225,11 +225,48 @@ export type Database = {
         }
         Relationships: []
       }
+      follows: {
+        Row: {
+          author_id: string
+          created_at: string
+          follower_id: string
+          id: string
+        }
+        Insert: {
+          author_id: string
+          created_at?: string
+          follower_id: string
+          id?: string
+        }
+        Update: {
+          author_id?: string
+          created_at?: string
+          follower_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "follows_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "follows_follower_id_fkey"
+            columns: ["follower_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
           bio: string | null
           created_at: string
+          email_notifications: boolean
           full_name: string | null
           id: string
           linkedin_url: string | null
@@ -240,6 +277,7 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
+          email_notifications?: boolean
           full_name?: string | null
           id: string
           linkedin_url?: string | null
@@ -250,6 +288,7 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
+          email_notifications?: boolean
           full_name?: string | null
           id?: string
           linkedin_url?: string | null
