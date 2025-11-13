@@ -47,12 +47,14 @@ All colors MUST be HSL.
     --gradient-secondary: linear-gradient(45deg, hsl(330 100% 70%) 0%, hsl(280 100% 65%) 100%);
     --gradient-subtle: linear-gradient(180deg, hsl(250 100% 98%) 0%, hsl(280 100% 97%) 100%);
     --gradient-card: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(280 100% 99%) 100%);
+    --gradient-neon: linear-gradient(135deg, hsl(280 100% 65%) 0%, hsl(330 100% 70%) 25%, hsl(170 100% 55%) 50%, hsl(60 100% 60%) 75%, hsl(280 100% 65%) 100%);
 
     /* Vibrant Shadows */
     --shadow-sm: 0 2px 4px rgba(168, 85, 247, 0.1);
     --shadow-md: 0 8px 16px rgba(168, 85, 247, 0.15);
     --shadow-lg: 0 16px 32px rgba(168, 85, 247, 0.2);
     --shadow-glow: 0 0 20px rgba(168, 85, 247, 0.3);
+    --shadow-neon: 0 0 40px rgba(168, 85, 247, 0.5), 0 0 80px rgba(168, 85, 247, 0.3);
 
     /* Smooth Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -96,11 +98,13 @@ All colors MUST be HSL.
     --gradient-secondary: linear-gradient(45deg, hsl(330 100% 75%) 0%, hsl(280 100% 70%) 100%);
     --gradient-subtle: linear-gradient(180deg, hsl(250 50% 8%) 0%, hsl(280 40% 10%) 100%);
     --gradient-card: linear-gradient(135deg, hsl(250 40% 12%) 0%, hsl(280 30% 14%) 100%);
+    --gradient-neon: linear-gradient(135deg, hsl(280 100% 70%) 0%, hsl(330 100% 75%) 25%, hsl(170 100% 60%) 50%, hsl(60 100% 65%) 75%, hsl(280 100% 70%) 100%);
 
     --shadow-sm: 0 2px 4px rgba(168, 85, 247, 0.2);
     --shadow-md: 0 8px 16px rgba(168, 85, 247, 0.3);
     --shadow-lg: 0 16px 32px rgba(168, 85, 247, 0.4);
     --shadow-glow: 0 0 30px rgba(168, 85, 247, 0.5);
+    --shadow-neon: 0 0 50px rgba(168, 85, 247, 0.6), 0 0 100px rgba(168, 85, 247, 0.4);
   }
 }
 
@@ -139,6 +143,12 @@ All colors MUST be HSL.
     background: var(--gradient-card);
   }
 
+  .gradient-neon {
+    background: var(--gradient-neon);
+    background-size: 200% 200%;
+    animation: gradient-shift 5s ease infinite;
+  }
+
   .transition-smooth {
     transition: var(--transition-smooth);
   }
@@ -149,6 +159,19 @@ All colors MUST be HSL.
 
   .shadow-glow {
     box-shadow: var(--shadow-glow);
+  }
+
+  .shadow-neon {
+    box-shadow: var(--shadow-neon);
+  }
+
+  .scrollbar-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 
   .article-content {
@@ -170,12 +193,30 @@ All colors MUST be HSL.
     50% { box-shadow: 0 0 40px rgba(168, 85, 247, 0.6); }
   }
 
+  @keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+
   .animate-float {
     animation: float 3s ease-in-out infinite;
   }
 
   .animate-pulse-glow {
     animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .animate-gradient-shift {
+    animation: gradient-shift 5s ease infinite;
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s linear infinite;
   }
 
   /* TipTap Editor Prose Styles */
