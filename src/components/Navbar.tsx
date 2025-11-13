@@ -1,4 +1,4 @@
-import { Search, Edit3, LogOut, User, BookMarked } from "lucide-react";
+import { Search, Edit3, LogOut, User, BookMarked, TrendingUp } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -79,6 +79,10 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
                     <DropdownMenuItem onClick={() => navigate("/reading-lists")}>
                       <BookMarked className="mr-2 h-4 w-4" />
                       Reading Lists
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/ads")}>
+                      <TrendingUp className="mr-2 h-4 w-4" />
+                      Manage Ads
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={handleSignOut}>
                       <LogOut className="mr-2 h-4 w-4" />
