@@ -17,6 +17,7 @@ import Analytics from "./pages/Analytics";
 import AdvancedSearch from "./pages/AdvancedSearch";
 import SeriesManagement from "./pages/SeriesManagement";
 import Monetization from "./pages/Monetization";
+import RewardsDashboard from "./pages/RewardsDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -42,6 +43,7 @@ const App = () => (
             <Route path="/search" element={<AdvancedSearch />} />
             <Route path="/series" element={<SeriesManagement />} />
             <Route path="/monetization" element={<Monetization />} />
+            <Route path="/rewards" element={<RewardsDashboard />} />
             <Route path="/ads" element={<AdsManagement />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
