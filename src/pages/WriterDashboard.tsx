@@ -18,7 +18,7 @@ import TipTapEditor from "@/components/editor/TipTapEditor";
 import { useToast } from "@/hooks/use-toast";
 import { generateSlug, calculateReadingTime, extractExcerpt } from "@/utils/articleUtils";
 import { ArticleCategory } from "@/hooks/useArticles";
-import { Loader2, Upload, Eye, Save, Send } from "lucide-react";
+import { Loader2, Upload, Eye, Save, Send, ArrowLeft } from "lucide-react";
 
 const CATEGORIES: ArticleCategory[] = [
   "Fintech",
@@ -270,9 +270,19 @@ const WriterDashboard = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-8">
-            <h1 className="font-serif text-3xl font-bold">
-              {id ? "Edit Article" : "Write New Article"}
-            </h1>
+            <div className="flex items-center gap-4">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => navigate("/")}
+                className="hover:bg-accent"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+              <h1 className="font-serif text-3xl font-bold">
+                {id ? "Edit Article" : "Write New Article"}
+              </h1>
+            </div>
             <div className="flex gap-2">
               <Button variant="outline" onClick={saveDraft} disabled={loading}>
                 {loading ? (
