@@ -52,7 +52,11 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
           <div className="flex items-center gap-4">
             {user ? (
               <>
-                <Button size="sm" className="gap-2 bg-primary hover:bg-primary-hover rounded-full">
+                <Button 
+                  size="sm" 
+                  className="gap-2 bg-primary hover:bg-primary-hover rounded-full"
+                  onClick={() => navigate("/write")}
+                >
                   <Edit3 className="h-4 w-4" />
                   Write
                 </Button>
