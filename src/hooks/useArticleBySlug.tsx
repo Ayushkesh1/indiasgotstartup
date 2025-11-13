@@ -33,7 +33,8 @@ export function useArticleBySlug(slug: string | undefined) {
   });
 }
 
-export async function incrementArticleViews(articleId: string) {
+export async function incrementArticleViews(articleId: string, userId?: string) {
+  // Update the views_count in articles table
   const { data: currentArticle } = await supabase
     .from("articles")
     .select("views_count")
@@ -47,5 +48,17 @@ export async function incrementArticleViews(articleId: string) {
       .eq("id", articleId);
 
     if (error) console.error("Error incrementing views:", error);
+  }
+
+  // Track the view in article_views for analytics
+  const { error: trackError } = await supabase
+    .from("article_views")
+    .insert({
+      article_id: articleId,
+      viewer_id: userId || null,
+    });
+
+  if (trackError) {
+    console.error("Error tracking article view:", trackError);
   }
 }

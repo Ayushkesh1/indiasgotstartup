@@ -1,7 +1,9 @@
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { useArticleBySlug, incrementArticleViews } from "@/hooks/useArticleBySlug";
 import { useRelatedArticles } from "@/hooks/useRelatedArticles";
+import { useAuth } from "@/hooks/useAuth";
 import Navbar from "@/components/Navbar";
 import ReadingProgress from "@/components/article/ReadingProgress";
 import TableOfContents from "@/components/article/TableOfContents";
@@ -16,6 +18,7 @@ import { Loader2, Calendar, Clock, Eye } from "lucide-react";
 const ArticleDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { data: article, isLoading, error } = useArticleBySlug(slug);
   const { data: relatedArticles } = useRelatedArticles(
     article?.category || "Tech",
@@ -24,9 +27,9 @@ const ArticleDetail = () => {
 
   useEffect(() => {
     if (article?.id) {
-      incrementArticleViews(article.id);
+      incrementArticleViews(article.id, user?.id);
     }
-  }, [article?.id]);
+  }, [article?.id, user?.id]);
 
   // Add IDs to headings for table of contents
   useEffect(() => {
@@ -71,9 +74,36 @@ const ArticleDetail = () => {
     : JSON.stringify(article.content);
 
   const shareUrl = `${window.location.origin}/article/${article.slug}`;
+  const ogImage = article.featured_image_url || `${window.location.origin}/placeholder.svg`;
+  const description = article.excerpt || contentHtml.substring(0, 160).replace(/<[^>]*>/g, '');
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>{article.title} | India Got Startup</title>
+        <meta name="description" content={description} />
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={shareUrl} />
+        <meta property="og:title" content={article.title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="article:published_time" content={article.published_at || article.created_at} />
+        <meta property="article:author" content={article.profiles.full_name || "Anonymous"} />
+        <meta property="article:section" content={article.category} />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content={shareUrl} />
+        <meta name="twitter:title" content={article.title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={ogImage} />
+        
+        {/* Additional SEO */}
+        <link rel="canonical" href={shareUrl} />
+      </Helmet>
+
       <ReadingProgress />
       <Navbar searchQuery="" onSearchChange={() => {}} />
 
