@@ -15,6 +15,7 @@ import AdsManagement from "./pages/AdsManagement";
 import FollowingManagement from "./pages/FollowingManagement";
 import Analytics from "./pages/Analytics";
 import AdvancedSearch from "./pages/AdvancedSearch";
+import SeriesManagement from "./pages/SeriesManagement";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/following" element={<FollowingManagement />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/search" element={<AdvancedSearch />} />
+            <Route path="/series" element={<SeriesManagement />} />
             <Route path="/ads" element={<AdsManagement />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

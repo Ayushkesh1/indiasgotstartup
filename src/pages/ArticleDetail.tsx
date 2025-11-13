@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useArticleBySlug, incrementArticleViews } from "@/hooks/useArticleBySlug";
 import { useRelatedArticles } from "@/hooks/useRelatedArticles";
+import { useReadingProgress, useTrackReadingProgress } from "@/hooks/useReadingProgress";
 import { useAuth } from "@/hooks/useAuth";
 import Navbar from "@/components/Navbar";
 import ReadingProgress from "@/components/article/ReadingProgress";
@@ -24,12 +25,30 @@ const ArticleDetail = () => {
     article?.category || "Tech",
     article?.id || ""
   );
+  
+  const { data: savedProgress } = useReadingProgress(article?.id || "", user?.id);
+  
+  // Track reading progress
+  useTrackReadingProgress(article?.id || "", user?.id, !!article?.id && !!user?.id);
 
   useEffect(() => {
     if (article?.id) {
       incrementArticleViews(article.id, user?.id);
     }
   }, [article?.id, user?.id]);
+
+  // Restore reading position
+  useEffect(() => {
+    if (savedProgress && savedProgress.scroll_position > 0) {
+      // Small delay to ensure content is loaded
+      setTimeout(() => {
+        window.scrollTo({
+          top: savedProgress.scroll_position,
+          behavior: "smooth",
+        });
+      }, 500);
+    }
+  }, [savedProgress]);
 
   // Add IDs to headings for table of contents
   useEffect(() => {
