@@ -1,13 +1,23 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
+export type ArticleCategory = 
+  | "Fintech"
+  | "Tech"
+  | "Blockchain"
+  | "eCommerce"
+  | "Government"
+  | "Edtech"
+  | "Funding"
+  | "Mobility";
+
 export interface Article {
   id: string;
   title: string;
   slug: string;
   excerpt: string | null;
   content: any;
-  category: string;
+  category: ArticleCategory;
   reading_time: number;
   featured_image_url: string | null;
   published: boolean;
@@ -20,7 +30,7 @@ export interface Article {
   };
 }
 
-export function useArticles(category?: string) {
+export function useArticles(category?: string | ArticleCategory) {
   return useQuery({
     queryKey: ["articles", category],
     queryFn: async () => {
@@ -38,7 +48,7 @@ export function useArticles(category?: string) {
         .order("published_at", { ascending: false });
 
       if (category && category !== "All") {
-        query = query.eq("category", category);
+        query = query.eq("category", category as ArticleCategory);
       }
 
       const { data, error } = await query;

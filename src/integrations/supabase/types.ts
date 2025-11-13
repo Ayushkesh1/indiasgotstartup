@@ -14,10 +14,61 @@ export type Database = {
   }
   public: {
     Tables: {
+      advertisements: {
+        Row: {
+          bid_amount: number
+          clicks: number
+          created_at: string
+          description: string | null
+          end_date: string | null
+          id: string
+          image_url: string
+          impressions: number
+          is_active: boolean
+          link_url: string
+          start_date: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bid_amount?: number
+          clicks?: number
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          image_url: string
+          impressions?: number
+          is_active?: boolean
+          link_url: string
+          start_date?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bid_amount?: number
+          clicks?: number
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          image_url?: string
+          impressions?: number
+          is_active?: boolean
+          link_url?: string
+          start_date?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       articles: {
         Row: {
           author_id: string
-          category: string
+          category: Database["public"]["Enums"]["article_category"]
           content: Json
           created_at: string
           excerpt: string | null
@@ -33,7 +84,7 @@ export type Database = {
         }
         Insert: {
           author_id: string
-          category: string
+          category: Database["public"]["Enums"]["article_category"]
           content: Json
           created_at?: string
           excerpt?: string | null
@@ -49,7 +100,7 @@ export type Database = {
         }
         Update: {
           author_id?: string
-          category?: string
+          category?: Database["public"]["Enums"]["article_category"]
           content?: Json
           created_at?: string
           excerpt?: string | null
@@ -111,10 +162,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      increment_ad_clicks: { Args: { ad_id: string }; Returns: undefined }
+      increment_ad_impressions: { Args: { ad_id: string }; Returns: undefined }
     }
     Enums: {
-      [_ in never]: never
+      article_category:
+        | "Fintech"
+        | "Tech"
+        | "Blockchain"
+        | "eCommerce"
+        | "Government"
+        | "Edtech"
+        | "Funding"
+        | "Mobility"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -241,6 +301,17 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      article_category: [
+        "Fintech",
+        "Tech",
+        "Blockchain",
+        "eCommerce",
+        "Government",
+        "Edtech",
+        "Funding",
+        "Mobility",
+      ],
+    },
   },
 } as const

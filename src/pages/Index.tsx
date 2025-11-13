@@ -2,19 +2,26 @@ import { useState, useMemo } from "react";
 import Navbar from "@/components/Navbar";
 import CategoryFilter from "@/components/CategoryFilter";
 import NewsCard from "@/components/NewsCard";
-import { useArticles } from "@/hooks/useArticles";
+import AdvertisementBanner from "@/components/AdvertisementBanner";
+import { useArticles, ArticleCategory } from "@/hooks/useArticles";
 import { TrendingUp, Loader2 } from "lucide-react";
+
+const PREDEFINED_CATEGORIES: ArticleCategory[] = [
+  "Fintech",
+  "Tech",
+  "Blockchain",
+  "eCommerce",
+  "Government",
+  "Edtech",
+  "Funding",
+  "Mobility",
+];
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState<string | ArticleCategory>("All");
   
   const { data: articles, isLoading } = useArticles(selectedCategory);
-
-  const categories = useMemo(() => {
-    if (!articles) return [];
-    return Array.from(new Set(articles.map((article) => article.category)));
-  }, [articles]);
 
   const filteredArticles = useMemo(() => {
     if (!articles) return [];
@@ -32,10 +39,12 @@ const Index = () => {
       <Navbar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
       
       <CategoryFilter
-        categories={categories}
+        categories={PREDEFINED_CATEGORIES}
         selectedCategory={selectedCategory}
         onCategoryChange={setSelectedCategory}
       />
+
+      <AdvertisementBanner />
 
       {/* Featured Banner */}
       <div className="border-b border-border bg-gradient-to-r from-primary/5 to-primary/10">
