@@ -23,6 +23,7 @@ export interface Article {
   published: boolean;
   published_at: string | null;
   created_at: string;
+  views_count: number;
   profiles: {
     full_name: string | null;
     avatar_url: string | null;
