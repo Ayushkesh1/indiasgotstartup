@@ -64,38 +64,38 @@ export default function Monetization() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-subtle">
       <Navbar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
-      <div className="container mx-auto px-4 py-12 max-w-6xl">
+      <div className="container mx-auto px-4 py-16 max-w-7xl">
         {/* Hero Section */}
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 mb-4">
-            <Sparkles className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium text-primary">Start Earning Today</span>
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-primary text-white mb-6 shadow-lg">
+            <Sparkles className="h-5 w-5" />
+            <span className="text-sm font-semibold">Start Earning Today</span>
           </div>
-          <h1 className="text-4xl font-bold mb-4">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-hero bg-clip-text text-transparent">
             Make Money Writing
           </h1>
-          <p className="text-lg text-muted-foreground">
-            Turn your passion for writing into income. Multiple ways to earn from your content.
+          <p className="text-xl text-muted-foreground leading-relaxed">
+            Turn your passion for writing into income. Multiple ways to earn from your content with automated earnings tracking.
           </p>
         </div>
 
         {/* Monetization Methods */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
           {monetizationMethods.map((method, index) => (
-            <Card key={index} className="hover:shadow-md transition-all">
-              <CardHeader>
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-3">
+            <Card key={index} className="hover:shadow-xl transition-all duration-300 border-0 bg-gradient-card backdrop-blur-sm group">
+              <CardHeader className="pb-4">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center text-white mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
                   {method.icon}
                 </div>
-                <CardTitle className="text-xl mb-2">{method.title}</CardTitle>
-                <CardDescription>{method.description}</CardDescription>
+                <CardTitle className="text-2xl mb-3">{method.title}</CardTitle>
+                <CardDescription className="text-base">{method.description}</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="bg-muted rounded-lg p-3">
-                  <p className="text-xs text-muted-foreground mb-1">Potential Earnings</p>
-                  <p className="text-lg font-semibold text-primary">{method.earnings}</p>
+                <div className="bg-primary/5 border border-primary/10 rounded-xl p-4">
+                  <p className="text-xs text-muted-foreground mb-1.5 uppercase tracking-wider">Potential Earnings</p>
+                  <p className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">{method.earnings}</p>
                 </div>
               </CardContent>
             </Card>
@@ -103,79 +103,64 @@ export default function Monetization() {
         </div>
 
         {/* How It Works */}
-        <Card className="gradient-card">
-          <CardHeader>
-            <CardTitle className="text-3xl">How It Works</CardTitle>
-            <CardDescription>Follow these steps to start monetizing your content</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {steps.map((item) => (
-                <div key={item.step} className="relative">
-                  <div className="flex flex-col items-center text-center space-y-3">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br gradient-primary flex items-center justify-center text-white font-bold text-xl">
-                      {item.step}
-                    </div>
-                    <h3 className="font-semibold">{item.title}</h3>
-                    <p className="text-sm text-muted-foreground">{item.description}</p>
+        <div className="mb-20">
+          <h2 className="text-4xl font-bold text-center mb-12">How It Works</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {steps.map((step, index) => (
+              <Card key={index} className="text-center border-0 bg-gradient-card hover:shadow-lg transition-all duration-300">
+                <CardHeader className="pb-3">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-primary text-white flex items-center justify-center text-2xl font-bold mx-auto mb-4 shadow-md">
+                    {step.step}
                   </div>
-                  {item.step < 4 && (
-                    <div className="hidden lg:block absolute top-6 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-primary to-transparent" />
-                  )}
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                  <CardTitle className="text-xl">{step.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground leading-relaxed">{step.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
 
         {/* Stats Section */}
-        <div className="grid md:grid-cols-3 gap-6">
-          <Card className="text-center">
-            <CardHeader>
-              <CardTitle className="text-4xl font-bold text-primary">$2.5M+</CardTitle>
-              <CardDescription>Paid to Writers</CardDescription>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+          <Card className="text-center border-0 bg-gradient-card hover:shadow-lg transition-all duration-300">
+            <CardHeader className="py-8">
+              <CardTitle className="text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">$2.5M+</CardTitle>
+              <CardDescription className="text-base">Paid to Writers</CardDescription>
             </CardHeader>
           </Card>
-          <Card className="text-center">
-            <CardHeader>
-              <CardTitle className="text-4xl font-bold text-secondary">10K+</CardTitle>
-              <CardDescription>Earning Writers</CardDescription>
+          <Card className="text-center border-0 bg-gradient-card hover:shadow-lg transition-all duration-300">
+            <CardHeader className="py-8">
+              <CardTitle className="text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">10K+</CardTitle>
+              <CardDescription className="text-base">Earning Writers</CardDescription>
             </CardHeader>
           </Card>
-          <Card className="text-center">
-            <CardHeader>
-              <CardTitle className="text-4xl font-bold text-accent">$1,200</CardTitle>
-              <CardDescription>Average Monthly Earnings</CardDescription>
+          <Card className="text-center border-0 bg-gradient-card hover:shadow-lg transition-all duration-300">
+            <CardHeader className="py-8">
+              <CardTitle className="text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">$5K</CardTitle>
+              <CardDescription className="text-base">Avg. Monthly Earnings</CardDescription>
             </CardHeader>
           </Card>
         </div>
 
         {/* CTA Section */}
-        <Card className="gradient-primary text-white text-center p-12">
-          <div className="space-y-6">
-            <h2 className="text-3xl font-bold">Ready to Start Earning?</h2>
-            <p className="text-lg opacity-90">
-              Join thousands of writers already making money on our platform
-            </p>
-            <div className="flex gap-4 justify-center">
-              <Button
-                size="lg"
-                variant="secondary"
-                onClick={() => navigate("/write")}
-                className="font-semibold"
-              >
-                Start Writing
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => navigate("/rewards")}
-                className="bg-white/10 border-white/20 text-white hover:bg-white/20"
-              >
-                View Rewards
-              </Button>
-            </div>
-          </div>
+        <Card className="text-center p-12 bg-gradient-primary border-0 shadow-xl">
+          <CardHeader>
+            <CardTitle className="text-3xl md:text-4xl text-white mb-4">Ready to Start Earning?</CardTitle>
+            <CardDescription className="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
+              Join thousands of writers who are already making money from their content with automated earnings tracking.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col sm:flex-row gap-6 justify-center">
+            <Button size="lg" onClick={() => navigate("/writer-dashboard")} className="gap-2 bg-white text-primary hover:bg-white/90 shadow-lg text-lg px-8 py-6">
+              <TrendingUp className="h-5 w-5" />
+              Start Writing
+            </Button>
+            <Button size="lg" variant="outline" onClick={() => navigate("/monetization")} className="bg-white/10 text-white border-white/20 hover:bg-white/20 text-lg px-8 py-6">
+              Learn More
+            </Button>
+          </CardContent>
         </Card>
       </div>
     </div>
