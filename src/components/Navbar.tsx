@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import logo from "@/assets/logo.png";
 
 interface NavbarProps {
@@ -20,6 +20,7 @@ interface NavbarProps {
 const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSignOut = async () => {
     await signOut();
@@ -39,9 +40,11 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={handleBack} className="hover:bg-accent">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
+            {location.pathname !== "/" && (
+              <Button variant="ghost" size="icon" onClick={handleBack} className="hover:bg-accent">
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+            )}
             <Link to="/" className="flex items-center gap-2 group">
               <img src={logo} alt="India's Startup" className="h-8 w-auto" />
             </Link>
