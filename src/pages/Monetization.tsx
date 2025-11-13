@@ -64,42 +64,38 @@ export default function Monetization() {
   ];
 
   return (
-    <div className="min-h-screen gradient-subtle">
+    <div className="min-h-screen bg-background">
       <Navbar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
-      <div className="container mx-auto px-4 py-12 space-y-12">
+      <div className="container mx-auto px-4 py-12 max-w-6xl">
         {/* Hero Section */}
-        <div className="text-center space-y-4 animate-fade-in">
+        <div className="text-center max-w-2xl mx-auto mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 mb-4">
             <Sparkles className="h-4 w-4 text-primary" />
             <span className="text-sm font-medium text-primary">Start Earning Today</span>
           </div>
-          <h1 className="text-5xl font-bold gradient-primary bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold mb-4">
             Make Money Writing
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Turn your passion for writing into a sustainable income stream
+          <p className="text-lg text-muted-foreground">
+            Turn your passion for writing into income. Multiple ways to earn from your content.
           </p>
         </div>
 
         {/* Monetization Methods */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
           {monetizationMethods.map((method, index) => (
-            <Card
-              key={index}
-              className="group hover:shadow-glow transition-smooth cursor-pointer animate-fade-in"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
+            <Card key={index} className="hover:shadow-md transition-all">
               <CardHeader>
-                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${method.color} p-3 text-white mb-4 group-hover:scale-110 transition-smooth`}>
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-3">
                   {method.icon}
                 </div>
-                <CardTitle>{method.title}</CardTitle>
+                <CardTitle className="text-xl mb-2">{method.title}</CardTitle>
                 <CardDescription>{method.description}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="bg-muted rounded-lg p-3">
-                  <p className="text-xs text-muted-foreground">Potential Earnings</p>
-                  <p className="text-lg font-bold text-primary">{method.earnings}</p>
+                  <p className="text-xs text-muted-foreground mb-1">Potential Earnings</p>
+                  <p className="text-lg font-semibold text-primary">{method.earnings}</p>
                 </div>
               </CardContent>
             </Card>
