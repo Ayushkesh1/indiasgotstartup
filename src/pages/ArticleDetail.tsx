@@ -8,6 +8,7 @@ import TableOfContents from "@/components/article/TableOfContents";
 import AuthorSidebar from "@/components/article/AuthorSidebar";
 import SocialShare from "@/components/article/SocialShare";
 import RelatedArticles from "@/components/article/RelatedArticles";
+import BookmarkButton from "@/components/bookmarks/BookmarkButton";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Calendar, Clock, Eye } from "lucide-react";
 
@@ -122,7 +123,10 @@ const ArticleDetail = () => {
                   {article.views_count} views
                 </span>
               </div>
-              <SocialShare title={article.title} url={shareUrl} />
+              <div className="flex items-center gap-2">
+                <BookmarkButton articleId={article.id} variant="outline" />
+                <SocialShare title={article.title} url={shareUrl} />
+              </div>
             </div>
           </div>
 

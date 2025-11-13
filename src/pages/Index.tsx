@@ -72,6 +72,7 @@ const Index = () => {
             {filteredArticles.map((article) => (
               <NewsCard
                 key={article.id}
+                articleId={article.id}
                 title={article.title}
                 description={article.excerpt || ""}
                 category={article.category}

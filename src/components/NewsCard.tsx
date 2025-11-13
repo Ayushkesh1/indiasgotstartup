@@ -1,6 +1,7 @@
-import { Clock, Bookmark } from "lucide-react";
+import { Clock } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import BookmarkButton from "@/components/bookmarks/BookmarkButton";
 
 interface NewsCardProps {
   title: string;
@@ -13,6 +14,7 @@ interface NewsCardProps {
   author?: string;
   authorImage?: string;
   readTime?: string;
+  articleId?: string;
 }
 
 const NewsCard = ({ 
@@ -25,7 +27,8 @@ const NewsCard = ({
   thumbnail,
   author = "Editorial Team",
   authorImage,
-  readTime = "5 min read"
+  readTime = "5 min read",
+  articleId
 }: NewsCardProps) => {
   return (
     <Card className="group border-0 shadow-none bg-transparent overflow-hidden transition-smooth hover:opacity-80 cursor-pointer">
@@ -71,15 +74,11 @@ const NewsCard = ({
               <span>{date}</span>
             </div>
             
-            <button 
-              className="text-muted-foreground hover:text-foreground transition-colors"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-              }}
-            >
-              <Bookmark className="h-5 w-5" />
-            </button>
+            {articleId && (
+              <div onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
+                <BookmarkButton articleId={articleId} variant="ghost" size="icon" />
+              </div>
+            )}
           </div>
         </div>
       </a>
