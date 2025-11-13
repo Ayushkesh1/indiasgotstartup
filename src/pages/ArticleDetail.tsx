@@ -8,6 +8,7 @@ import TableOfContents from "@/components/article/TableOfContents";
 import AuthorSidebar from "@/components/article/AuthorSidebar";
 import SocialShare from "@/components/article/SocialShare";
 import RelatedArticles from "@/components/article/RelatedArticles";
+import CommentsList from "@/components/article/CommentsList";
 import BookmarkButton from "@/components/bookmarks/BookmarkButton";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Calendar, Clock, Eye } from "lucide-react";
@@ -155,6 +156,11 @@ const ArticleDetail = () => {
           {/* Related Articles */}
           <div className="max-w-6xl mx-auto">
             <RelatedArticles articles={relatedArticles || []} />
+          </div>
+
+          {/* Comments Section */}
+          <div className="max-w-4xl mx-auto mt-16">
+            <CommentsList articleId={article.id} />
           </div>
         </div>
       </article>
