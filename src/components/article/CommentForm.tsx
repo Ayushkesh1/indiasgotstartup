@@ -12,6 +12,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { z } from "zod";
+
+const commentSchema = z.object({
+  content: z.string()
+    .trim()
+    .min(1, "Comment cannot be empty")
+    .max(2000, "Comment must be less than 2000 characters")
+});
 
 interface CommentFormProps {
   articleId: string;
@@ -42,8 +50,10 @@ export default function CommentForm({
       return;
     }
 
-    if (!content.trim()) {
-      toast.error("Please write something");
+    // Validate input
+    const result = commentSchema.safeParse({ content });
+    if (!result.success) {
+      toast.error(result.error.errors[0].message);
       return;
     }
 

@@ -1,7 +1,7 @@
 project_id = "cikptmgvfpeuzweeohae"
 
 [functions.profile-assistant]
-verify_jwt = false
+verify_jwt = true
 
 [functions.translate-article]
-verify_jwt = false
+verify_jwt = true

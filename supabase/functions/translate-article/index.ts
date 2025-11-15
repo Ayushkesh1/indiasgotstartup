@@ -12,6 +12,28 @@ serve(async (req) => {
 
   try {
     const { content, targetLanguage } = await req.json();
+    
+    // Validate input
+    if (!content || typeof content !== 'string') {
+      return new Response(
+        JSON.stringify({ error: 'Content is required and must be a string' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      );
+    }
+    
+    if (content.length > 50000) {
+      return new Response(
+        JSON.stringify({ error: 'Content must be less than 50000 characters' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      );
+    }
+    
+    if (!targetLanguage || typeof targetLanguage !== 'string') {
+      return new Response(
+        JSON.stringify({ error: 'Target language is required' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      );
+    }
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {

@@ -13,6 +13,7 @@ export function useUserArticles(userId: string | undefined) {
         .select(`
           *,
           profiles:author_id (
+            id,
             full_name,
             avatar_url,
             bio
