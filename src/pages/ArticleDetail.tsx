@@ -17,6 +17,7 @@ import BookmarkButton from "@/components/bookmarks/BookmarkButton";
 import TranslateButton from "@/components/article/TranslateButton";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Calendar, Clock, Eye } from "lucide-react";
+import DOMPurify from "dompurify";
 
 const ArticleDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -109,6 +110,19 @@ const ArticleDetail = () => {
   const contentHtml = typeof article.content === 'string' 
     ? article.content 
     : JSON.stringify(article.content);
+  
+  // Sanitize HTML content to prevent XSS attacks
+  const sanitizedContent = DOMPurify.sanitize(contentHtml, {
+    ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'a', 'img', 'blockquote', 'code', 'pre', 'span', 'div'],
+    ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'id']
+  });
+  
+  const sanitizedTranslatedContent = translatedContent 
+    ? DOMPurify.sanitize(translatedContent, {
+        ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'a', 'img', 'blockquote', 'code', 'pre', 'span', 'div'],
+        ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'id']
+      })
+    : null;
 
   const shareUrl = `${window.location.origin}/article/${article.slug}`;
   const ogImage = article.featured_image_url || `${window.location.origin}/placeholder.svg`;
@@ -224,7 +238,7 @@ const ArticleDetail = () => {
               <div
                 id="article-content"
                 className="prose prose-lg max-w-none"
-                dangerouslySetInnerHTML={{ __html: translatedContent || contentHtml }}
+                dangerouslySetInnerHTML={{ __html: sanitizedTranslatedContent || sanitizedContent }}
               />
             </div>
 

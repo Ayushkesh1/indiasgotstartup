@@ -12,6 +12,28 @@ serve(async (req) => {
 
   try {
     const { action, text } = await req.json();
+    
+    // Validate input
+    if (!text || typeof text !== 'string') {
+      return new Response(
+        JSON.stringify({ error: 'Text is required and must be a string' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      );
+    }
+    
+    if (text.length > 5000) {
+      return new Response(
+        JSON.stringify({ error: 'Text must be less than 5000 characters' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      );
+    }
+    
+    if (!['refine', 'expand', 'shorten'].includes(action)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid action. Must be refine, expand, or shorten' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      );
+    }
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
