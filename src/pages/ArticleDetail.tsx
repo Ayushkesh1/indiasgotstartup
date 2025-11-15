@@ -124,6 +124,7 @@ const ArticleDetail = () => {
       })
     : null;
 
+
   const shareUrl = `${window.location.origin}/article/${article.slug}`;
   const ogImage = article.featured_image_url || `${window.location.origin}/placeholder.svg`;
   const description = article.excerpt || contentHtml.substring(0, 160).replace(/<[^>]*>/g, '');
