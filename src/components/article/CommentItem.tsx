@@ -35,7 +35,7 @@ export default function CommentItem({ comment, articleId }: CommentItemProps) {
   const { data: userVote } = useUserCommentVote(comment.id, user?.id);
   const toggleVote = useToggleCommentVote();
 
-  const isOwner = user?.id === comment.user_id;
+  const isOwner = comment.is_owner;
   const hasVoted = !!userVote;
 
   const handleVote = () => {
@@ -68,9 +68,9 @@ export default function CommentItem({ comment, articleId }: CommentItemProps) {
     <div className="space-y-4">
       <div className="flex gap-4">
         <Avatar className="h-10 w-10">
-          <AvatarImage src={comment.profiles.avatar_url || undefined} />
+          <AvatarImage src={comment.avatar_url || undefined} />
           <AvatarFallback>
-            {comment.profiles.full_name?.charAt(0).toUpperCase() || "U"}
+            {comment.full_name?.charAt(0).toUpperCase() || "U"}
           </AvatarFallback>
         </Avatar>
 
@@ -78,7 +78,7 @@ export default function CommentItem({ comment, articleId }: CommentItemProps) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="font-medium text-foreground">
-                {comment.profiles.full_name || "Anonymous"}
+                {comment.full_name || "Anonymous"}
               </span>
               <span className="text-sm text-muted-foreground">
                 {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}

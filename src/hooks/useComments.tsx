@@ -5,15 +5,13 @@ import { useEffect } from "react";
 export interface Comment {
   id: string;
   article_id: string;
-  user_id: string;
   content: string;
   parent_comment_id: string | null;
   created_at: string;
   updated_at: string;
-  profiles: {
-    full_name: string | null;
-    avatar_url: string | null;
-  };
+  full_name: string | null;
+  avatar_url: string | null;
+  is_owner: boolean;
   replies?: Comment[];
 }
 
@@ -24,14 +22,8 @@ export function useComments(articleId: string) {
     queryKey: ["comments", articleId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("comments")
-        .select(`
-          *,
-          profiles:user_id (
-            full_name,
-            avatar_url
-          )
-        `)
+        .from("comments_public")
+        .select("*")
         .eq("article_id", articleId)
         .order("created_at", { ascending: true });
 
