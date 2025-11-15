@@ -56,36 +56,38 @@ const Index = () => {
   }, [filteredArticles, followedAuthorIds]);
 
   return (
-    <div className="min-h-screen bg-gradient-subtle">
+    <div className="min-h-screen bg-background">
       <Navbar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
       
       <TrendingHero />
       
-      <CategoryFilter
-        categories={PREDEFINED_CATEGORIES}
-        selectedCategory={selectedCategory}
-        onCategoryChange={(cat) => {
-          setSelectedCategory(cat);
-          setSelectedTag(null);
-        }}
-      />
+      <div className="border-b border-border bg-card">
+        <CategoryFilter
+          categories={PREDEFINED_CATEGORIES}
+          selectedCategory={selectedCategory}
+          onCategoryChange={(cat) => {
+            setSelectedCategory(cat);
+            setSelectedTag(null);
+          }}
+        />
+      </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 max-w-7xl">
         <TagFilter selectedTag={selectedTag} onTagChange={setSelectedTag} />
       </div>
 
       <AdvertisementBanner />
 
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-7xl">
         {user && followedAuthorIds && followedAuthorIds.length > 0 ? (
-          <Tabs defaultValue="all" className="max-w-4xl mx-auto">
-            <TabsList className="mb-8">
-              <TabsTrigger value="all">
-                <TrendingUp className="h-4 w-4 mr-2" />
+          <Tabs defaultValue="all">
+            <TabsList className="mb-6 bg-muted">
+              <TabsTrigger value="all" className="gap-2">
+                <TrendingUp className="h-4 w-4" />
                 All Stories
               </TabsTrigger>
-              <TabsTrigger value="following">
-                <Heart className="h-4 w-4 mr-2" />
+              <TabsTrigger value="following" className="gap-2">
+                <Heart className="h-4 w-4" />
                 Following ({followedArticles.length})
               </TabsTrigger>
             </TabsList>
@@ -96,7 +98,7 @@ const Index = () => {
                   <Loader2 className="h-8 w-8 animate-spin text-primary" />
                 </div>
               ) : filteredArticles && filteredArticles.length > 0 ? (
-                <div className="space-y-12">
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {filteredArticles.map((article) => (
                     <NewsCard
                       key={article.id}
@@ -117,7 +119,7 @@ const Index = () => {
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center py-16 text-center max-w-md mx-auto">
-                  <h3 className="font-serif text-2xl font-bold mb-2">No stories yet</h3>
+                  <h3 className="text-xl font-bold mb-2">No stories yet</h3>
                   <p className="text-muted-foreground mb-6">
                     Be the first to share your startup story! Sign in and start writing.
                   </p>
@@ -127,7 +129,7 @@ const Index = () => {
 
             <TabsContent value="following">
               {followedArticles.length > 0 ? (
-                <div className="space-y-12">
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {followedArticles.map((article) => (
                     <NewsCard
                       key={article.id}
@@ -149,7 +151,7 @@ const Index = () => {
               ) : (
                 <div className="flex flex-col items-center justify-center py-16 text-center max-w-md mx-auto">
                   <Heart className="h-12 w-12 text-muted-foreground mb-4" />
-                  <h3 className="font-serif text-2xl font-bold mb-2">No articles yet</h3>
+                  <h3 className="text-xl font-bold mb-2">No articles yet</h3>
                   <p className="text-muted-foreground">
                     Follow authors to see their stories here. Articles from authors you follow will appear in this personalized feed.
                   </p>
@@ -164,7 +166,7 @@ const Index = () => {
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
               </div>
             ) : filteredArticles && filteredArticles.length > 0 ? (
-              <div className="max-w-4xl mx-auto space-y-12">
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {filteredArticles.map((article) => (
                   <NewsCard
                     key={article.id}
@@ -185,7 +187,7 @@ const Index = () => {
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-16 text-center max-w-md mx-auto">
-                <h3 className="font-serif text-2xl font-bold mb-2">No stories yet</h3>
+                <h3 className="text-xl font-bold mb-2">No stories yet</h3>
                 <p className="text-muted-foreground mb-6">
                   Be the first to share your startup story! Sign in and start writing.
                 </p>

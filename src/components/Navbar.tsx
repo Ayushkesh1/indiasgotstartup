@@ -37,27 +37,27 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center gap-3">
+    <nav className="sticky top-0 z-50 w-full border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/95 shadow-sm">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+        <div className="flex h-14 items-center justify-between">
+          <div className="flex items-center gap-2">
             {location.pathname !== "/" && (
-              <Button variant="ghost" size="icon" onClick={handleBack} className="hover:bg-accent">
+              <Button variant="ghost" size="icon" onClick={handleBack} className="hover:bg-muted">
                 <ArrowLeft className="h-4 w-4" />
               </Button>
             )}
-            <Link to="/" className="flex items-center gap-2 group">
-              <img src={logo} alt="India's Startup" className="h-8 w-auto" />
+            <Link to="/" className="flex items-center gap-2">
+              <img src={logo} alt="India's Startup" className="h-7 w-auto" />
             </Link>
           </div>
           
-          <div className="hidden md:flex flex-1 max-w-md mx-8">
+          <div className="hidden md:flex flex-1 max-w-lg mx-6">
             <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="search"
                 placeholder="Search stories..."
-                className="w-full pl-10 bg-background border-border rounded-full"
+                className="w-full pl-10 bg-muted border-0 h-9"
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
               />
@@ -70,11 +70,11 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
               <>
                 <Button 
                   size="sm" 
-                  className="gap-2 bg-primary hover:bg-primary-hover rounded-full"
+                  className="gap-2 bg-primary hover:bg-primary-hover h-9"
                   onClick={() => navigate("/write")}
                 >
                   <Edit3 className="h-4 w-4" />
-                  Write
+                  <span className="hidden sm:inline">Write</span>
                 </Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
