@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useBookmarks, useMarkAsRead, Bookmark } from "@/hooks/useBookmarks";
 import { useCollections, useCreateCollection } from "@/hooks/useCollections";
 import { useRecommendations } from "@/hooks/useRecommendations";
+import { BookmarkCollections } from "@/components/bookmarks/BookmarkCollections";
 import Navbar from "@/components/Navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -342,6 +343,11 @@ const ReadingLists = () => {
               </div>
             </div>
           )}
+
+          {/* Collections */}
+          <div className="mt-12">
+            <BookmarkCollections />
+          </div>
         </div>
       </div>
     </div>

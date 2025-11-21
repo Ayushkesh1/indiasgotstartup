@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import BookmarkButton from "@/components/bookmarks/BookmarkButton";
+import { RealtimeViewCounter } from "@/components/article/RealtimeViewCounter";
 import { Link } from "react-router-dom";
 import { useArticleTags } from "@/hooks/useTags";
 
@@ -96,14 +97,17 @@ const NewsCard = ({
           )}
 
           <div className="flex items-center justify-between pt-2 border-t border-border">
-            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+            <div className="flex items-center gap-3 text-xs">
               <Badge variant="outline" className="text-xs font-normal">
                 {category}
               </Badge>
-              <span className="flex items-center gap-1">
+              <span className="flex items-center gap-1 text-muted-foreground">
                 <Clock className="h-3 w-3" />
                 {readTime}
               </span>
+              {articleId && (
+                <RealtimeViewCounter articleId={articleId} />
+              )}
             </div>
             
             {articleId && (
