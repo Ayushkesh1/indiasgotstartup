@@ -1,4 +1,4 @@
-import { Search, Edit3, LogOut, User, BookMarked, TrendingUp, ArrowLeft, Users, DollarSign } from "lucide-react";
+import { Search, Edit3, LogOut, User, BookMarked, TrendingUp, ArrowLeft, Users, DollarSign, Share2, Twitter, Linkedin, Facebook } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -11,6 +11,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 import logo from "@/assets/logo.png";
 
 interface NavbarProps {
@@ -22,6 +23,7 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { toast } = useToast();
 
   const handleSignOut = async () => {
     await signOut();
@@ -34,6 +36,33 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
     } else {
       navigate("/");
     }
+  };
+
+  const handleShare = (platform: string) => {
+    const url = window.location.href;
+    const text = "Check out India's Startup";
+    
+    let shareUrl = "";
+    switch (platform) {
+      case "twitter":
+        shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
+        break;
+      case "linkedin":
+        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+        break;
+      case "facebook":
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+        break;
+      default:
+        navigator.clipboard.writeText(url);
+        toast({
+          title: "Link copied!",
+          description: "Share link copied to clipboard",
+        });
+        return;
+    }
+    
+    window.open(shareUrl, "_blank", "width=600,height=400");
   };
 
   return (
@@ -65,6 +94,31 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
           </div>
 
           <div className="flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="hover:bg-muted">
+                  <Share2 className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => handleShare("twitter")}>
+                  <Twitter className="mr-2 h-4 w-4" />
+                  Share on Twitter
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleShare("linkedin")}>
+                  <Linkedin className="mr-2 h-4 w-4" />
+                  Share on LinkedIn
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleShare("facebook")}>
+                  <Facebook className="mr-2 h-4 w-4" />
+                  Share on Facebook
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleShare("copy")}>
+                  <Share2 className="mr-2 h-4 w-4" />
+                  Copy Link
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <ThemeToggle />
             {user ? (
               <>
