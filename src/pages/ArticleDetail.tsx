@@ -15,8 +15,10 @@ import RelatedArticles from "@/components/article/RelatedArticles";
 import CommentsList from "@/components/article/CommentsList";
 import BookmarkButton from "@/components/bookmarks/BookmarkButton";
 import TranslateButton from "@/components/article/TranslateButton";
+import { RealtimeViewCounter } from "@/components/article/RealtimeViewCounter";
+import { ArticleRecommendations } from "@/components/article/ArticleRecommendations";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Calendar, Clock, Eye } from "lucide-react";
+import { Loader2, Calendar, Clock } from "lucide-react";
 import DOMPurify from "dompurify";
 
 const ArticleDetail = () => {
@@ -201,10 +203,7 @@ const ArticleDetail = () => {
                   <Clock className="h-4 w-4" />
                   {article.reading_time} min read
                 </span>
-                <span className="flex items-center gap-1">
-                  <Eye className="h-4 w-4" />
-                  {article.views_count} views
-                </span>
+                <RealtimeViewCounter articleId={article.id} showTrendingBadge={true} />
               </div>
               <div className="flex items-center gap-2">
                 <TranslateButton 
@@ -243,9 +242,14 @@ const ArticleDetail = () => {
               />
             </div>
 
-            {/* Right Sidebar - Author Bio */}
-            <aside className="lg:col-span-3">
+            {/* Right Sidebar - Author Bio & Recommendations */}
+            <aside className="lg:col-span-3 space-y-6">
               <AuthorSidebar author={article.profiles} />
+              <ArticleRecommendations 
+                currentArticleId={article.id}
+                category={article.category}
+                authorId={article.author_id}
+              />
             </aside>
           </div>
 
