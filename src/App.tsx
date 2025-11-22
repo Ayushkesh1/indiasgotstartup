@@ -15,6 +15,8 @@ import AdsManagement from "./pages/AdsManagement";
 import FollowingManagement from "./pages/FollowingManagement";
 import Monetization from "./pages/Monetization";
 import Earnings from "./pages/Earnings";
+import AdminDashboard from "./pages/AdminDashboard";
+import { AdminGuard } from "./components/admin/AdminGuard";
 
 import NotFound from "./pages/NotFound";
 
@@ -41,6 +43,7 @@ const App = () => (
             <Route path="/earnings" element={<Earnings />} />
             
             <Route path="/ads" element={<AdsManagement />} />
+            <Route path="/admin" element={<AdminGuard><AdminDashboard /></AdminGuard>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

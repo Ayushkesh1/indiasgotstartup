@@ -7,6 +7,7 @@ import { useFollowerCount, useFollowingCount } from "@/hooks/useFollows";
 import Navbar from "@/components/Navbar";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import ArticlesList from "@/components/profile/ArticlesList";
+import { RateLimitCounter } from "@/components/profile/RateLimitCounter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, FileText, Eye, TrendingUp, Users } from "lucide-react";
 
@@ -65,7 +66,7 @@ const Profile = () => {
           </div>
 
           {/* Analytics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">Published Articles</CardTitle>
@@ -118,6 +119,9 @@ const Profile = () => {
               </CardContent>
             </Card>
           </div>
+
+          {/* Rate Limit Counter */}
+          {user && <RateLimitCounter userId={user.id} />}
 
           {/* Profile Information */}
           <ProfileHeader

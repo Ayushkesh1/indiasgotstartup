@@ -1,4 +1,4 @@
-import { Search, Edit3, LogOut, User, BookMarked, TrendingUp, ArrowLeft, Users, DollarSign, Share2, Twitter, Linkedin, Facebook } from "lucide-react";
+import { Search, Edit3, LogOut, User, BookMarked, TrendingUp, ArrowLeft, Users, DollarSign, Share2, Twitter, Linkedin, Facebook, Shield } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -14,6 +14,7 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import logoStartup from "@/assets/logo-startup.png";
 import { useTheme } from "@/hooks/useTheme";
+import { useUserRole } from "@/hooks/useUserRole";
 
 interface NavbarProps {
   searchQuery: string;
@@ -22,6 +23,7 @@ interface NavbarProps {
 
 const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
   const { user, signOut } = useAuth();
+  const { data: roleData } = useUserRole(user?.id);
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
@@ -175,6 +177,12 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
                       <TrendingUp className="mr-2 h-4 w-4" />
                       Manage Ads
                     </DropdownMenuItem>
+                    {roleData?.isAdmin && (
+                      <DropdownMenuItem onClick={() => navigate("/admin")}>
+                        <Shield className="mr-2 h-4 w-4" />
+                        Admin Dashboard
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem onClick={handleSignOut}>
                       <LogOut className="mr-2 h-4 w-4" />
                       Sign Out
