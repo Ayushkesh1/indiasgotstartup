@@ -3,6 +3,7 @@ import { Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 export const NewsletterFooter = () => {
   const [email, setEmail] = useState("");
@@ -23,16 +24,38 @@ export const NewsletterFooter = () => {
 
     setIsLoading(true);
     
-    // Simulate subscription
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    toast({
-      title: "Success!",
-      description: "You've been subscribed to our newsletter",
-    });
-    
-    setEmail("");
-    setIsLoading(false);
+    try {
+      const { error } = await supabase
+        .from('newsletter_subscriptions')
+        .insert({ email });
+
+      if (error) {
+        if (error.code === '23505') { // Unique constraint violation
+          toast({
+            title: "Already subscribed",
+            description: "This email is already subscribed to our newsletter",
+            variant: "destructive",
+          });
+        } else {
+          throw error;
+        }
+      } else {
+        toast({
+          title: "Success!",
+          description: "You've been subscribed to our newsletter",
+        });
+        setEmail("");
+      }
+    } catch (error) {
+      console.error('Newsletter subscription error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to subscribe. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

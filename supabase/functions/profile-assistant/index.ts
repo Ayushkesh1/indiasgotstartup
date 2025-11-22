@@ -1,9 +1,13 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.81.1";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+const RATE_LIMIT = 10; // requests per hour
+const WINDOW_MS = 3600000; // 1 hour in milliseconds
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -11,6 +15,69 @@ serve(async (req) => {
   }
 
   try {
+    // Get user ID from JWT
+    const authHeader = req.headers.get('authorization');
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: 'Authorization required' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
+      );
+    }
+
+    // Initialize Supabase client
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    // Get user from JWT
+    const { data: { user }, error: authError } = await supabase.auth.getUser(
+      authHeader.replace('Bearer ', '')
+    );
+
+    if (authError || !user) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid authorization' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
+      );
+    }
+
+    // Check rate limit
+    const windowStart = new Date(Date.now() - WINDOW_MS).toISOString();
+    const { data: rateLimitData, error: rateLimitError } = await supabase
+      .from('function_rate_limits')
+      .select('request_count')
+      .eq('user_id', user.id)
+      .eq('function_name', 'profile-assistant')
+      .gte('window_start', windowStart)
+      .single();
+
+    if (!rateLimitError && rateLimitData && rateLimitData.request_count >= RATE_LIMIT) {
+      return new Response(
+        JSON.stringify({ error: `Rate limit exceeded. Maximum ${RATE_LIMIT} requests per hour. Please try again later.` }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 429 }
+      );
+    }
+
+    // Increment rate limit counter
+    if (rateLimitData) {
+      await supabase
+        .from('function_rate_limits')
+        .update({ request_count: rateLimitData.request_count + 1 })
+        .eq('user_id', user.id)
+        .eq('function_name', 'profile-assistant')
+        .gte('window_start', windowStart);
+    } else {
+      await supabase
+        .from('function_rate_limits')
+        .insert({
+          user_id: user.id,
+          function_name: 'profile-assistant',
+          request_count: 1,
+          window_start: new Date().toISOString()
+        });
+    }
+
     const { action, text } = await req.json();
     
     // Validate input

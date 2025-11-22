@@ -12,7 +12,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import logo from "@/assets/logo.png";
+import logoStartup from "@/assets/logo-startup.png";
+import { useTheme } from "@/hooks/useTheme";
 
 interface NavbarProps {
   searchQuery: string;
@@ -24,6 +25,7 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
+  const { theme } = useTheme();
 
   const handleSignOut = async () => {
     await signOut();
@@ -76,7 +78,14 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
               </Button>
             )}
             <Link to="/" className="flex items-center gap-2">
-              <img src={logo} alt="India's Startup" className="h-7 w-auto" />
+              <img 
+                src={logoStartup} 
+                alt="India's Startup" 
+                className="h-7 w-auto"
+                style={{ 
+                  filter: theme === 'dark' ? 'invert(1)' : 'none' 
+                }}
+              />
             </Link>
           </div>
           
