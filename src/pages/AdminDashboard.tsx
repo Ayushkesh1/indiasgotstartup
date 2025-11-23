@@ -3,7 +3,8 @@ import Navbar from "@/components/Navbar";
 import { NewsletterManagement } from "@/components/admin/NewsletterManagement";
 import { UserManagementTable } from "@/components/admin/UserManagementTable";
 import { ContentModerationPanel } from "@/components/admin/ContentModerationPanel";
-import { Card } from "@/components/ui/card";
+import { ReportsPanel } from "@/components/admin/ReportsPanel";
+import { AnalyticsDashboard } from "@/components/admin/AnalyticsDashboard";
 import { Shield, Mail, Users, FileText, BarChart } from "lucide-react";
 import { useState } from "react";
 
@@ -21,7 +22,7 @@ export default function AdminDashboard() {
         </div>
 
         <Tabs defaultValue="newsletter" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="newsletter" className="gap-2">
               <Mail className="h-4 w-4" />
               Newsletter
@@ -33,6 +34,10 @@ export default function AdminDashboard() {
             <TabsTrigger value="content" className="gap-2">
               <FileText className="h-4 w-4" />
               Content
+            </TabsTrigger>
+            <TabsTrigger value="reports" className="gap-2">
+              <Shield className="h-4 w-4" />
+              Reports
             </TabsTrigger>
             <TabsTrigger value="analytics" className="gap-2">
               <BarChart className="h-4 w-4" />
@@ -52,14 +57,12 @@ export default function AdminDashboard() {
             <ContentModerationPanel />
           </TabsContent>
 
+          <TabsContent value="reports">
+            <ReportsPanel />
+          </TabsContent>
+
           <TabsContent value="analytics">
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4">Analytics Dashboard</h3>
-              <p className="text-muted-foreground">
-                Analytics features coming soon. This will include platform engagement metrics,
-                user growth trends, and content performance statistics.
-              </p>
-            </Card>
+            <AnalyticsDashboard />
           </TabsContent>
         </Tabs>
       </div>
