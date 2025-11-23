@@ -17,6 +17,7 @@ import BookmarkButton from "@/components/bookmarks/BookmarkButton";
 import TranslateButton from "@/components/article/TranslateButton";
 import { RealtimeViewCounter } from "@/components/article/RealtimeViewCounter";
 import { ArticleRecommendations } from "@/components/article/ArticleRecommendations";
+import { ReportArticleDialog } from "@/components/article/ReportArticleDialog";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Calendar, Clock } from "lucide-react";
 import DOMPurify from "dompurify";
@@ -215,6 +216,7 @@ const ArticleDetail = () => {
                 />
                 <BookmarkButton articleId={article.id} variant="outline" />
                 <SocialShare title={article.title} url={shareUrl} />
+                {user && <ReportArticleDialog articleId={article.id} />}
               </div>
             </div>
           </div>

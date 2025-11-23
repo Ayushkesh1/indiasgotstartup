@@ -100,6 +100,53 @@ export type Database = {
           },
         ]
       }
+      article_reports: {
+        Row: {
+          article_id: string
+          created_at: string
+          description: string | null
+          id: string
+          reason: string
+          reporter_id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          article_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          reason: string
+          reporter_id: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          article_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          reason?: string
+          reporter_id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "article_reports_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       article_series: {
         Row: {
           author_id: string
@@ -457,6 +504,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          points: number | null
           status: string
           type: string
           updated_at: string
@@ -468,6 +516,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          points?: number | null
           status?: string
           type: string
           updated_at?: string
@@ -479,6 +528,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          points?: number | null
           status?: string
           type?: string
           updated_at?: string
@@ -600,6 +650,7 @@ export type Database = {
           id: string
           notes: string | null
           payment_method: string
+          points_redeemed: number | null
           requested_at: string
           status: string
           transaction_id: string | null
@@ -613,6 +664,7 @@ export type Database = {
           id?: string
           notes?: string | null
           payment_method: string
+          points_redeemed?: number | null
           requested_at?: string
           status?: string
           transaction_id?: string | null
@@ -626,6 +678,7 @@ export type Database = {
           id?: string
           notes?: string | null
           payment_method?: string
+          points_redeemed?: number | null
           requested_at?: string
           status?: string
           transaction_id?: string | null

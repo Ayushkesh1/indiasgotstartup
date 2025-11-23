@@ -6,6 +6,7 @@ export interface Earning {
   user_id: string;
   article_id: string | null;
   amount: number;
+  points: number;
   type: string;
   description: string | null;
   status: string;
