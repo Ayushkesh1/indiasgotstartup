@@ -1,4 +1,4 @@
-import { Search, Edit3, LogOut, User, BookMarked, TrendingUp, ArrowLeft, Users, DollarSign, Share2, Twitter, Linkedin, Facebook, Shield } from "lucide-react";
+import { Search, Edit3, LogOut, User, BookMarked, TrendingUp, ArrowLeft, Users, DollarSign, Share2, Twitter, Linkedin, Facebook, Shield, Trophy } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -172,6 +172,10 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
                     <DropdownMenuItem onClick={() => navigate("/following")}>
                       <Users className="mr-2 h-4 w-4" />
                       Following
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/leaderboard")}>
+                      <Trophy className="mr-2 h-4 w-4" />
+                      Leaderboard
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate("/ads")}>
                       <TrendingUp className="mr-2 h-4 w-4" />
