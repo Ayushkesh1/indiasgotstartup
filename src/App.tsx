@@ -15,6 +15,8 @@ import AdsManagement from "./pages/AdsManagement";
 import FollowingManagement from "./pages/FollowingManagement";
 import Monetization from "./pages/Monetization";
 import Earnings from "./pages/Earnings";
+import Leaderboard from "./pages/Leaderboard";
+import SeriesDetail from "./pages/SeriesDetail";
 import AdminDashboard from "./pages/AdminDashboard";
 import { AdminGuard } from "./components/admin/AdminGuard";
 
@@ -41,6 +43,8 @@ const App = () => (
             <Route path="/following" element={<FollowingManagement />} />
             <Route path="/monetization" element={<Monetization />} />
             <Route path="/earnings" element={<Earnings />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path="/series/:id" element={<SeriesDetail />} />
             
             <Route path="/ads" element={<AdsManagement />} />
             <Route path="/admin" element={<AdminGuard><AdminDashboard /></AdminGuard>} />

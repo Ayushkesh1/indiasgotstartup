@@ -8,6 +8,7 @@ import Navbar from "@/components/Navbar";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import ArticlesList from "@/components/profile/ArticlesList";
 import { RateLimitCounter } from "@/components/profile/RateLimitCounter";
+import { SeriesManagement } from "@/components/series/SeriesManagement";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, FileText, Eye, TrendingUp, Users } from "lucide-react";
 
@@ -122,6 +123,9 @@ const Profile = () => {
 
           {/* Rate Limit Counter */}
           {user && <RateLimitCounter userId={user.id} />}
+
+          {/* Series Management */}
+          <SeriesManagement />
 
           {/* Profile Information */}
           <ProfileHeader
