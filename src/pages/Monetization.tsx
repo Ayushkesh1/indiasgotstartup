@@ -4,10 +4,15 @@ import Navbar from "@/components/Navbar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useCountUp } from "@/hooks/useCountUp";
 
 export default function Monetization() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  
+  const totalPaid = useCountUp({ end: 2500000, duration: 2500, prefix: "$", suffix: "M+" });
+  const earningWriters = useCountUp({ end: 10000, duration: 2000, suffix: "K+" });
+  const avgEarnings = useCountUp({ end: 5000, duration: 2000, prefix: "$", suffix: "K" });
 
   const monetizationMethods = [
     {
@@ -124,22 +129,28 @@ export default function Monetization() {
 
         {/* Stats Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-          <Card className="text-center border-0 bg-gradient-card hover:shadow-lg transition-all duration-300">
-            <CardHeader className="py-8">
-              <CardTitle className="text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">$2.5M+</CardTitle>
-              <CardDescription className="text-base">Paid to Writers</CardDescription>
+          <Card className="text-center border-0 bg-gradient-card hover:shadow-lg transition-all duration-300 group">
+            <CardHeader className="py-10">
+              <CardTitle className="text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform duration-300">
+                {totalPaid}
+              </CardTitle>
+              <CardDescription className="text-base font-medium">Paid to Writers</CardDescription>
             </CardHeader>
           </Card>
-          <Card className="text-center border-0 bg-gradient-card hover:shadow-lg transition-all duration-300">
-            <CardHeader className="py-8">
-              <CardTitle className="text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">10K+</CardTitle>
-              <CardDescription className="text-base">Earning Writers</CardDescription>
+          <Card className="text-center border-0 bg-gradient-card hover:shadow-lg transition-all duration-300 group">
+            <CardHeader className="py-10">
+              <CardTitle className="text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform duration-300">
+                {earningWriters}
+              </CardTitle>
+              <CardDescription className="text-base font-medium">Earning Writers</CardDescription>
             </CardHeader>
           </Card>
-          <Card className="text-center border-0 bg-gradient-card hover:shadow-lg transition-all duration-300">
-            <CardHeader className="py-8">
-              <CardTitle className="text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">$5K</CardTitle>
-              <CardDescription className="text-base">Avg. Monthly Earnings</CardDescription>
+          <Card className="text-center border-0 bg-gradient-card hover:shadow-lg transition-all duration-300 group">
+            <CardHeader className="py-10">
+              <CardTitle className="text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform duration-300">
+                {avgEarnings}
+              </CardTitle>
+              <CardDescription className="text-base font-medium">Avg. Monthly Earnings</CardDescription>
             </CardHeader>
           </Card>
         </div>

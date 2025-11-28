@@ -30,101 +30,160 @@ export function EarningsDashboard() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="border-0 bg-gradient-card hover:shadow-lg transition-all duration-300">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Earnings</CardTitle>
-            <DollarSign className="h-5 w-5 text-primary" />
+    <div className="space-y-8">
+      {/* Stats Cards with Better Hierarchy */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card className="border-0 bg-gradient-card hover:shadow-xl transition-all duration-300 group">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between mb-2">
+              <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+                Total Earnings
+              </CardTitle>
+              <div className="h-10 w-10 rounded-xl bg-gradient-primary flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <DollarSign className="h-5 w-5 text-white" />
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+            <div className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
               ${stats?.total.toFixed(2) || "0.00"}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Automated from article views</p>
+            <p className="text-sm text-muted-foreground">From article views</p>
           </CardContent>
         </Card>
 
-        <Card className="border-0 bg-gradient-card hover:shadow-lg transition-all duration-300">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Pending</CardTitle>
-            <Clock className="h-5 w-5 text-warning" />
+        <Card className="border-0 bg-gradient-card hover:shadow-xl transition-all duration-300 group">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between mb-2">
+              <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+                Pending
+              </CardTitle>
+              <div className="h-10 w-10 rounded-xl bg-warning/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <Clock className="h-5 w-5 text-warning" />
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-warning">
+            <div className="text-4xl font-bold text-warning mb-2">
               ${stats?.pending.toFixed(2) || "0.00"}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Awaiting processing</p>
+            <p className="text-sm text-muted-foreground">7 days processing</p>
           </CardContent>
         </Card>
 
-        <Card className="border-0 bg-gradient-card hover:shadow-lg transition-all duration-300">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Paid Out</CardTitle>
-            <CheckCircle className="h-5 w-5 text-success" />
+        <Card className="border-0 bg-gradient-card hover:shadow-xl transition-all duration-300 group">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between mb-2">
+              <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+                Paid Out
+              </CardTitle>
+              <div className="h-10 w-10 rounded-xl bg-success/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <CheckCircle className="h-5 w-5 text-success" />
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-success">
+            <div className="text-4xl font-bold text-success mb-2">
               ${stats?.paid.toFixed(2) || "0.00"}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Successfully processed</p>
+            <p className="text-sm text-muted-foreground">Successfully sent</p>
           </CardContent>
         </Card>
 
-        <Card className="border-0 bg-gradient-card hover:shadow-lg transition-all duration-300">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Points</CardTitle>
-            <Coins className="h-5 w-5 text-primary" />
+        <Card className="border-0 bg-gradient-card hover:shadow-xl transition-all duration-300 group">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between mb-2">
+              <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+                Total Points
+              </CardTitle>
+              <div className="h-10 w-10 rounded-xl bg-gradient-primary flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <Coins className="h-5 w-5 text-white" />
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              {totalPoints}
+            <div className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
+              {totalPoints.toLocaleString()}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">100 points = $1</p>
+            <p className="text-sm text-muted-foreground">100 pts = $1</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Payout Request */}
-      <Card className="border-0 bg-gradient-card">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <DollarSign className="h-5 w-5 text-primary" />
-            Cash Out Your Points
-          </CardTitle>
-          <CardDescription>
-            Convert your points to cash and request a payout. Minimum payout is $10.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Available for payout</p>
-              <p className="text-2xl font-bold">${availableAmount.toFixed(2)}</p>
-              <p className="text-xs text-muted-foreground mt-1">{totalPoints} points available</p>
+      {/* Payout Request - Enhanced Visual Hierarchy */}
+      <Card className="border-0 bg-gradient-primary/5 border-primary/10">
+        <CardHeader className="pb-4">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="h-12 w-12 rounded-xl bg-gradient-primary flex items-center justify-center">
+              <DollarSign className="h-6 w-6 text-white" />
             </div>
-            <PayoutRequestDialog availableAmount={availableAmount} availablePoints={totalPoints} />
+            <div>
+              <CardTitle className="text-2xl">Cash Out Your Points</CardTitle>
+              <CardDescription className="text-base mt-1">
+                Convert your points to cash. Minimum payout is $10.
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="bg-card rounded-2xl p-6 border border-border">
+            <div className="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
+              <div className="flex-1">
+                <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-2">
+                  Available Balance
+                </p>
+                <div className="flex items-baseline gap-2 mb-2">
+                  <p className="text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+                    ${availableAmount.toFixed(2)}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Coins className="h-4 w-4 text-muted-foreground" />
+                  <p className="text-sm text-muted-foreground">
+                    {totalPoints.toLocaleString()} points available
+                  </p>
+                </div>
+              </div>
+              <PayoutRequestDialog availableAmount={availableAmount} availablePoints={totalPoints} />
+            </div>
           </div>
 
           {payouts && payouts.length > 0 && (
-            <div className="mt-6">
-              <h4 className="font-semibold mb-3">Recent Payout Requests</h4>
-              <div className="space-y-2">
+            <div>
+              <h4 className="font-semibold text-lg mb-4 flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-primary" />
+                Recent Payout Requests
+              </h4>
+              <div className="space-y-3">
                 {payouts.slice(0, 3).map((payout) => (
                   <div
                     key={payout.id}
-                    className="flex items-center justify-between p-3 rounded-lg bg-muted/50"
+                    className="flex items-center justify-between p-4 rounded-xl bg-card border border-border hover:shadow-md transition-all"
                   >
-                    <div>
-                      <p className="font-medium">${Number(payout.amount).toFixed(2)}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {format(new Date(payout.requested_at), "PP")}
-                      </p>
+                    <div className="flex items-center gap-4">
+                      <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                        <DollarSign className="h-6 w-6 text-primary" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-lg">${Number(payout.amount).toFixed(2)}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {format(new Date(payout.requested_at), "MMM dd, yyyy")}
+                        </p>
+                      </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm capitalize">{payout.status}</p>
-                      <p className="text-xs text-muted-foreground">{payout.payment_method}</p>
+                      <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                        payout.status === 'completed' ? 'bg-success/10 text-success' :
+                        payout.status === 'pending' ? 'bg-warning/10 text-warning' :
+                        'bg-muted text-muted-foreground'
+                      }`}>
+                        {payout.status === 'completed' && <CheckCircle className="h-3 w-3 mr-1.5" />}
+                        {payout.status === 'pending' && <Clock className="h-3 w-3 mr-1.5" />}
+                        {payout.status.charAt(0).toUpperCase() + payout.status.slice(1)}
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1 capitalize">
+                        {payout.payment_method}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -134,16 +193,20 @@ export function EarningsDashboard() {
         </CardContent>
       </Card>
 
-      {/* Recent Earnings */}
+      {/* Recent Earnings - Enhanced */}
       <Card className="border-0 bg-gradient-card">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-primary" />
-            Recent Earnings
-          </CardTitle>
-          <CardDescription>
-            Automatically calculated based on your article views ($0.05 per view)
-          </CardDescription>
+        <CardHeader className="pb-4">
+          <div className="flex items-center gap-3">
+            <div className="h-12 w-12 rounded-xl bg-gradient-primary flex items-center justify-center">
+              <TrendingUp className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <CardTitle className="text-2xl">Recent Earnings</CardTitle>
+              <CardDescription className="text-base mt-1">
+                Automatically calculated at $0.05 per article view
+              </CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           {earnings && earnings.length > 0 ? (
@@ -151,29 +214,42 @@ export function EarningsDashboard() {
               {earnings.slice(0, 10).map((earning) => (
                 <div
                   key={earning.id}
-                  className="flex items-center justify-between p-4 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                  className="flex items-center justify-between p-4 rounded-xl bg-card border border-border hover:shadow-md transition-all group"
                 >
-                  <div className="flex-1">
-                    <p className="font-medium">{earning.description || earning.type}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {format(new Date(earning.created_at), "PPp")}
-                    </p>
+                  <div className="flex items-center gap-4 flex-1">
+                    <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                      <DollarSign className="h-6 w-6 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-semibold text-base">{earning.description || earning.type}</p>
+                      <p className="text-sm text-muted-foreground mt-0.5">
+                        {format(new Date(earning.created_at), "MMM dd, yyyy 'at' h:mm a")}
+                      </p>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-lg font-bold text-primary">
+                  <div className="text-right ml-4">
+                    <p className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
                       ${Number(earning.amount).toFixed(2)}
                     </p>
-                    <p className="text-xs text-muted-foreground capitalize">{earning.status}</p>
+                    <div className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium mt-1 ${
+                      earning.status === 'paid' ? 'bg-success/10 text-success' :
+                      earning.status === 'pending' ? 'bg-warning/10 text-warning' :
+                      'bg-muted text-muted-foreground'
+                    }`}>
+                      {earning.status.charAt(0).toUpperCase() + earning.status.slice(1)}
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <DollarSign className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground">No earnings yet</p>
-              <p className="text-sm text-muted-foreground mt-2">
-                Start writing articles to earn money from views!
+            <div className="text-center py-16 px-4">
+              <div className="h-20 w-20 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6">
+                <DollarSign className="h-10 w-10 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">No earnings yet</h3>
+              <p className="text-muted-foreground max-w-md mx-auto">
+                Start writing quality articles to earn money from views. Each view earns you $0.05 automatically!
               </p>
             </div>
           )}
