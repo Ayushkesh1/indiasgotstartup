@@ -12,8 +12,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import logoNotYourWorld from "@/assets/logo-not-your-world.png";
-import { useTheme } from "@/hooks/useTheme";
 import { useUserRole } from "@/hooks/useUserRole";
 
 interface NavbarProps {
@@ -27,7 +25,6 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
-  const { theme } = useTheme();
 
   const handleSignOut = async () => {
     await signOut();
@@ -80,14 +77,9 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
               </Button>
             )}
             <Link to="/" className="flex items-center gap-2">
-              <img 
-                src={logoNotYourWorld} 
-                alt="Not Your World" 
-                className="h-8 w-auto"
-                style={{ 
-                  filter: theme === 'dark' ? 'invert(1)' : 'none' 
-                }}
-              />
+              <span className="font-brand font-bold text-xl tracking-tight text-foreground">
+                Not Your World
+              </span>
             </Link>
           </div>
           
