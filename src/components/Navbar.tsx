@@ -12,7 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import logoStartup from "@/assets/logo-startup.png";
+import logoNotYourWorld from "@/assets/logo-not-your-world.png";
 import { useTheme } from "@/hooks/useTheme";
 import { useUserRole } from "@/hooks/useUserRole";
 
@@ -81,9 +81,9 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
             )}
             <Link to="/" className="flex items-center gap-2">
               <img 
-                src={logoStartup} 
+                src={logoNotYourWorld} 
                 alt="Not Your World" 
-                className="h-7 w-auto"
+                className="h-8 w-auto"
                 style={{ 
                   filter: theme === 'dark' ? 'invert(1)' : 'none' 
                 }}
