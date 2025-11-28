@@ -44,7 +44,7 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
 
   const handleShare = (platform: string) => {
     const url = window.location.href;
-    const text = "Check out India's Startup";
+    const text = "Check out Not Your World";
     
     let shareUrl = "";
     switch (platform) {
@@ -82,7 +82,7 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
             <Link to="/" className="flex items-center gap-2">
               <img 
                 src={logoStartup} 
-                alt="India's Startup" 
+                alt="Not Your World" 
                 className="h-7 w-auto"
                 style={{ 
                   filter: theme === 'dark' ? 'invert(1)' : 'none' 

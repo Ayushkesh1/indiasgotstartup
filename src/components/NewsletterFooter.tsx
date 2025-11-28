@@ -127,7 +127,7 @@ export const NewsletterFooter = () => {
 
         {/* Copyright */}
         <div className="pt-8 border-t border-border text-center text-sm text-muted-foreground">
-          <p>&copy; 2025 India's Startup. All rights reserved.</p>
+          <p>&copy; 2025 Not Your World. All rights reserved.</p>
         </div>
       </div>
     </footer>
