@@ -10,6 +10,7 @@ import { usePayouts } from "@/hooks/usePayouts";
 import { EarningsTrendChart } from "./earnings/EarningsTrendChart";
 import { EarningsFilters, EarningsFilterState } from "./earnings/EarningsFilters";
 import { EarningsNotifications } from "./earnings/EarningsNotifications";
+import { EarningsExport } from "./earnings/EarningsExport";
 
 export function EarningsDashboard() {
   const { user } = useAuth();
@@ -245,7 +246,10 @@ export function EarningsDashboard() {
                 </CardDescription>
               </div>
             </div>
-            <EarningsNotifications />
+            <div className="flex items-center gap-2">
+              <EarningsExport earnings={filteredEarnings} dateRange={filters.dateRange} />
+              <EarningsNotifications />
+            </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
