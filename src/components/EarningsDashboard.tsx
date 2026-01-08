@@ -1,11 +1,15 @@
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useEarningsStats, useEarnings } from "@/hooks/useEarnings";
 import { DollarSign, TrendingUp, Clock, CheckCircle, Coins } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
-import { format } from "date-fns";
+import { format, isWithinInterval } from "date-fns";
 import { PayoutRequestDialog } from "./earnings/PayoutRequestDialog";
 import { usePayouts } from "@/hooks/usePayouts";
+import { EarningsTrendChart } from "./earnings/EarningsTrendChart";
+import { EarningsFilters, EarningsFilterState } from "./earnings/EarningsFilters";
+import { EarningsNotifications } from "./earnings/EarningsNotifications";
 
 export function EarningsDashboard() {
   const { user } = useAuth();
@@ -13,8 +17,36 @@ export function EarningsDashboard() {
   const { data: earnings, isLoading: earningsLoading } = useEarnings(user?.id);
   const { data: payouts } = usePayouts(user?.id);
 
+  const [filters, setFilters] = useState<EarningsFilterState>({
+    dateRange: undefined,
+    status: "all",
+  });
+
   const totalPoints = earnings?.reduce((sum, e) => sum + (e.points || 0), 0) || 0;
   const availableAmount = stats?.total || 0;
+
+  const filteredEarnings = useMemo(() => {
+    if (!earnings) return [];
+
+    return earnings.filter((earning) => {
+      // Date range filter
+      if (filters.dateRange?.from) {
+        const earningDate = new Date(earning.created_at);
+        const from = filters.dateRange.from;
+        const to = filters.dateRange.to || filters.dateRange.from;
+        if (!isWithinInterval(earningDate, { start: from, end: to })) {
+          return false;
+        }
+      }
+
+      // Status filter
+      if (filters.status !== "all" && earning.status !== filters.status) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [earnings, filters]);
 
   if (statsLoading || earningsLoading) {
     return (
@@ -110,6 +142,11 @@ export function EarningsDashboard() {
         </Card>
       </div>
 
+      {/* Earnings Trend Chart */}
+      {earnings && earnings.length > 0 && (
+        <EarningsTrendChart earnings={earnings} />
+      )}
+
       {/* Payout Request - Enhanced Visual Hierarchy */}
       <Card className="border-0 bg-gradient-primary/5 border-primary/10">
         <CardHeader className="pb-4">
@@ -196,22 +233,27 @@ export function EarningsDashboard() {
       {/* Recent Earnings - Enhanced */}
       <Card className="border-0 bg-gradient-card">
         <CardHeader className="pb-4">
-          <div className="flex items-center gap-3">
-            <div className="h-12 w-12 rounded-xl bg-gradient-primary flex items-center justify-center">
-              <TrendingUp className="h-6 w-6 text-white" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="h-12 w-12 rounded-xl bg-gradient-primary flex items-center justify-center">
+                <TrendingUp className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <CardTitle className="text-2xl">Earnings History</CardTitle>
+                <CardDescription className="text-base mt-1">
+                  {filteredEarnings.length} earnings • $0.05 per article view
+                </CardDescription>
+              </div>
             </div>
-            <div>
-              <CardTitle className="text-2xl">Recent Earnings</CardTitle>
-              <CardDescription className="text-base mt-1">
-                Automatically calculated at $0.05 per article view
-              </CardDescription>
-            </div>
+            <EarningsNotifications />
           </div>
         </CardHeader>
-        <CardContent>
-          {earnings && earnings.length > 0 ? (
+        <CardContent className="space-y-4">
+          <EarningsFilters filters={filters} onFiltersChange={setFilters} />
+          
+          {filteredEarnings.length > 0 ? (
             <div className="space-y-3">
-              {earnings.slice(0, 10).map((earning) => (
+              {filteredEarnings.slice(0, 10).map((earning) => (
                 <div
                   key={earning.id}
                   className="flex items-center justify-between p-4 rounded-xl bg-card border border-border hover:shadow-md transition-all group"
@@ -247,9 +289,15 @@ export function EarningsDashboard() {
               <div className="h-20 w-20 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6">
                 <DollarSign className="h-10 w-10 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">No earnings yet</h3>
+              <h3 className="text-xl font-semibold mb-2">
+                {filters.dateRange?.from || filters.status !== "all"
+                  ? "No matching earnings"
+                  : "No earnings yet"}
+              </h3>
               <p className="text-muted-foreground max-w-md mx-auto">
-                Start writing quality articles to earn money from views. Each view earns you $0.05 automatically!
+                {filters.dateRange?.from || filters.status !== "all"
+                  ? "Try adjusting your filters to see more results."
+                  : "Start writing quality articles to earn money from views. Each view earns you $0.05 automatically!"}
               </p>
             </div>
           )}
