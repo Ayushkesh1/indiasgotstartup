@@ -3,7 +3,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useState, useMemo } from "react";
 import { format, subDays, subWeeks, subMonths, startOfDay, startOfWeek, startOfMonth } from "date-fns";
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { Earning } from "@/hooks/useEarnings";
 
 interface EarningsTrendChartProps {
@@ -15,40 +15,55 @@ type TimeRange = "7d" | "30d" | "90d";
 export function EarningsTrendChart({ earnings }: EarningsTrendChartProps) {
   const [timeRange, setTimeRange] = useState<TimeRange>("30d");
 
-  const chartData = useMemo(() => {
-    if (!earnings || earnings.length === 0) return [];
+  const { chartData, currentPeriodTotal, previousPeriodTotal, percentageChange } = useMemo(() => {
+    if (!earnings || earnings.length === 0) {
+      return { chartData: [], currentPeriodTotal: 0, previousPeriodTotal: 0, percentageChange: 0 };
+    }
 
     const now = new Date();
-    let startDate: Date;
+    let periodDays: number;
     let groupBy: "day" | "week" | "month";
 
     switch (timeRange) {
       case "7d":
-        startDate = subDays(now, 7);
+        periodDays = 7;
         groupBy = "day";
         break;
       case "30d":
-        startDate = subDays(now, 30);
+        periodDays = 30;
         groupBy = "day";
         break;
       case "90d":
-        startDate = subMonths(now, 3);
+        periodDays = 90;
         groupBy = "week";
         break;
       default:
-        startDate = subDays(now, 30);
+        periodDays = 30;
         groupBy = "day";
     }
 
-    // Filter earnings within the time range
-    const filteredEarnings = earnings.filter(
-      (e) => new Date(e.created_at) >= startDate
+    const currentStart = subDays(now, periodDays);
+    const previousStart = subDays(currentStart, periodDays);
+
+    // Filter earnings for current and previous periods
+    const currentPeriodEarnings = earnings.filter(
+      (e) => new Date(e.created_at) >= currentStart && new Date(e.created_at) <= now
+    );
+    const previousPeriodEarnings = earnings.filter(
+      (e) => new Date(e.created_at) >= previousStart && new Date(e.created_at) < currentStart
     );
 
-    // Group earnings by period
+    const currentTotal = currentPeriodEarnings.reduce((sum, e) => sum + Number(e.amount), 0);
+    const previousTotal = previousPeriodEarnings.reduce((sum, e) => sum + Number(e.amount), 0);
+    
+    const change = previousTotal > 0 
+      ? ((currentTotal - previousTotal) / previousTotal) * 100 
+      : currentTotal > 0 ? 100 : 0;
+
+    // Group current period earnings by period
     const grouped = new Map<string, number>();
 
-    filteredEarnings.forEach((earning) => {
+    currentPeriodEarnings.forEach((earning) => {
       const date = new Date(earning.created_at);
       let key: string;
 
@@ -65,7 +80,7 @@ export function EarningsTrendChart({ earnings }: EarningsTrendChartProps) {
 
     // Generate all periods in range
     const periods: { date: string; amount: number; label: string }[] = [];
-    let currentDate = startDate;
+    let currentDate = currentStart;
 
     while (currentDate <= now) {
       let key: string;
@@ -92,10 +107,15 @@ export function EarningsTrendChart({ earnings }: EarningsTrendChartProps) {
       });
     }
 
-    return periods;
+    return {
+      chartData: periods,
+      currentPeriodTotal: currentTotal,
+      previousPeriodTotal: previousTotal,
+      percentageChange: change,
+    };
   }, [earnings, timeRange]);
 
-  const totalInPeriod = chartData.reduce((sum, d) => sum + d.amount, 0);
+  const isPositiveChange = percentageChange >= 0;
 
   return (
     <Card className="border-0 bg-gradient-card">
@@ -107,9 +127,24 @@ export function EarningsTrendChart({ earnings }: EarningsTrendChartProps) {
             </div>
             <div>
               <CardTitle className="text-2xl">Earnings Trend</CardTitle>
-              <p className="text-sm text-muted-foreground mt-1">
-                ${totalInPeriod.toFixed(2)} total in this period
-              </p>
+              <div className="flex items-center gap-3 mt-1">
+                <p className="text-sm text-muted-foreground">
+                  ${currentPeriodTotal.toFixed(2)} total
+                </p>
+                {(currentPeriodTotal > 0 || previousPeriodTotal > 0) && (
+                  <div className={`flex items-center gap-1 text-sm font-medium ${
+                    isPositiveChange ? 'text-success' : 'text-destructive'
+                  }`}>
+                    {isPositiveChange ? (
+                      <ArrowUpRight className="h-4 w-4" />
+                    ) : (
+                      <ArrowDownRight className="h-4 w-4" />
+                    )}
+                    <span>{Math.abs(percentageChange).toFixed(1)}%</span>
+                    <span className="text-muted-foreground font-normal">vs prev period</span>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           <Tabs value={timeRange} onValueChange={(v) => setTimeRange(v as TimeRange)}>
@@ -122,6 +157,24 @@ export function EarningsTrendChart({ earnings }: EarningsTrendChartProps) {
         </div>
       </CardHeader>
       <CardContent>
+        {/* Comparison Summary */}
+        {(currentPeriodTotal > 0 || previousPeriodTotal > 0) && (
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="p-4 rounded-xl bg-card border border-border">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
+                Current Period
+              </p>
+              <p className="text-2xl font-bold">${currentPeriodTotal.toFixed(2)}</p>
+            </div>
+            <div className="p-4 rounded-xl bg-card border border-border">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
+                Previous Period
+              </p>
+              <p className="text-2xl font-bold text-muted-foreground">${previousPeriodTotal.toFixed(2)}</p>
+            </div>
+          </div>
+        )}
+
         {chartData.length > 0 ? (
           <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
