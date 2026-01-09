@@ -14,12 +14,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import TipTapEditor from "@/components/editor/TipTapEditor";
 import TagSelector from "@/components/article/TagSelector";
 import { useToast } from "@/hooks/use-toast";
 import { generateSlug, calculateReadingTime, extractExcerpt } from "@/utils/articleUtils";
 import { ArticleCategory } from "@/hooks/useArticles";
-import { Loader2, Upload, Eye, Save, Send, ArrowLeft, Clock } from "lucide-react";
+import { Loader2, Upload, Eye, Save, Send, ArrowLeft, Clock, X, ImagePlus } from "lucide-react";
 
 const CATEGORIES: ArticleCategory[] = [
   "Fintech",
@@ -359,6 +366,39 @@ const WriterDashboard = () => {
                 )}
                 <span className="ml-2">Save Draft</span>
               </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" disabled={!title || !content}>
+                    <Eye className="h-4 w-4" />
+                    <span className="ml-2">Preview</span>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Article Preview</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-6">
+                    {(featuredImage || featuredImageUrl) && (
+                      <img
+                        src={featuredImage ? URL.createObjectURL(featuredImage) : featuredImageUrl}
+                        alt="Featured"
+                        className="w-full h-64 object-cover rounded-lg"
+                      />
+                    )}
+                    <div>
+                      <span className="text-sm text-primary font-medium">{category}</span>
+                      <h1 className="text-3xl font-bold mt-2">{title || "Untitled Article"}</h1>
+                      <p className="text-muted-foreground mt-2">
+                        {excerpt || extractExcerpt(content) || "No excerpt available"}
+                      </p>
+                    </div>
+                    <div 
+                      className="prose dark:prose-invert max-w-none"
+                      dangerouslySetInnerHTML={{ __html: content }}
+                    />
+                  </div>
+                </DialogContent>
+              </Dialog>
               <Button onClick={publishArticle} disabled={loading}>
                 {loading ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -416,33 +456,75 @@ const WriterDashboard = () => {
 
                 <div>
                   <Label htmlFor="featured-image">Featured Image</Label>
-                  <div className="flex gap-2 items-end">
-                    <div className="flex-1">
-                      <Input
-                        id="featured-image"
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => setFeaturedImage(e.target.files?.[0] || null)}
-                      />
-                    </div>
-                    {featuredImage && (
-                      <Button onClick={uploadImage} disabled={uploading} variant="outline">
-                        {uploading ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <Upload className="h-4 w-4" />
-                        )}
-                      </Button>
+                  <div 
+                    className="mt-2 border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary/50 transition-colors cursor-pointer"
+                    onClick={() => document.getElementById('featured-image')?.click()}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      e.currentTarget.classList.add('border-primary');
+                    }}
+                    onDragLeave={(e) => {
+                      e.currentTarget.classList.remove('border-primary');
+                    }}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      e.currentTarget.classList.remove('border-primary');
+                      const file = e.dataTransfer.files?.[0];
+                      if (file && file.type.startsWith('image/')) {
+                        setFeaturedImage(file);
+                      }
+                    }}
+                  >
+                    {featuredImage || featuredImageUrl ? (
+                      <div className="relative inline-block">
+                        <img
+                          src={featuredImage ? URL.createObjectURL(featuredImage) : featuredImageUrl}
+                          alt="Featured preview"
+                          className="max-h-48 rounded-lg mx-auto"
+                        />
+                        <Button
+                          variant="destructive"
+                          size="icon"
+                          className="absolute -top-2 -right-2 h-6 w-6"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setFeaturedImage(null);
+                            setFeaturedImageUrl("");
+                          }}
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        <ImagePlus className="h-10 w-10 mx-auto text-muted-foreground" />
+                        <p className="text-sm text-muted-foreground">
+                          Click or drag & drop to upload an image
+                        </p>
+                      </div>
                     )}
+                    <Input
+                      id="featured-image"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => setFeaturedImage(e.target.files?.[0] || null)}
+                    />
                   </div>
-                  {featuredImageUrl && (
-                    <div className="mt-2">
-                      <img
-                        src={featuredImageUrl}
-                        alt="Featured"
-                        className="h-32 w-auto rounded-lg border border-border"
-                      />
-                    </div>
+                  {featuredImage && !featuredImageUrl && (
+                    <Button 
+                      onClick={uploadImage} 
+                      disabled={uploading} 
+                      variant="outline"
+                      className="mt-2 w-full"
+                    >
+                      {uploading ? (
+                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      ) : (
+                        <Upload className="h-4 w-4 mr-2" />
+                      )}
+                      Upload Image
+                    </Button>
                   )}
                 </div>
 
