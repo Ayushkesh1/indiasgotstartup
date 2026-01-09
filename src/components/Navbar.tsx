@@ -13,6 +13,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useProfile } from "@/hooks/useProfile";
 
 interface NavbarProps {
   searchQuery: string;
@@ -22,6 +23,7 @@ interface NavbarProps {
 const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
   const { user, signOut } = useAuth();
   const { data: roleData } = useUserRole(user?.id);
+  const { data: profile } = useProfile(user?.id);
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
@@ -137,9 +139,9 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm" className="rounded-full h-9 w-9 p-0">
                       <Avatar className="h-8 w-8">
-                        <AvatarImage src={user.user_metadata?.avatar_url} />
+                        <AvatarImage src={profile?.avatar_url || user.user_metadata?.avatar_url} />
                         <AvatarFallback className="bg-primary text-primary-foreground">
-                          {user.email?.charAt(0).toUpperCase()}
+                          {profile?.full_name?.charAt(0)?.toUpperCase() || user.email?.charAt(0).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
                     </Button>

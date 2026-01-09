@@ -1,11 +1,11 @@
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useLeaderboard, LeaderboardMetric } from "@/hooks/useLeaderboard";
-import { Trophy, Eye, DollarSign, Users, TrendingUp, Loader2 } from "lucide-react";
+import { Trophy, Eye, Users, TrendingUp, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function Leaderboard() {
@@ -19,10 +19,10 @@ export default function Leaderboard() {
     switch (metric) {
       case "views":
         return <Eye className="h-5 w-5" />;
-      case "earnings":
-        return <DollarSign className="h-5 w-5" />;
       case "followers":
         return <Users className="h-5 w-5" />;
+      default:
+        return <Eye className="h-5 w-5" />;
     }
   };
 
@@ -30,10 +30,10 @@ export default function Leaderboard() {
     switch (metric) {
       case "views":
         return `${value.toLocaleString()} views`;
-      case "earnings":
-        return `$${value.toFixed(2)}`;
       case "followers":
         return `${value} followers`;
+      default:
+        return `${value}`;
     }
   };
 
@@ -65,14 +65,10 @@ export default function Leaderboard() {
 
         {/* Metrics Tabs */}
         <Tabs value={metric} onValueChange={(value) => setMetric(value as LeaderboardMetric)} className="mb-8">
-          <TabsList className="grid w-full grid-cols-3 max-w-md mx-auto">
+          <TabsList className="grid w-full grid-cols-2 max-w-sm mx-auto">
             <TabsTrigger value="views" className="gap-2">
               <Eye className="h-4 w-4" />
               Views
-            </TabsTrigger>
-            <TabsTrigger value="earnings" className="gap-2">
-              <DollarSign className="h-4 w-4" />
-              Earnings
             </TabsTrigger>
             <TabsTrigger value="followers" className="gap-2">
               <Users className="h-4 w-4" />
@@ -86,7 +82,7 @@ export default function Leaderboard() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               {getMetricIcon()}
-              Top 50 Authors by {metric === "views" ? "Views" : metric === "earnings" ? "Earnings" : "Followers"}
+              Top 50 Authors by {metric === "views" ? "Views" : "Followers"}
             </CardTitle>
           </CardHeader>
           <CardContent>
