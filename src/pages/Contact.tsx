@@ -16,13 +16,12 @@ import {
 import { 
   Mail, 
   MapPin, 
-  Phone, 
-  Clock,
   MessageSquare,
   Building,
   HelpCircle,
   Megaphone
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Contact = () => {
   const contactMethods = [
@@ -30,25 +29,19 @@ const Contact = () => {
       icon: Mail,
       title: "Email Us",
       description: "For general inquiries",
-      contact: "hello@notyourworld.com",
+      contact: "connectnotyourworld@gmail.com",
     },
     {
-      icon: Phone,
-      title: "Call Us",
-      description: "Mon-Fri, 9am-6pm IST",
-      contact: "+91 22 1234 5678",
+      icon: Mail,
+      title: "Support Email",
+      description: "For support requests",
+      contact: "notyourworld0@gmail.com",
     },
     {
       icon: MapPin,
-      title: "Visit Us",
-      description: "Our Mumbai office",
-      contact: "123 Tech Park, Andheri East, Mumbai 400093",
-    },
-    {
-      icon: Clock,
-      title: "Business Hours",
-      description: "When we're available",
-      contact: "Monday - Friday, 9:00 AM - 6:00 PM IST",
+      title: "Our Location",
+      description: "We're based in",
+      contact: "Gurugram, Haryana 122017, India",
     },
   ];
 
@@ -66,11 +59,11 @@ const Contact = () => {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-b from-primary/10 via-background to-background">
+      <section className="relative py-16 bg-gradient-to-b from-primary/10 via-background to-background">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
           <div className="text-center max-w-3xl mx-auto">
             <Badge className="mb-4" variant="secondary">Contact</Badge>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
               We'd Love to Hear From You
             </h1>
             <p className="text-lg text-muted-foreground">
@@ -82,9 +75,9 @@ const Contact = () => {
       </section>
 
       {/* Contact Methods */}
-      <section className="py-12">
+      <section className="py-10">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid sm:grid-cols-3 gap-6">
             {contactMethods.map((method, index) => (
               <Card key={index} className="text-center hover:shadow-md transition-shadow">
                 <CardContent className="pt-6">
@@ -93,7 +86,7 @@ const Contact = () => {
                   </div>
                   <h3 className="font-semibold mb-1">{method.title}</h3>
                   <p className="text-sm text-muted-foreground mb-2">{method.description}</p>
-                  <p className="text-sm font-medium">{method.contact}</p>
+                  <p className="text-sm font-medium break-all">{method.contact}</p>
                 </CardContent>
               </Card>
             ))}
@@ -102,9 +95,9 @@ const Contact = () => {
       </section>
 
       {/* Contact Form */}
-      <section className="py-16">
+      <section className="py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
-          <div className="grid lg:grid-cols-2 gap-12">
+          <div className="grid lg:grid-cols-2 gap-10">
             {/* Form */}
             <Card>
               <CardHeader>
@@ -114,7 +107,7 @@ const Contact = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <form className="space-y-6">
+                <form className="space-y-5">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="firstName">First Name</Label>
@@ -153,7 +146,7 @@ const Contact = () => {
                     <Textarea 
                       id="message" 
                       placeholder="Tell us more about your inquiry..."
-                      rows={5}
+                      rows={4}
                     />
                   </div>
                   <Button type="submit" className="w-full">
@@ -164,7 +157,7 @@ const Contact = () => {
             </Card>
 
             {/* Quick Links */}
-            <div className="space-y-6">
+            <div className="space-y-5">
               <Card className="bg-muted/30">
                 <CardContent className="pt-6">
                   <div className="flex items-start gap-4">
@@ -177,7 +170,7 @@ const Contact = () => {
                         Check our Help Center for answers to frequently asked questions.
                       </p>
                       <Button variant="outline" size="sm" asChild>
-                        <a href="/help-center">Visit Help Center</a>
+                        <Link to="/help-center">Visit Help Center</Link>
                       </Button>
                     </div>
                   </div>
@@ -196,7 +189,7 @@ const Contact = () => {
                         Interested in advertising with us? Learn about our options.
                       </p>
                       <Button variant="outline" size="sm" asChild>
-                        <a href="/advertise">Advertise With Us</a>
+                        <Link to="/advertise">Advertise With Us</Link>
                       </Button>
                     </div>
                   </div>
@@ -215,23 +208,27 @@ const Contact = () => {
                         Want to join our team? Check out our open positions.
                       </p>
                       <Button variant="outline" size="sm" asChild>
-                        <a href="/careers">View Openings</a>
+                        <Link to="/careers">View Openings</Link>
                       </Button>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Map Placeholder */}
+              {/* Location Card */}
               <Card className="overflow-hidden">
-                <div className="aspect-video bg-muted flex items-center justify-center">
-                  <div className="text-center">
-                    <MapPin className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-                    <p className="text-sm text-muted-foreground">
-                      123 Tech Park, Andheri East<br />
-                      Mumbai 400093, India
-                    </p>
+                <div className="p-6 bg-muted/30">
+                  <div className="flex items-center gap-3 mb-3">
+                    <MapPin className="h-5 w-5 text-primary" />
+                    <h3 className="font-semibold">Our Location</h3>
                   </div>
+                  <p className="text-sm text-muted-foreground">
+                    Gurugram, Haryana 122017<br />
+                    India
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-3">
+                    <strong>Email:</strong> connectnotyourworld@gmail.com
+                  </p>
                 </div>
               </Card>
             </div>
