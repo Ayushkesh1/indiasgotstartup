@@ -645,6 +645,76 @@ const WriterDashboard = () => {
 
       {/* Main Editor Area */}
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl py-8">
+        {/* Featured Image - Medium-style Hero */}
+        <div className="mb-8">
+          {featuredImageUrl ? (
+            <div className="relative group">
+              <img
+                src={featuredImageUrl}
+                alt="Featured"
+                className="w-full aspect-[2/1] object-cover rounded-xl"
+              />
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center gap-3">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => document.getElementById('hero-image-input')?.click()}
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  Change
+                </Button>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => {
+                    setFeaturedImageUrl("");
+                    setFeaturedImage(null);
+                  }}
+                >
+                  <X className="h-4 w-4 mr-2" />
+                  Remove
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div
+              className="relative border-2 border-dashed border-border rounded-xl aspect-[3/1] flex flex-col items-center justify-center cursor-pointer hover:border-primary/50 hover:bg-accent/30 transition-all group"
+              onClick={() => document.getElementById('hero-image-input')?.click()}
+            >
+              {uploading ? (
+                <div className="flex flex-col items-center gap-2">
+                  <Loader2 className="h-10 w-10 animate-spin text-primary" />
+                  <p className="text-sm text-muted-foreground">Uploading...</p>
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-center justify-center w-16 h-16 rounded-full bg-muted group-hover:bg-primary/10 transition-colors mb-3">
+                    <ImagePlus className="h-8 w-8 text-muted-foreground group-hover:text-primary transition-colors" />
+                  </div>
+                  <p className="text-base font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                    Add a cover image
+                  </p>
+                  <p className="text-sm text-muted-foreground/70 mt-1">
+                    Recommended: 1600×800 or higher
+                  </p>
+                </>
+              )}
+            </div>
+          )}
+          <input
+            id="hero-image-input"
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                uploadImage(file);
+              }
+            }}
+          />
+        </div>
+
         {/* Title Input - Medium-style */}
         <input
           type="text"
