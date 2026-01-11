@@ -20,6 +20,15 @@ import CreatorDashboard from "./pages/CreatorDashboard";
 import CreatorProgram from "./pages/CreatorProgram";
 import CreatorCheckout from "./pages/CreatorCheckout";
 import SubscriptionManagement from "./pages/SubscriptionManagement";
+import AboutUs from "./pages/AboutUs";
+import Careers from "./pages/Careers";
+import Advertise from "./pages/Advertise";
+import Contact from "./pages/Contact";
+import HelpCenter from "./pages/HelpCenter";
+import TermsOfService from "./pages/TermsOfService";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import CookiePolicy from "./pages/CookiePolicy";
+import SocialImpact from "./pages/SocialImpact";
 import { AdminGuard } from "./components/admin/AdminGuard";
 
 import NotFound from "./pages/NotFound";
@@ -49,6 +58,17 @@ const App = () => (
             <Route path="/subscription" element={<SubscriptionManagement />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/series/:id" element={<SeriesDetail />} />
+            
+            {/* Static Pages */}
+            <Route path="/about" element={<AboutUs />} />
+            <Route path="/careers" element={<Careers />} />
+            <Route path="/advertise" element={<Advertise />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/help-center" element={<HelpCenter />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/cookies" element={<CookiePolicy />} />
+            <Route path="/social-impact" element={<SocialImpact />} />
             
             <Route path="/ads" element={<AdsManagement />} />
             <Route path="/admin" element={<AdminGuard><AdminDashboard /></AdminGuard>} />

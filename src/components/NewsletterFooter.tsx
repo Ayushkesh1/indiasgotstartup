@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Mail } from "lucide-react";
+import { Mail, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Link } from "react-router-dom";
 
 export const NewsletterFooter = () => {
   const [email, setEmail] = useState("");
@@ -61,6 +62,24 @@ export const NewsletterFooter = () => {
   return (
     <footer className="border-t border-border bg-card mt-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl py-12">
+        {/* Social Impact Banner */}
+        <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-accent/10 rounded-xl p-6 mb-12">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
+                <Heart className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-foreground">2% For Education</h3>
+                <p className="text-sm text-muted-foreground">We contribute 2% of our earnings to support student education</p>
+              </div>
+            </div>
+            <Button asChild variant="outline" size="sm">
+              <Link to="/social-impact">Learn More</Link>
+            </Button>
+          </div>
+        </div>
+
         {/* Newsletter Section */}
         <div className="max-w-2xl mx-auto text-center mb-12">
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 mb-4">
@@ -90,37 +109,37 @@ export const NewsletterFooter = () => {
           <div>
             <h4 className="font-semibold mb-4 text-foreground">Categories</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="/?category=Tech" className="hover:text-foreground transition-colors">Technology</a></li>
-              <li><a href="/?category=Fintech" className="hover:text-foreground transition-colors">Fintech</a></li>
-              <li><a href="/?category=Blockchain" className="hover:text-foreground transition-colors">Blockchain</a></li>
-              <li><a href="/?category=Funding" className="hover:text-foreground transition-colors">Funding</a></li>
+              <li><Link to="/?category=Tech" className="hover:text-foreground transition-colors">Technology</Link></li>
+              <li><Link to="/?category=Fintech" className="hover:text-foreground transition-colors">Fintech</Link></li>
+              <li><Link to="/?category=Blockchain" className="hover:text-foreground transition-colors">Blockchain</Link></li>
+              <li><Link to="/?category=Funding" className="hover:text-foreground transition-colors">Funding</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="font-semibold mb-4 text-foreground">Company</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors">About Us</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Careers</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Advertise</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Contact</a></li>
+              <li><Link to="/about" className="hover:text-foreground transition-colors">About Us</Link></li>
+              <li><Link to="/careers" className="hover:text-foreground transition-colors">Careers</Link></li>
+              <li><Link to="/advertise" className="hover:text-foreground transition-colors">Advertise</Link></li>
+              <li><Link to="/contact" className="hover:text-foreground transition-colors">Contact</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="font-semibold mb-4 text-foreground">Resources</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors">Help Center</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Terms of Service</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Cookie Policy</a></li>
+              <li><Link to="/help-center" className="hover:text-foreground transition-colors">Help Center</Link></li>
+              <li><Link to="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link></li>
+              <li><Link to="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/cookies" className="hover:text-foreground transition-colors">Cookie Policy</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="font-semibold mb-4 text-foreground">Follow Us</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors">Twitter</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">LinkedIn</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Facebook</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Instagram</a></li>
+              <li><a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Twitter</a></li>
+              <li><a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">LinkedIn</a></li>
+              <li><a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Facebook</a></li>
+              <li><a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Instagram</a></li>
             </ul>
           </div>
         </div>
