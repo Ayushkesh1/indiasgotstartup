@@ -5,7 +5,8 @@ import { UserManagementTable } from "@/components/admin/UserManagementTable";
 import { ContentModerationPanel } from "@/components/admin/ContentModerationPanel";
 import { ReportsPanel } from "@/components/admin/ReportsPanel";
 import { AnalyticsDashboard } from "@/components/admin/AnalyticsDashboard";
-import { Shield, Mail, Users, FileText, BarChart } from "lucide-react";
+import { AdminRevenuePanel } from "@/components/admin/AdminRevenuePanel";
+import { Shield, Mail, Users, FileText, BarChart, IndianRupee } from "lucide-react";
 import { useState } from "react";
 
 export default function AdminDashboard() {
@@ -21,8 +22,12 @@ export default function AdminDashboard() {
           <h1 className="text-3xl font-bold">Admin Dashboard</h1>
         </div>
 
-        <Tabs defaultValue="newsletter" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+        <Tabs defaultValue="revenue" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-6">
+            <TabsTrigger value="revenue" className="gap-2">
+              <IndianRupee className="h-4 w-4" />
+              Revenue
+            </TabsTrigger>
             <TabsTrigger value="newsletter" className="gap-2">
               <Mail className="h-4 w-4" />
               Newsletter
@@ -44,6 +49,10 @@ export default function AdminDashboard() {
               Analytics
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="revenue">
+            <AdminRevenuePanel />
+          </TabsContent>
 
           <TabsContent value="newsletter">
             <NewsletterManagement />

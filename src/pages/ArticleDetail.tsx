@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,6 +6,7 @@ import { useArticleBySlug } from "@/hooks/useArticleBySlug";
 import { useRelatedArticles } from "@/hooks/useRelatedArticles";
 import { useReadingProgress, useTrackReadingProgress } from "@/hooks/useReadingProgress";
 import { useAuth } from "@/hooks/useAuth";
+import { useTrackEngagement } from "@/hooks/useCreatorEarnings";
 import Navbar from "@/components/Navbar";
 import ReadingProgress from "@/components/article/ReadingProgress";
 import TableOfContents from "@/components/article/TableOfContents";
@@ -36,10 +37,17 @@ const ArticleDetail = () => {
   const [translatedLanguage, setTranslatedLanguage] = useState<string | null>(null);
   
   const { data: savedProgress } = useReadingProgress(article?.id || "", user?.id);
+  const { mutate: trackEngagement } = useTrackEngagement();
+  
+  // Track reading time and full read
+  const startTimeRef = useRef<number>(Date.now());
+  const hasTrackedFullReadRef = useRef(false);
+  const hasTrackedLongReadRef = useRef(false);
   
   // Track reading progress
   useTrackReadingProgress(article?.id || "", user?.id, !!article?.id && !!user?.id);
 
+  // Record view
   useEffect(() => {
     const recordView = async () => {
       if (article?.id) {
@@ -57,7 +65,39 @@ const ArticleDetail = () => {
     };
     
     recordView();
+    startTimeRef.current = Date.now();
   }, [article?.id, user?.id]);
+
+  // Track full read when user scrolls to bottom
+  useEffect(() => {
+    if (!article?.id || !user) return;
+
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollPercentage = (scrollPosition / documentHeight) * 100;
+
+      // Track full read when user reaches 90% of the article
+      if (scrollPercentage >= 90 && !hasTrackedFullReadRef.current) {
+        hasTrackedFullReadRef.current = true;
+        trackEngagement({ event_type: "full_read", article_id: article.id });
+      }
+
+      // Track long read bonus after 3+ minutes
+      const readingTime = (Date.now() - startTimeRef.current) / 1000;
+      if (readingTime > 180 && !hasTrackedLongReadRef.current) {
+        hasTrackedLongReadRef.current = true;
+        trackEngagement({ 
+          event_type: "long_read_bonus", 
+          article_id: article.id,
+          reading_time: readingTime 
+        });
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [article?.id, user, trackEngagement]);
 
   // Restore reading position
   useEffect(() => {

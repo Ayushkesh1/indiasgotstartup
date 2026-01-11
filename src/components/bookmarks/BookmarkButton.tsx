@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Bookmark } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToggleBookmark } from "@/hooks/useBookmarks";
+import { useTrackEngagement } from "@/hooks/useCreatorEarnings";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 
@@ -16,6 +17,7 @@ const BookmarkButton = ({ articleId, variant = "ghost", size = "default" }: Book
   const { user } = useAuth();
   const navigate = useNavigate();
   const toggleBookmark = useToggleBookmark();
+  const { mutate: trackEngagement } = useTrackEngagement();
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -53,6 +55,10 @@ const BookmarkButton = ({ articleId, variant = "ghost", size = "default" }: Book
       { userId: user.id, articleId },
       {
         onSuccess: () => {
+          // Track bookmark engagement (only when adding, not removing)
+          if (!isBookmarked) {
+            trackEngagement({ event_type: "bookmark", article_id: articleId });
+          }
           setIsBookmarked(!isBookmarked);
         },
       }
