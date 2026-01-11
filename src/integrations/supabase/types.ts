@@ -497,6 +497,138 @@ export type Database = {
           },
         ]
       }
+      creator_monthly_earnings: {
+        Row: {
+          bookmarks: number
+          comments: number
+          created_at: string
+          creator_id: string
+          estimated_earnings: number
+          final_earnings: number | null
+          full_reads: number
+          id: string
+          is_paid: boolean
+          long_read_bonuses: number
+          month_year: string
+          total_engagement_points: number
+          updated_at: string
+        }
+        Insert: {
+          bookmarks?: number
+          comments?: number
+          created_at?: string
+          creator_id: string
+          estimated_earnings?: number
+          final_earnings?: number | null
+          full_reads?: number
+          id?: string
+          is_paid?: boolean
+          long_read_bonuses?: number
+          month_year: string
+          total_engagement_points?: number
+          updated_at?: string
+        }
+        Update: {
+          bookmarks?: number
+          comments?: number
+          created_at?: string
+          creator_id?: string
+          estimated_earnings?: number
+          final_earnings?: number | null
+          full_reads?: number
+          id?: string
+          is_paid?: boolean
+          long_read_bonuses?: number
+          month_year?: string
+          total_engagement_points?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      creator_payment_info: {
+        Row: {
+          bank_account_name: string | null
+          bank_account_number: string | null
+          bank_ifsc: string | null
+          created_at: string
+          creator_id: string
+          id: string
+          preferred_method: string | null
+          updated_at: string
+          upi_id: string | null
+        }
+        Insert: {
+          bank_account_name?: string | null
+          bank_account_number?: string | null
+          bank_ifsc?: string | null
+          created_at?: string
+          creator_id: string
+          id?: string
+          preferred_method?: string | null
+          updated_at?: string
+          upi_id?: string | null
+        }
+        Update: {
+          bank_account_name?: string | null
+          bank_account_number?: string | null
+          bank_ifsc?: string | null
+          created_at?: string
+          creator_id?: string
+          id?: string
+          preferred_method?: string | null
+          updated_at?: string
+          upi_id?: string | null
+        }
+        Relationships: []
+      }
+      creator_payouts: {
+        Row: {
+          amount: number
+          completed_at: string | null
+          created_at: string
+          creator_id: string
+          id: string
+          notes: string | null
+          payment_details: Json | null
+          payment_method: string
+          processed_at: string | null
+          requested_at: string
+          status: string
+          transaction_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          completed_at?: string | null
+          created_at?: string
+          creator_id: string
+          id?: string
+          notes?: string | null
+          payment_details?: Json | null
+          payment_method: string
+          processed_at?: string | null
+          requested_at?: string
+          status?: string
+          transaction_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          completed_at?: string | null
+          created_at?: string
+          creator_id?: string
+          id?: string
+          notes?: string | null
+          payment_details?: Json | null
+          payment_method?: string
+          processed_at?: string | null
+          requested_at?: string
+          status?: string
+          transaction_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       earnings: {
         Row: {
           amount: number
@@ -537,6 +669,50 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "earnings_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      engagement_events: {
+        Row: {
+          article_id: string
+          created_at: string
+          creator_id: string
+          event_type: string
+          id: string
+          metadata: Json | null
+          month_year: string
+          points: number
+          user_id: string
+        }
+        Insert: {
+          article_id: string
+          created_at?: string
+          creator_id: string
+          event_type: string
+          id?: string
+          metadata?: Json | null
+          month_year: string
+          points: number
+          user_id: string
+        }
+        Update: {
+          article_id?: string
+          created_at?: string
+          creator_id?: string
+          event_type?: string
+          id?: string
+          metadata?: Json | null
+          month_year?: string
+          points?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "engagement_events_article_id_fkey"
             columns: ["article_id"]
             isOneToOne: false
             referencedRelation: "articles"
@@ -615,6 +791,48 @@ export type Database = {
           request_count?: number
           user_id?: string
           window_start?: string
+        }
+        Relationships: []
+      }
+      monthly_revenue_pools: {
+        Row: {
+          created_at: string
+          creator_pool: number
+          finalized_at: string | null
+          id: string
+          is_finalized: boolean
+          month_year: string
+          platform_revenue: number
+          total_engagement_points: number
+          total_revenue: number
+          total_subscribers: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          creator_pool?: number
+          finalized_at?: string | null
+          id?: string
+          is_finalized?: boolean
+          month_year: string
+          platform_revenue?: number
+          total_engagement_points?: number
+          total_revenue?: number
+          total_subscribers?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          creator_pool?: number
+          finalized_at?: string | null
+          id?: string
+          is_finalized?: boolean
+          month_year?: string
+          platform_revenue?: number
+          total_engagement_points?: number
+          total_revenue?: number
+          total_subscribers?: number
+          updated_at?: string
         }
         Relationships: []
       }
@@ -799,6 +1017,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      subscriptions: {
+        Row: {
+          cancelled_at: string | null
+          created_at: string
+          expires_at: string
+          id: string
+          payment_method: string | null
+          started_at: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cancelled_at?: string | null
+          created_at?: string
+          expires_at: string
+          id?: string
+          payment_method?: string | null
+          started_at?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cancelled_at?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          payment_method?: string | null
+          started_at?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       tags: {
         Row: {

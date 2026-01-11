@@ -5,3 +5,12 @@ verify_jwt = true
 
 [functions.translate-article]
 verify_jwt = true
+
+[functions.calculate-earnings]
+verify_jwt = false
+
+[functions.calculate-creator-earnings]
+verify_jwt = false
+
+[functions.track-engagement]
+verify_jwt = false
