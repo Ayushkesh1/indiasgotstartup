@@ -13,8 +13,6 @@ import ArticleDetail from "./pages/ArticleDetail";
 import ReadingLists from "./pages/ReadingLists";
 import AdsManagement from "./pages/AdsManagement";
 import FollowingManagement from "./pages/FollowingManagement";
-import Monetization from "./pages/Monetization";
-import Earnings from "./pages/Earnings";
 import Leaderboard from "./pages/Leaderboard";
 import SeriesDetail from "./pages/SeriesDetail";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -42,8 +40,6 @@ const App = () => (
             <Route path="/article/:slug" element={<ArticleDetail />} />
             <Route path="/reading-lists" element={<ReadingLists />} />
             <Route path="/following" element={<FollowingManagement />} />
-            <Route path="/monetization" element={<Monetization />} />
-            <Route path="/earnings" element={<Earnings />} />
             <Route path="/creator-dashboard" element={<CreatorDashboard />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/series/:id" element={<SeriesDetail />} />
