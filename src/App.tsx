@@ -16,6 +16,7 @@ import FollowingManagement from "./pages/FollowingManagement";
 import Leaderboard from "./pages/Leaderboard";
 import SeriesDetail from "./pages/SeriesDetail";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminLogin from "./pages/AdminLogin";
 import CreatorDashboard from "./pages/CreatorDashboard";
 import CreatorProgram from "./pages/CreatorProgram";
 import CreatorCheckout from "./pages/CreatorCheckout";
@@ -29,7 +30,6 @@ import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import CookiePolicy from "./pages/CookiePolicy";
 import SocialImpact from "./pages/SocialImpact";
-import { AdminGuard } from "./components/admin/AdminGuard";
 
 import NotFound from "./pages/NotFound";
 
@@ -71,7 +71,11 @@ const App = () => (
             <Route path="/social-impact" element={<SocialImpact />} />
             
             <Route path="/ads" element={<AdsManagement />} />
-            <Route path="/admin" element={<AdminGuard><AdminDashboard /></AdminGuard>} />
+            
+            {/* Admin Routes */}
+            <Route path="/admin-login" element={<AdminLogin />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
