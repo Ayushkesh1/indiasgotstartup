@@ -5,7 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   TrendingUp, 
@@ -15,15 +14,16 @@ import {
   Clock, 
   Wallet,
   IndianRupee,
-  HelpCircle,
-  ArrowRight,
   CheckCircle
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useCreatorStats, useCreatorPayouts, useCreatorPaymentInfo } from "@/hooks/useCreatorEarnings";
+import { useUserArticles } from "@/hooks/useUserArticles";
 import { CreatorPayoutDialog } from "@/components/creator/CreatorPayoutDialog";
 import { PaymentInfoForm } from "@/components/creator/PaymentInfoForm";
 import { EarningsExplanation } from "@/components/creator/EarningsExplanation";
+import { NewCreatorTips } from "@/components/creator/NewCreatorTips";
+import { PayoutProgressIndicator } from "@/components/creator/PayoutProgressIndicator";
 import { format } from "date-fns";
 
 export default function CreatorDashboard() {
@@ -33,6 +33,7 @@ export default function CreatorDashboard() {
   const { data: stats, isLoading: statsLoading } = useCreatorStats();
   const { data: payouts, isLoading: payoutsLoading } = useCreatorPayouts();
   const { data: paymentInfo } = useCreatorPaymentInfo();
+  const { data: userArticles } = useUserArticles(user?.id);
 
   if (authLoading) {
     return (
@@ -90,9 +91,7 @@ export default function CreatorDashboard() {
     },
   ] : [];
 
-  const progressToThreshold = stats 
-    ? Math.min((stats.pending_balance / stats.min_payout_threshold) * 100, 100) 
-    : 0;
+  const articleCount = userArticles?.length || 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -117,6 +116,9 @@ export default function CreatorDashboard() {
           </div>
         ) : (
           <>
+            {/* New Creator Tips - shows for users with <5 articles */}
+            <NewCreatorTips articleCount={articleCount} />
+
             {/* Key Metrics */}
             <div className="grid gap-6 md:grid-cols-4 mb-8">
               <Card className="border-l-4 border-l-primary">
@@ -188,51 +190,21 @@ export default function CreatorDashboard() {
               </Card>
             </div>
 
-            {/* Payout Progress & Request */}
-            <Card className="mb-8">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Wallet className="h-5 w-5" />
-                  Payout Status
-                </CardTitle>
-                <CardDescription>
-                  Minimum threshold: ₹{stats?.min_payout_threshold}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex justify-between text-sm mb-2">
-                      <span>Progress to threshold</span>
-                      <span className="font-medium">
-                        ₹{stats?.pending_balance.toFixed(2)} / ₹{stats?.min_payout_threshold}
-                      </span>
-                    </div>
-                    <Progress value={progressToThreshold} className="h-3" />
-                  </div>
-
-                  <div className="flex items-center justify-between pt-4 border-t">
-                    <div>
-                      {stats?.can_request_payout ? (
-                        <Badge variant="default" className="bg-green-500">
-                          <CheckCircle className="h-3 w-3 mr-1" />
-                          Ready for Payout
-                        </Badge>
-                      ) : (
-                        <Badge variant="secondary">
-                          ₹{((stats?.min_payout_threshold || 300) - (stats?.pending_balance || 0)).toFixed(2)} more to unlock
-                        </Badge>
-                      )}
-                    </div>
-                    <CreatorPayoutDialog 
-                      availableBalance={stats?.pending_balance || 0}
-                      canRequest={stats?.can_request_payout || false}
-                      hasPaymentInfo={!!paymentInfo}
-                    />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            {/* Animated Payout Progress & Request */}
+            <div className="mb-8">
+              <PayoutProgressIndicator 
+                currentBalance={stats?.pending_balance || 0}
+                threshold={stats?.min_payout_threshold || 300}
+                canRequestPayout={stats?.can_request_payout || false}
+              />
+              <div className="flex justify-end mt-4">
+                <CreatorPayoutDialog 
+                  availableBalance={stats?.pending_balance || 0}
+                  canRequest={stats?.can_request_payout || false}
+                  hasPaymentInfo={!!paymentInfo}
+                />
+              </div>
+            </div>
 
             {/* Tabs for Details */}
             <Tabs defaultValue="engagement" className="space-y-6">
