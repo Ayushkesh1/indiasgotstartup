@@ -18,6 +18,7 @@ import BookmarkButton from "@/components/bookmarks/BookmarkButton";
 import TranslateButton from "@/components/article/TranslateButton";
 import { RealtimeViewCounter } from "@/components/article/RealtimeViewCounter";
 import { ArticleRecommendations } from "@/components/article/ArticleRecommendations";
+import { WhoToFollow } from "@/components/article/WhoToFollow";
 import { ReportArticleDialog } from "@/components/article/ReportArticleDialog";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Calendar, Clock } from "lucide-react";
@@ -284,9 +285,10 @@ const ArticleDetail = () => {
               />
             </div>
 
-            {/* Right Sidebar - Author Bio & Recommendations */}
+            {/* Right Sidebar - Author Bio, Recommendations & Who to Follow */}
             <aside className="lg:col-span-3 space-y-6">
-              <AuthorSidebar author={article.profiles} />
+              <AuthorSidebar author={article.profiles} authorId={article.author_id} />
+              <WhoToFollow currentAuthorId={article.author_id} currentUserId={user?.id} />
               <ArticleRecommendations 
                 currentArticleId={article.id}
                 category={article.category}

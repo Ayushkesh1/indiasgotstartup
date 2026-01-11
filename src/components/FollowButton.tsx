@@ -8,9 +8,10 @@ interface FollowButtonProps {
   authorId: string;
   variant?: "default" | "outline" | "ghost";
   size?: "default" | "sm" | "lg" | "icon";
+  className?: string;
 }
 
-export default function FollowButton({ authorId, variant = "default", size = "default" }: FollowButtonProps) {
+export default function FollowButton({ authorId, variant = "default", size = "default", className }: FollowButtonProps) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { data: isFollowing, isLoading } = useFollowStatus(authorId, user?.id);
@@ -38,6 +39,7 @@ export default function FollowButton({ authorId, variant = "default", size = "de
     <Button
       variant={isFollowing ? "outline" : variant}
       size={size}
+      className={className}
       onClick={handleClick}
       disabled={isLoading || toggleFollow.isPending}
     >

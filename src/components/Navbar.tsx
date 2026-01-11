@@ -34,9 +34,11 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
   };
 
   const handleBack = () => {
-    if (window.history.length > 1) {
+    // Check if there's actually history to go back to within our app
+    if (window.history.length > 2) {
       navigate(-1);
     } else {
+      // If no history or first page, go to home
       navigate("/");
     }
   };
