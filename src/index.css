@@ -135,6 +135,21 @@ All colors MUST be HSL.
   }
 
 
+  /* TipTap Editor Styles */
+  .ProseMirror {
+    @apply outline-none;
+  }
+
+  .ProseMirror p.is-editor-empty:first-child::before {
+    @apply text-muted-foreground/50 pointer-events-none float-left h-0;
+    content: attr(data-placeholder);
+  }
+
+  .ProseMirror .is-empty::before {
+    @apply text-muted-foreground/50 pointer-events-none float-left h-0;
+    content: attr(data-placeholder);
+  }
+
   /* TipTap Editor Prose Styles */
   .prose {
     @apply text-foreground max-w-none;

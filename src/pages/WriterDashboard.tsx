@@ -4,8 +4,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Select,
   SelectContent,
@@ -13,20 +14,52 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import TipTapEditor from "@/components/editor/TipTapEditor";
 import TagSelector from "@/components/article/TagSelector";
 import { useToast } from "@/hooks/use-toast";
 import { generateSlug, calculateReadingTime, extractExcerpt } from "@/utils/articleUtils";
 import { ArticleCategory } from "@/hooks/useArticles";
-import { Loader2, Upload, Eye, Save, Send, ArrowLeft, Clock, X, ImagePlus } from "lucide-react";
+import { useProfile } from "@/hooks/useProfile";
+import { 
+  Loader2, 
+  Upload, 
+  Eye, 
+  Save, 
+  Send, 
+  ArrowLeft, 
+  Clock, 
+  X, 
+  ImagePlus,
+  MoreHorizontal,
+  Settings2,
+  Bell,
+  ChevronDown,
+  Check
+} from "lucide-react";
 
 const CATEGORIES: ArticleCategory[] = [
   "Fintech",
@@ -41,6 +74,7 @@ const CATEGORIES: ArticleCategory[] = [
 
 const WriterDashboard = () => {
   const { user, loading: authLoading } = useAuth();
+  const { data: profile } = useProfile(user?.id);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { id } = useParams();
@@ -51,12 +85,14 @@ const WriterDashboard = () => {
   const [excerpt, setExcerpt] = useState("");
   const [featuredImage, setFeaturedImage] = useState<File | null>(null);
   const [featuredImageUrl, setFeaturedImageUrl] = useState("");
-  const [metaDescription, setMetaDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [showPublishSettings, setShowPublishSettings] = useState(false);
   const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const readingTime = calculateReadingTime(content);
 
   // Auto-save function
   const autoSave = useCallback(async () => {
@@ -65,7 +101,6 @@ const WriterDashboard = () => {
     setIsSaving(true);
     try {
       const slug = generateSlug(title);
-      const readingTime = calculateReadingTime(content);
       const autoExcerpt = excerpt || extractExcerpt(content);
 
       const articleData = {
@@ -92,7 +127,7 @@ const WriterDashboard = () => {
     } finally {
       setIsSaving(false);
     }
-  }, [user, title, content, category, excerpt, featuredImageUrl, id]);
+  }, [user, title, content, category, excerpt, featuredImageUrl, id, readingTime]);
 
   // Set up auto-save on content changes
   useEffect(() => {
@@ -104,7 +139,7 @@ const WriterDashboard = () => {
 
     autoSaveTimerRef.current = setTimeout(() => {
       autoSave();
-    }, 3000); // Auto-save after 3 seconds of inactivity
+    }, 3000);
 
     return () => {
       if (autoSaveTimerRef.current) {
@@ -142,7 +177,6 @@ const WriterDashboard = () => {
         setCategory(data.category);
         setExcerpt(data.excerpt || "");
         setFeaturedImageUrl(data.featured_image_url || "");
-        setMetaDescription(data.excerpt || "");
       }
     } catch (error: any) {
       toast({
@@ -153,26 +187,27 @@ const WriterDashboard = () => {
     }
   };
 
-  const uploadImage = async () => {
-    if (!featuredImage || !user) return null;
+  const uploadImage = async (file?: File) => {
+    const imageToUpload = file || featuredImage;
+    if (!imageToUpload || !user) return null;
 
     setUploading(true);
     try {
-      const fileExt = featuredImage.name.split(".").pop();
+      const fileExt = imageToUpload.name.split(".").pop();
       const fileName = `${user.id}-${Date.now()}.${fileExt}`;
-      const filePath = `${fileName}`;
 
-      const { error: uploadError, data } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from("article-images")
-        .upload(filePath, featuredImage);
+        .upload(fileName, imageToUpload);
 
       if (uploadError) throw uploadError;
 
       const { data: { publicUrl } } = supabase.storage
         .from("article-images")
-        .getPublicUrl(filePath);
+        .getPublicUrl(fileName);
 
       setFeaturedImageUrl(publicUrl);
+      setFeaturedImage(null);
       toast({
         title: "Success",
         description: "Image uploaded successfully",
@@ -209,7 +244,6 @@ const WriterDashboard = () => {
       }
 
       const slug = generateSlug(title);
-      const readingTime = calculateReadingTime(content);
       const autoExcerpt = excerpt || extractExcerpt(content);
 
       const articleData = {
@@ -234,14 +268,15 @@ const WriterDashboard = () => {
       } else {
         const { data, error } = await supabase
           .from("articles")
-          .insert([articleData])
+          .insert([{ ...articleData, slug }])
           .select()
           .single();
 
         if (error) throw error;
-        if (data) navigate(`/write/${data.id}`);
+        if (data) navigate(`/write/${data.id}`, { replace: true });
       }
 
+      setLastSaved(new Date());
       toast({
         title: "Draft saved",
         description: "Your article has been saved as a draft",
@@ -276,7 +311,6 @@ const WriterDashboard = () => {
       }
 
       const slug = generateSlug(title);
-      const readingTime = calculateReadingTime(content);
       const autoExcerpt = excerpt || extractExcerpt(content);
 
       const articleData = {
@@ -302,7 +336,7 @@ const WriterDashboard = () => {
       } else {
         const { error } = await supabase
           .from("articles")
-          .insert([articleData]);
+          .insert([{ ...articleData, slug }]);
 
         if (error) throw error;
       }
@@ -311,6 +345,7 @@ const WriterDashboard = () => {
         title: "Published!",
         description: "Your article has been published successfully",
       });
+      setShowPublishSettings(false);
       navigate("/");
     } catch (error: any) {
       toast({
@@ -333,9 +368,10 @@ const WriterDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
+      {/* Minimal Header */}
+      <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
+          <div className="flex h-14 items-center justify-between">
             <div className="flex items-center gap-4">
               <Button
                 variant="ghost"
@@ -345,204 +381,295 @@ const WriterDashboard = () => {
               >
                 <ArrowLeft className="h-5 w-5" />
               </Button>
-              <div>
-                <h1 className="font-serif text-3xl font-bold">
-                  {id ? "Edit Article" : "Write New Article"}
-                </h1>
-                {id && lastSaved && (
-                  <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
-                    <Clock className="h-3 w-3" />
-                    {isSaving ? "Saving..." : `Last saved ${lastSaved.toLocaleTimeString()}`}
-                  </p>
-                )}
-              </div>
+              <span className="font-medium text-muted-foreground">
+                {id ? "Draft" : "New Story"}
+              </span>
+              {lastSaved && (
+                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  {isSaving ? (
+                    <>
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Check className="h-3 w-3" />
+                      Saved
+                    </>
+                  )}
+                </span>
+              )}
             </div>
-            <div className="flex gap-2">
-              <Button variant="outline" onClick={saveDraft} disabled={loading}>
-                {loading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Save className="h-4 w-4" />
-                )}
-                <span className="ml-2">Save Draft</span>
+
+            <div className="flex items-center gap-2">
+              {/* Reading time indicator */}
+              <span className="text-xs text-muted-foreground hidden sm:flex items-center gap-1">
+                <Clock className="h-3 w-3" />
+                {readingTime} min read
+              </span>
+
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={saveDraft} 
+                disabled={loading || !title}
+              >
+                Save Draft
               </Button>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="outline" disabled={!title || !content}>
-                    <Eye className="h-4 w-4" />
-                    <span className="ml-2">Preview</span>
+
+              <Sheet open={showPublishSettings} onOpenChange={setShowPublishSettings}>
+                <SheetTrigger asChild>
+                  <Button 
+                    size="sm" 
+                    disabled={!title || !content}
+                    className="bg-primary hover:bg-primary/90"
+                  >
+                    Publish
                   </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                  <DialogHeader>
-                    <DialogTitle>Article Preview</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-6">
-                    {(featuredImage || featuredImageUrl) && (
-                      <img
-                        src={featuredImage ? URL.createObjectURL(featuredImage) : featuredImageUrl}
-                        alt="Featured"
-                        className="w-full h-64 object-cover rounded-lg"
-                      />
-                    )}
+                </SheetTrigger>
+                <SheetContent className="overflow-y-auto">
+                  <SheetHeader>
+                    <SheetTitle>Story Preview</SheetTitle>
+                    <SheetDescription>
+                      Review your story settings before publishing
+                    </SheetDescription>
+                  </SheetHeader>
+                  
+                  <div className="space-y-6 mt-6">
+                    {/* Featured Image */}
                     <div>
-                      <span className="text-sm text-primary font-medium">{category}</span>
-                      <h1 className="text-3xl font-bold mt-2">{title || "Untitled Article"}</h1>
-                      <p className="text-muted-foreground mt-2">
-                        {excerpt || extractExcerpt(content) || "No excerpt available"}
+                      <label className="text-sm font-medium mb-2 block">
+                        Featured Image
+                      </label>
+                      <div 
+                        className="relative border-2 border-dashed border-border rounded-lg aspect-video flex items-center justify-center cursor-pointer hover:border-primary/50 transition-colors overflow-hidden"
+                        onClick={() => document.getElementById('sheet-featured-image')?.click()}
+                      >
+                        {featuredImageUrl ? (
+                          <>
+                            <img
+                              src={featuredImageUrl}
+                              alt="Featured"
+                              className="w-full h-full object-cover"
+                            />
+                            <Button
+                              variant="destructive"
+                              size="icon"
+                              className="absolute top-2 right-2 h-8 w-8"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setFeaturedImageUrl("");
+                                setFeaturedImage(null);
+                              }}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </>
+                        ) : (
+                          <div className="text-center p-4">
+                            {uploading ? (
+                              <Loader2 className="h-8 w-8 animate-spin mx-auto text-muted-foreground" />
+                            ) : (
+                              <>
+                                <ImagePlus className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
+                                <p className="text-sm text-muted-foreground">
+                                  Add a cover image
+                                </p>
+                              </>
+                            )}
+                          </div>
+                        )}
+                        <input
+                          id="sheet-featured-image"
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              uploadImage(file);
+                            }
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Title Preview */}
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">
+                        Title
+                      </label>
+                      <p className="text-lg font-semibold">{title || "Untitled"}</p>
+                    </div>
+
+                    {/* Excerpt */}
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">
+                        Subtitle / Excerpt
+                      </label>
+                      <Textarea
+                        placeholder="Write a brief description..."
+                        value={excerpt}
+                        onChange={(e) => setExcerpt(e.target.value)}
+                        rows={3}
+                        className="resize-none"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        This appears in article previews and search results
                       </p>
                     </div>
-                    <div 
-                      className="prose dark:prose-invert max-w-none"
-                      dangerouslySetInnerHTML={{ __html: content }}
-                    />
-                  </div>
-                </DialogContent>
-              </Dialog>
-              <Button onClick={publishArticle} disabled={loading}>
-                {loading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Send className="h-4 w-4" />
-                )}
-                <span className="ml-2">Publish</span>
-              </Button>
-            </div>
-          </div>
 
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Article Details</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label htmlFor="title">Title *</Label>
-                  <Input
-                    id="title"
-                    placeholder="Enter article title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    className="text-xl font-semibold"
-                  />
-                </div>
+                    {/* Category */}
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">
+                        Category
+                      </label>
+                      <Select 
+                        value={category} 
+                        onValueChange={(value) => setCategory(value as ArticleCategory)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {CATEGORIES.map((cat) => (
+                            <SelectItem key={cat} value={cat}>
+                              {cat}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                <div>
-                  <Label htmlFor="category">Category *</Label>
-                  <Select value={category} onValueChange={(value) => setCategory(value as ArticleCategory)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {CATEGORIES.map((cat) => (
-                        <SelectItem key={cat} value={cat}>
-                          {cat}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label htmlFor="excerpt">Excerpt</Label>
-                  <Textarea
-                    id="excerpt"
-                    placeholder="Brief description (auto-generated if empty)"
-                    value={excerpt}
-                    onChange={(e) => setExcerpt(e.target.value)}
-                    rows={3}
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="featured-image">Featured Image</Label>
-                  <div 
-                    className="mt-2 border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary/50 transition-colors cursor-pointer"
-                    onClick={() => document.getElementById('featured-image')?.click()}
-                    onDragOver={(e) => {
-                      e.preventDefault();
-                      e.currentTarget.classList.add('border-primary');
-                    }}
-                    onDragLeave={(e) => {
-                      e.currentTarget.classList.remove('border-primary');
-                    }}
-                    onDrop={(e) => {
-                      e.preventDefault();
-                      e.currentTarget.classList.remove('border-primary');
-                      const file = e.dataTransfer.files?.[0];
-                      if (file && file.type.startsWith('image/')) {
-                        setFeaturedImage(file);
-                      }
-                    }}
-                  >
-                    {featuredImage || featuredImageUrl ? (
-                      <div className="relative inline-block">
-                        <img
-                          src={featuredImage ? URL.createObjectURL(featuredImage) : featuredImageUrl}
-                          alt="Featured preview"
-                          className="max-h-48 rounded-lg mx-auto"
+                    {/* Tags */}
+                    {id && (
+                      <div>
+                        <label className="text-sm font-medium mb-2 block">
+                          Tags
+                        </label>
+                        <TagSelector 
+                          articleId={id} 
+                          selectedTags={[]} 
+                          onTagsChange={() => {}} 
                         />
-                        <Button
-                          variant="destructive"
-                          size="icon"
-                          className="absolute -top-2 -right-2 h-6 w-6"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setFeaturedImage(null);
-                            setFeaturedImageUrl("");
-                          }}
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className="space-y-2">
-                        <ImagePlus className="h-10 w-10 mx-auto text-muted-foreground" />
-                        <p className="text-sm text-muted-foreground">
-                          Click or drag & drop to upload an image
-                        </p>
                       </div>
                     )}
-                    <Input
-                      id="featured-image"
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => setFeaturedImage(e.target.files?.[0] || null)}
-                    />
-                  </div>
-                  {featuredImage && !featuredImageUrl && (
+
+                    {/* Publish Button */}
                     <Button 
-                      onClick={uploadImage} 
-                      disabled={uploading} 
-                      variant="outline"
-                      className="mt-2 w-full"
+                      className="w-full" 
+                      size="lg"
+                      onClick={publishArticle}
+                      disabled={loading}
                     >
-                      {uploading ? (
-                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      {loading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                          Publishing...
+                        </>
                       ) : (
-                        <Upload className="h-4 w-4 mr-2" />
+                        <>
+                          <Send className="h-4 w-4 mr-2" />
+                          Publish Now
+                        </>
                       )}
-                      Upload Image
                     </Button>
-                  )}
-                </div>
+                  </div>
+                </SheetContent>
+              </Sheet>
 
-                {id && <TagSelector articleId={id} selectedTags={[]} onTagsChange={() => {}} />}
-              </CardContent>
-            </Card>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <MoreHorizontal className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                        <Eye className="h-4 w-4 mr-2" />
+                        Preview
+                      </DropdownMenuItem>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle>Preview</DialogTitle>
+                      </DialogHeader>
+                      <div className="space-y-6 py-4">
+                        {featuredImageUrl && (
+                          <img
+                            src={featuredImageUrl}
+                            alt="Featured"
+                            className="w-full aspect-video object-cover rounded-lg"
+                          />
+                        )}
+                        <div>
+                          <Badge>{category}</Badge>
+                          <h1 className="text-3xl font-bold mt-3">{title || "Untitled"}</h1>
+                          {excerpt && (
+                            <p className="text-lg text-muted-foreground mt-2">{excerpt}</p>
+                          )}
+                        </div>
+                        <div 
+                          className="prose prose-lg dark:prose-invert max-w-none"
+                          dangerouslySetInnerHTML={{ __html: content }}
+                        />
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                  <DropdownMenuItem onClick={saveDraft} disabled={loading}>
+                    <Save className="h-4 w-4 mr-2" />
+                    Save Draft
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    className="text-destructive"
+                    onClick={() => navigate("/")}
+                  >
+                    Discard Changes
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Content *</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <TipTapEditor content={content} onChange={setContent} />
-              </CardContent>
-            </Card>
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={profile?.avatar_url || undefined} />
+                <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                  {profile?.full_name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </div>
           </div>
         </div>
-      </div>
+      </header>
+
+      {/* Main Editor Area */}
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl py-8">
+        {/* Title Input - Medium-style */}
+        <input
+          type="text"
+          placeholder="Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="w-full text-4xl md:text-5xl font-serif font-bold border-none bg-transparent focus:outline-none focus:ring-0 placeholder:text-muted-foreground/50 mb-4"
+        />
+
+        {/* Subtitle / Excerpt - Optional */}
+        <input
+          type="text"
+          placeholder="Add a subtitle..."
+          value={excerpt}
+          onChange={(e) => setExcerpt(e.target.value)}
+          className="w-full text-xl text-muted-foreground border-none bg-transparent focus:outline-none focus:ring-0 placeholder:text-muted-foreground/40 mb-8"
+        />
+
+        {/* Rich Text Editor */}
+        <TipTapEditor 
+          content={content} 
+          onChange={setContent}
+          placeholder="Tell your story..."
+        />
+      </main>
     </div>
   );
 };
