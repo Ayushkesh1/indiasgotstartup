@@ -19,9 +19,9 @@ export function useProfile(userId: string | undefined) {
     queryFn: async () => {
       if (!userId) throw new Error("User ID required");
       
-      // Only select public fields for security
+      // Use profiles_public view for public access (bypasses RLS restrictions)
       const { data, error } = await supabase
-        .from("profiles")
+        .from("profiles_public")
         .select("id, full_name, bio, avatar_url, twitter_handle, linkedin_url, created_at, updated_at")
         .eq("id", userId)
         .maybeSingle();
