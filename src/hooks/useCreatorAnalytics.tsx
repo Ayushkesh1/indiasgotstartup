@@ -42,14 +42,13 @@ export function useArticlePerformance() {
     queryFn: async () => {
       if (!user) throw new Error("User required");
 
-      // Get user's articles
+      // Get ALL user's published articles (no limit)
       const { data: articles, error: articlesError } = await supabase
         .from("articles")
         .select("id, title, slug, views_count, published_at, is_boosted, boost_multiplier")
         .eq("author_id", user.id)
         .eq("published", true)
-        .order("published_at", { ascending: false })
-        .limit(20);
+        .order("published_at", { ascending: false });
 
       if (articlesError) throw articlesError;
 
