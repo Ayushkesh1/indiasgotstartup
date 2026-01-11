@@ -245,12 +245,16 @@ export type Database = {
       articles: {
         Row: {
           author_id: string
+          boost_expires_at: string | null
+          boost_multiplier: number
+          boosted_at: string | null
           category: Database["public"]["Enums"]["article_category"]
           content: Json
           created_at: string
           excerpt: string | null
           featured_image_url: string | null
           id: string
+          is_boosted: boolean
           published: boolean
           published_at: string | null
           reading_time: number
@@ -261,12 +265,16 @@ export type Database = {
         }
         Insert: {
           author_id: string
+          boost_expires_at?: string | null
+          boost_multiplier?: number
+          boosted_at?: string | null
           category: Database["public"]["Enums"]["article_category"]
           content: Json
           created_at?: string
           excerpt?: string | null
           featured_image_url?: string | null
           id?: string
+          is_boosted?: boolean
           published?: boolean
           published_at?: string | null
           reading_time?: number
@@ -277,12 +285,16 @@ export type Database = {
         }
         Update: {
           author_id?: string
+          boost_expires_at?: string | null
+          boost_multiplier?: number
+          boosted_at?: string | null
           category?: Database["public"]["Enums"]["article_category"]
           content?: Json
           created_at?: string
           excerpt?: string | null
           featured_image_url?: string | null
           id?: string
+          is_boosted?: boolean
           published?: boolean
           published_at?: string | null
           reading_time?: number
@@ -500,11 +512,14 @@ export type Database = {
       creator_monthly_earnings: {
         Row: {
           bookmarks: number
+          boosted_article_points: number
           comments: number
           created_at: string
           creator_id: string
           estimated_earnings: number
           final_earnings: number | null
+          follower_bonus_points: number
+          follower_engagements: number
           full_reads: number
           id: string
           is_paid: boolean
@@ -515,11 +530,14 @@ export type Database = {
         }
         Insert: {
           bookmarks?: number
+          boosted_article_points?: number
           comments?: number
           created_at?: string
           creator_id: string
           estimated_earnings?: number
           final_earnings?: number | null
+          follower_bonus_points?: number
+          follower_engagements?: number
           full_reads?: number
           id?: string
           is_paid?: boolean
@@ -530,11 +548,14 @@ export type Database = {
         }
         Update: {
           bookmarks?: number
+          boosted_article_points?: number
           comments?: number
           created_at?: string
           creator_id?: string
           estimated_earnings?: number
           final_earnings?: number | null
+          follower_bonus_points?: number
+          follower_engagements?: number
           full_reads?: number
           id?: string
           is_paid?: boolean
@@ -682,7 +703,9 @@ export type Database = {
           created_at: string
           creator_id: string
           event_type: string
+          follower_bonus_points: number
           id: string
+          is_follower_engagement: boolean
           metadata: Json | null
           month_year: string
           points: number
@@ -693,7 +716,9 @@ export type Database = {
           created_at?: string
           creator_id: string
           event_type: string
+          follower_bonus_points?: number
           id?: string
+          is_follower_engagement?: boolean
           metadata?: Json | null
           month_year: string
           points: number
@@ -704,7 +729,9 @@ export type Database = {
           created_at?: string
           creator_id?: string
           event_type?: string
+          follower_bonus_points?: number
           id?: string
+          is_follower_engagement?: boolean
           metadata?: Json | null
           month_year?: string
           points?: number
