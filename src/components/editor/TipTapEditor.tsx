@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -40,6 +40,8 @@ import {
   Code,
   Minus,
   Type,
+  Keyboard,
+  FileText,
 } from "lucide-react";
 
 interface TipTapEditorProps {
@@ -54,11 +56,14 @@ const TipTapEditor = ({ content, onChange, placeholder = "Start writing your sto
   const [showImageDialog, setShowImageDialog] = useState(false);
   const [showLinkDialog, setShowLinkDialog] = useState(false);
   const [showYoutubeDialog, setShowYoutubeDialog] = useState(false);
+  const [showShortcutsDialog, setShowShortcutsDialog] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
   const [linkText, setLinkText] = useState("");
   const [youtubeUrl, setYoutubeUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const [wordCount, setWordCount] = useState(0);
+  const [charCount, setCharCount] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const editor = useEditor({
@@ -93,7 +98,13 @@ const TipTapEditor = ({ content, onChange, placeholder = "Start writing your sto
     ],
     content,
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML());
+      const html = editor.getHTML();
+      onChange(html);
+      
+      // Update word and character counts
+      const text = editor.getText();
+      setCharCount(text.length);
+      setWordCount(text.trim() ? text.trim().split(/\s+/).length : 0);
     },
     editorProps: {
       attributes: {
@@ -101,6 +112,29 @@ const TipTapEditor = ({ content, onChange, placeholder = "Start writing your sto
       },
     },
   });
+
+  // Initial count calculation
+  useEffect(() => {
+    if (editor) {
+      const text = editor.getText();
+      setCharCount(text.length);
+      setWordCount(text.trim() ? text.trim().split(/\s+/).length : 0);
+    }
+  }, [editor]);
+
+  // Global keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Show shortcuts dialog with Ctrl+/
+      if ((e.ctrlKey || e.metaKey) && e.key === '/') {
+        e.preventDefault();
+        setShowShortcutsDialog(true);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const handleImageUpload = useCallback(async (file: File) => {
     if (!user) {
@@ -324,7 +358,7 @@ const TipTapEditor = ({ content, onChange, placeholder = "Start writing your sto
           </div>
 
           {/* Utility */}
-          <div className="flex items-center gap-0.5 ml-auto">
+          <div className="flex items-center gap-0.5 border-r border-border pr-2 mr-2">
             <VoiceInput
               onTranscript={(text) => {
                 editor.commands.insertContent(text);
@@ -338,10 +372,25 @@ const TipTapEditor = ({ content, onChange, placeholder = "Start writing your sto
             </ToolbarButton>
             <ToolbarButton
               onClick={() => editor.chain().focus().redo().run()}
-              title="Redo (Ctrl+Y)"
+              title="Redo (Ctrl+Shift+Z)"
             >
               <Redo className="h-4 w-4" />
             </ToolbarButton>
+            <ToolbarButton
+              onClick={() => setShowShortcutsDialog(true)}
+              title="Keyboard Shortcuts (Ctrl+/)"
+            >
+              <Keyboard className="h-4 w-4" />
+            </ToolbarButton>
+          </div>
+
+          {/* Word & Character Count */}
+          <div className="flex items-center gap-3 ml-auto text-xs text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <FileText className="h-3 w-3" />
+              {wordCount} words
+            </span>
+            <span>{charCount} chars</span>
           </div>
         </div>
       </div>
@@ -489,8 +538,66 @@ const TipTapEditor = ({ content, onChange, placeholder = "Start writing your sto
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Keyboard Shortcuts Dialog */}
+      <Dialog open={showShortcutsDialog} onOpenChange={setShowShortcutsDialog}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Keyboard className="h-5 w-5" />
+              Keyboard Shortcuts
+            </DialogTitle>
+            <DialogDescription>
+              Speed up your writing with these shortcuts
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-3">
+                <h4 className="font-medium text-sm text-muted-foreground">Text Formatting</h4>
+                <ShortcutItem keys={["Ctrl", "B"]} description="Bold" />
+                <ShortcutItem keys={["Ctrl", "I"]} description="Italic" />
+                <ShortcutItem keys={["Ctrl", "`"]} description="Inline Code" />
+                <ShortcutItem keys={["Ctrl", "K"]} description="Add Link" />
+              </div>
+              <div className="space-y-3">
+                <h4 className="font-medium text-sm text-muted-foreground">Structure</h4>
+                <ShortcutItem keys={["Ctrl", "Alt", "1"]} description="Heading 1" />
+                <ShortcutItem keys={["Ctrl", "Alt", "2"]} description="Heading 2" />
+                <ShortcutItem keys={["Ctrl", "Alt", "3"]} description="Heading 3" />
+                <ShortcutItem keys={["Ctrl", "Shift", "B"]} description="Bullet List" />
+              </div>
+            </div>
+            <div className="border-t pt-4 space-y-3">
+              <h4 className="font-medium text-sm text-muted-foreground">General</h4>
+              <div className="grid grid-cols-2 gap-4">
+                <ShortcutItem keys={["Ctrl", "Z"]} description="Undo" />
+                <ShortcutItem keys={["Ctrl", "Shift", "Z"]} description="Redo" />
+                <ShortcutItem keys={["Ctrl", "/"]} description="Show Shortcuts" />
+                <ShortcutItem keys={["Ctrl", "Shift", "E"]} description="Quote" />
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
+
+const ShortcutItem = ({ keys, description }: { keys: string[]; description: string }) => (
+  <div className="flex items-center justify-between text-sm">
+    <span className="text-foreground">{description}</span>
+    <div className="flex items-center gap-1">
+      {keys.map((key, index) => (
+        <span key={index}>
+          <kbd className="px-2 py-1 text-xs font-semibold bg-muted rounded border border-border">
+            {key}
+          </kbd>
+          {index < keys.length - 1 && <span className="mx-0.5 text-muted-foreground">+</span>}
+        </span>
+      ))}
+    </div>
+  </div>
+);
 
 export default TipTapEditor;
