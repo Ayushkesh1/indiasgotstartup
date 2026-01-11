@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_credentials: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          last_login: string | null
+          password_hash: string
+          username: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_login?: string | null
+          password_hash: string
+          username: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_login?: string | null
+          password_hash?: string
+          username?: string
+        }
+        Relationships: []
+      }
       advertisements: {
         Row: {
           bid_amount: number
@@ -402,6 +429,48 @@ export type Database = {
           },
         ]
       }
+      career_postings: {
+        Row: {
+          created_at: string
+          department: string | null
+          description: string
+          employment_type: string | null
+          id: string
+          is_active: boolean
+          location: string | null
+          requirements: string | null
+          salary_range: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          department?: string | null
+          description: string
+          employment_type?: string | null
+          id?: string
+          is_active?: boolean
+          location?: string | null
+          requirements?: string | null
+          salary_range?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          department?: string | null
+          description?: string
+          employment_type?: string | null
+          id?: string
+          is_active?: boolean
+          location?: string | null
+          requirements?: string | null
+          salary_range?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       collection_items: {
         Row: {
           added_at: string
@@ -555,6 +624,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      contact_queries: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          responded_at: string | null
+          response_notes: string | null
+          status: string
+          subject: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          responded_at?: string | null
+          response_notes?: string | null
+          status?: string
+          subject?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          responded_at?: string | null
+          response_notes?: string | null
+          status?: string
+          subject?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       creator_monthly_earnings: {
         Row: {
@@ -868,6 +976,56 @@ export type Database = {
         }
         Relationships: []
       }
+      job_applications: {
+        Row: {
+          applicant_email: string
+          applicant_name: string
+          career_posting_id: string | null
+          cover_letter: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          phone: string | null
+          resume_url: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          applicant_email: string
+          applicant_name: string
+          career_posting_id?: string | null
+          cover_letter?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          phone?: string | null
+          resume_url?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          applicant_email?: string
+          applicant_name?: string
+          career_posting_id?: string | null
+          cover_letter?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          phone?: string | null
+          resume_url?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_applications_career_posting_id_fkey"
+            columns: ["career_posting_id"]
+            isOneToOne: false
+            referencedRelation: "career_postings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       monthly_revenue_pools: {
         Row: {
           created_at: string
@@ -931,6 +1089,45 @@ export type Database = {
           is_active?: boolean
           subscribed_at?: string
           unsubscribed_at?: string | null
+        }
+        Relationships: []
+      }
+      partners: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_order: number | null
+          id: string
+          is_active: boolean
+          logo_url: string | null
+          name: string
+          partnership_type: string | null
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean
+          logo_url?: string | null
+          name: string
+          partnership_type?: string | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean
+          logo_url?: string | null
+          name?: string
+          partnership_type?: string | null
+          updated_at?: string
+          website_url?: string | null
         }
         Relationships: []
       }
@@ -1146,6 +1343,54 @@ export type Database = {
           id?: string
           name?: string
           slug?: string
+        }
+        Relationships: []
+      }
+      team_members: {
+        Row: {
+          bio: string | null
+          created_at: string
+          department: string | null
+          display_order: number | null
+          email: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          linkedin_url: string | null
+          name: string
+          role: string
+          twitter_handle: string | null
+          updated_at: string
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          department?: string | null
+          display_order?: number | null
+          email?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          linkedin_url?: string | null
+          name: string
+          role: string
+          twitter_handle?: string | null
+          updated_at?: string
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          department?: string | null
+          display_order?: number | null
+          email?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          linkedin_url?: string | null
+          name?: string
+          role?: string
+          twitter_handle?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
