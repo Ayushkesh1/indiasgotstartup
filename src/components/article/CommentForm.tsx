@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/useAuth";
 import { useAddComment } from "@/hooks/useComments";
+import { useTrackEngagement } from "@/hooks/useCreatorEarnings";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { Info } from "lucide-react";
@@ -40,6 +41,7 @@ export default function CommentForm({
   const navigate = useNavigate();
   const [content, setContent] = useState("");
   const addComment = useAddComment();
+  const { mutate: trackEngagement } = useTrackEngagement();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,6 +70,8 @@ export default function CommentForm({
         onSuccess: () => {
           setContent("");
           toast.success("Comment posted!");
+          // Track comment engagement
+          trackEngagement({ event_type: "comment", article_id: articleId });
           onSuccess?.();
         },
         onError: () => {

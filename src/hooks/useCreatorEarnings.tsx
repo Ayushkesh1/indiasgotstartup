@@ -109,7 +109,7 @@ export function useCreatorPaymentInfo() {
         .maybeSingle();
 
       if (error) throw error;
-      return data as CreatorPaymentInfo | null;
+      return data as unknown as CreatorPaymentInfo | null;
     },
     enabled: !!user,
   });
