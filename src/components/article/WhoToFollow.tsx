@@ -1,19 +1,13 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Users } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Users, ChevronDown } from "lucide-react";
 import FollowButton from "@/components/FollowButton";
-
-interface SuggestedAuthor {
-  id: string;
-  full_name: string | null;
-  avatar_url: string | null;
-  bio: string | null;
-  article_count: number;
-}
 
 interface WhoToFollowProps {
   currentAuthorId?: string;
@@ -21,10 +15,11 @@ interface WhoToFollowProps {
 }
 
 export const WhoToFollow = ({ currentAuthorId, currentUserId }: WhoToFollowProps) => {
+  const [isOpen, setIsOpen] = useState(true);
+
   const { data: suggestedAuthors, isLoading } = useQuery({
     queryKey: ["suggested-authors", currentAuthorId, currentUserId],
     queryFn: async () => {
-      // Get authors with most articles, excluding current author and current user
       const { data: articlesData, error: articlesError } = await supabase
         .from("articles")
         .select("author_id")
@@ -32,13 +27,11 @@ export const WhoToFollow = ({ currentAuthorId, currentUserId }: WhoToFollowProps
 
       if (articlesError) throw articlesError;
 
-      // Count articles per author
       const authorCounts: Record<string, number> = {};
       articlesData?.forEach(article => {
         authorCounts[article.author_id] = (authorCounts[article.author_id] || 0) + 1;
       });
 
-      // Get top authors by article count
       const sortedAuthors = Object.entries(authorCounts)
         .filter(([id]) => id !== currentAuthorId && id !== currentUserId)
         .sort(([, a], [, b]) => b - a)
@@ -47,7 +40,6 @@ export const WhoToFollow = ({ currentAuthorId, currentUserId }: WhoToFollowProps
 
       if (sortedAuthors.length === 0) return [];
 
-      // Get author profiles
       const { data: profiles, error: profilesError } = await supabase
         .from("profiles")
         .select("id, full_name, avatar_url, bio")
@@ -55,7 +47,6 @@ export const WhoToFollow = ({ currentAuthorId, currentUserId }: WhoToFollowProps
 
       if (profilesError) throw profilesError;
 
-      // Combine with article counts
       return profiles?.map(profile => ({
         ...profile,
         article_count: authorCounts[profile.id] || 0
@@ -67,10 +58,10 @@ export const WhoToFollow = ({ currentAuthorId, currentUserId }: WhoToFollowProps
     return (
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base flex items-center gap-2">
+          <div className="text-sm font-medium flex items-center gap-2">
             <Users className="h-4 w-4" />
             Who to Follow
-          </CardTitle>
+          </div>
         </CardHeader>
         <CardContent className="space-y-4">
           {[1, 2, 3].map((i) => (
@@ -92,38 +83,47 @@ export const WhoToFollow = ({ currentAuthorId, currentUserId }: WhoToFollowProps
 
   return (
     <Card>
-      <CardHeader className="pb-3">
-        <CardTitle className="text-sm font-medium flex items-center gap-2">
-          <Users className="h-4 w-4" />
-          Who to Follow
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {suggestedAuthors.map((author) => (
-          <div key={author.id} className="flex items-center gap-3">
-            <Link to={`/author/${author.id}`}>
-              <Avatar className="h-10 w-10 hover:ring-2 hover:ring-primary transition-all">
-                <AvatarImage src={author.avatar_url || undefined} />
-                <AvatarFallback className="bg-primary text-primary-foreground text-sm">
-                  {author.full_name?.charAt(0)?.toUpperCase() || "A"}
-                </AvatarFallback>
-              </Avatar>
-            </Link>
-            <div className="flex-1 min-w-0">
-              <Link 
-                to={`/author/${author.id}`}
-                className="font-medium text-sm hover:text-primary transition-colors truncate block"
-              >
-                {author.full_name || "Anonymous"}
-              </Link>
-              <p className="text-xs text-muted-foreground">
-                {author.article_count} article{author.article_count !== 1 ? "s" : ""}
-              </p>
-            </div>
-            <FollowButton authorId={author.id} size="sm" />
-          </div>
-        ))}
-      </CardContent>
+      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+        <CardHeader className="pb-3">
+          <CollapsibleTrigger asChild>
+            <button className="flex items-center justify-between w-full text-left">
+              <span className="text-sm font-medium flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                Who to Follow
+              </span>
+              <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+            </button>
+          </CollapsibleTrigger>
+        </CardHeader>
+        <CollapsibleContent className="animate-accordion-down data-[state=closed]:animate-accordion-up">
+          <CardContent className="pt-0 space-y-4">
+            {suggestedAuthors.map((author) => (
+              <div key={author.id} className="flex items-center gap-3">
+                <Link to={`/author/${author.id}`}>
+                  <Avatar className="h-10 w-10 hover:ring-2 hover:ring-primary transition-all">
+                    <AvatarImage src={author.avatar_url || undefined} />
+                    <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+                      {author.full_name?.charAt(0)?.toUpperCase() || "A"}
+                    </AvatarFallback>
+                  </Avatar>
+                </Link>
+                <div className="flex-1 min-w-0">
+                  <Link 
+                    to={`/author/${author.id}`}
+                    className="font-medium text-sm hover:text-primary transition-colors truncate block"
+                  >
+                    {author.full_name || "Anonymous"}
+                  </Link>
+                  <p className="text-xs text-muted-foreground">
+                    {author.article_count} article{author.article_count !== 1 ? "s" : ""}
+                  </p>
+                </div>
+                <FollowButton authorId={author.id} size="sm" />
+              </div>
+            ))}
+          </CardContent>
+        </CollapsibleContent>
+      </Collapsible>
     </Card>
   );
 };

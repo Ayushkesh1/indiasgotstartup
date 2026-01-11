@@ -1,36 +1,30 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Hash, TrendingUp } from "lucide-react";
+import { Hash, TrendingUp, ChevronDown } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-
-interface TrendingTag {
-  id: string;
-  name: string;
-  slug: string;
-  count: number;
-}
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 export const TrendingTopics = () => {
+  const [isOpen, setIsOpen] = useState(true);
+
   const { data: trendingTags, isLoading } = useQuery({
     queryKey: ["trending-tags"],
     queryFn: async () => {
-      // Get article_tags with counts
       const { data: tagCounts, error: countError } = await supabase
         .from("article_tags")
         .select("tag_id");
 
       if (countError) throw countError;
 
-      // Count occurrences
       const counts: Record<string, number> = {};
       tagCounts?.forEach(t => {
         counts[t.tag_id] = (counts[t.tag_id] || 0) + 1;
       });
 
-      // Get top tag IDs
       const topTagIds = Object.entries(counts)
         .sort(([, a], [, b]) => b - a)
         .slice(0, 8)
@@ -38,7 +32,6 @@ export const TrendingTopics = () => {
 
       if (topTagIds.length === 0) return [];
 
-      // Fetch tag details
       const { data: tags, error: tagsError } = await supabase
         .from("tags")
         .select("id, name, slug")
@@ -46,20 +39,19 @@ export const TrendingTopics = () => {
 
       if (tagsError) throw tagsError;
 
-      // Combine with counts and sort
       return tags?.map(tag => ({
         ...tag,
         count: counts[tag.id] || 0
       })).sort((a, b) => b.count - a.count) || [];
     },
-    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    staleTime: 5 * 60 * 1000,
   });
 
   if (isLoading) {
     return (
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-medium">Trending Topics</CardTitle>
+          <div className="text-sm font-medium">Trending Topics</div>
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-2">
@@ -76,27 +68,36 @@ export const TrendingTopics = () => {
 
   return (
     <Card>
-      <CardHeader className="pb-3">
-        <CardTitle className="text-sm font-medium flex items-center gap-2">
-          <TrendingUp className="h-4 w-4" />
-          Trending Topics
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="flex flex-wrap gap-2">
-          {trendingTags.map((tag) => (
-            <Link key={tag.id} to={`/?tag=${tag.slug}`}>
-              <Badge 
-                variant="secondary" 
-                className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
-              >
-                <Hash className="h-3 w-3 mr-1" />
-                {tag.name}
-              </Badge>
-            </Link>
-          ))}
-        </div>
-      </CardContent>
+      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+        <CardHeader className="pb-3">
+          <CollapsibleTrigger asChild>
+            <button className="flex items-center justify-between w-full text-left">
+              <span className="text-sm font-medium flex items-center gap-2">
+                <TrendingUp className="h-4 w-4" />
+                Trending Topics
+              </span>
+              <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+            </button>
+          </CollapsibleTrigger>
+        </CardHeader>
+        <CollapsibleContent className="animate-accordion-down data-[state=closed]:animate-accordion-up">
+          <CardContent className="pt-0">
+            <div className="flex flex-wrap gap-2">
+              {trendingTags.map((tag) => (
+                <Link key={tag.id} to={`/?tag=${tag.slug}`}>
+                  <Badge 
+                    variant="secondary" 
+                    className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
+                  >
+                    <Hash className="h-3 w-3 mr-1" />
+                    {tag.name}
+                  </Badge>
+                </Link>
+              ))}
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Collapsible>
     </Card>
   );
 };
