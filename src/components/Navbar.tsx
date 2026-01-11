@@ -155,10 +155,6 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
                       <Wallet className="mr-2 h-4 w-4" />
                       Creator Dashboard
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate("/creator-dashboard")}>
-                      <Wallet className="mr-2 h-4 w-4" />
-                      Creator Dashboard
-                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate("/reading-lists")}>
                       <BookMarked className="mr-2 h-4 w-4" />
                       Reading Lists
