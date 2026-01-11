@@ -19,6 +19,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import CreatorDashboard from "./pages/CreatorDashboard";
 import CreatorProgram from "./pages/CreatorProgram";
 import CreatorCheckout from "./pages/CreatorCheckout";
+import SubscriptionManagement from "./pages/SubscriptionManagement";
 import { AdminGuard } from "./components/admin/AdminGuard";
 
 import NotFound from "./pages/NotFound";
@@ -45,6 +46,7 @@ const App = () => (
             <Route path="/creator-dashboard" element={<CreatorDashboard />} />
             <Route path="/creator-program" element={<CreatorProgram />} />
             <Route path="/creator-program/checkout" element={<CreatorCheckout />} />
+            <Route path="/subscription" element={<SubscriptionManagement />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/series/:id" element={<SeriesDetail />} />
             

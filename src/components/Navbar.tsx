@@ -1,4 +1,4 @@
-import { Search, Edit3, LogOut, User, BookMarked, TrendingUp, ArrowLeft, Users, DollarSign, Share2, Twitter, Linkedin, Facebook, Shield, Trophy, Wallet } from "lucide-react";
+import { Search, Edit3, LogOut, User, BookMarked, TrendingUp, ArrowLeft, Users, DollarSign, Share2, Twitter, Linkedin, Facebook, Shield, Trophy, Wallet, Sparkles, Settings } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -151,9 +151,17 @@ const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
                       <User className="mr-2 h-4 w-4" />
                       Profile
                     </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/creator-program")}>
+                      <Sparkles className="mr-2 h-4 w-4" />
+                      Creator Program
+                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate("/creator-dashboard")}>
                       <Wallet className="mr-2 h-4 w-4" />
                       Creator Dashboard
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/subscription")}>
+                      <Settings className="mr-2 h-4 w-4" />
+                      Subscription
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate("/reading-lists")}>
                       <BookMarked className="mr-2 h-4 w-4" />
