@@ -8,6 +8,7 @@ export function useUserArticles(userId: string | undefined) {
     queryFn: async () => {
       if (!userId) throw new Error("User ID required");
 
+      // Fetch ALL articles for this user (published and drafts)
       const { data, error } = await supabase
         .from("articles")
         .select(`
