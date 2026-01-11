@@ -23,13 +23,13 @@ const AuthorSidebar = ({ author, authorId }: AuthorSidebarProps) => {
   const id = authorId || author.id;
 
   return (
-    <Card className="sticky top-20">
+    <Card>
       <CardContent className="pt-6">
         <div className="flex flex-col items-center text-center space-y-4">
           <Link to={id ? `/author/${id}` : "#"}>
-            <Avatar className="h-20 w-20 cursor-pointer hover:ring-2 hover:ring-primary transition-all">
+            <Avatar className="h-16 w-16 cursor-pointer hover:ring-2 hover:ring-primary transition-all">
               <AvatarImage src={author.avatar_url || undefined} />
-              <AvatarFallback className="text-2xl bg-primary text-primary-foreground">
+              <AvatarFallback className="text-xl bg-primary text-primary-foreground">
                 {author.full_name?.charAt(0)?.toUpperCase() || "A"}
               </AvatarFallback>
             </Avatar>
@@ -40,12 +40,12 @@ const AuthorSidebar = ({ author, authorId }: AuthorSidebarProps) => {
               to={id ? `/author/${id}` : "#"}
               className="hover:text-primary transition-colors"
             >
-              <h3 className="font-semibold text-lg">
+              <h3 className="font-semibold">
                 {author.full_name || "Anonymous"}
               </h3>
             </Link>
             {author.bio && (
-              <p className="text-sm text-muted-foreground mt-2 line-clamp-3">
+              <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
                 {author.bio}
               </p>
             )}
@@ -53,7 +53,7 @@ const AuthorSidebar = ({ author, authorId }: AuthorSidebarProps) => {
 
           {/* Follow Button */}
           {id && (
-            <FollowButton authorId={id} size="default" className="w-full" />
+            <FollowButton authorId={id} size="sm" className="w-full" />
           )}
 
           {/* View Profile Link */}
@@ -70,7 +70,7 @@ const AuthorSidebar = ({ author, authorId }: AuthorSidebarProps) => {
             <div className="flex gap-2 w-full">
               {author.twitter_handle && (
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
                   className="flex-1"
                   onClick={() =>
@@ -85,7 +85,7 @@ const AuthorSidebar = ({ author, authorId }: AuthorSidebarProps) => {
               )}
               {author.linkedin_url && (
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
                   className="flex-1"
                   onClick={() => window.open(author.linkedin_url!, "_blank")}

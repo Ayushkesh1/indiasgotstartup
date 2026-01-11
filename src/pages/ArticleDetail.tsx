@@ -19,6 +19,8 @@ import TranslateButton from "@/components/article/TranslateButton";
 import { RealtimeViewCounter } from "@/components/article/RealtimeViewCounter";
 import { ArticleRecommendations } from "@/components/article/ArticleRecommendations";
 import { WhoToFollow } from "@/components/article/WhoToFollow";
+import { MoreFromAuthor } from "@/components/article/MoreFromAuthor";
+import { TrendingTopics } from "@/components/article/TrendingTopics";
 import { ReportArticleDialog } from "@/components/article/ReportArticleDialog";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Calendar, Clock } from "lucide-react";
@@ -285,15 +287,23 @@ const ArticleDetail = () => {
               />
             </div>
 
-            {/* Right Sidebar - Author Bio, Recommendations & Who to Follow */}
-            <aside className="lg:col-span-3 space-y-6">
-              <AuthorSidebar author={article.profiles} authorId={article.author_id} />
-              <WhoToFollow currentAuthorId={article.author_id} currentUserId={user?.id} />
-              <ArticleRecommendations 
-                currentArticleId={article.id}
-                category={article.category}
-                authorId={article.author_id}
-              />
+            {/* Right Sidebar - Sticky container with all sections */}
+            <aside className="lg:col-span-3">
+              <div className="sticky top-20 space-y-4 max-h-[calc(100vh-6rem)] overflow-y-auto pb-4 scrollbar-thin">
+                <AuthorSidebar author={article.profiles} authorId={article.author_id} />
+                <MoreFromAuthor 
+                  authorId={article.author_id} 
+                  authorName={article.profiles.full_name}
+                  currentArticleId={article.id} 
+                />
+                <WhoToFollow currentAuthorId={article.author_id} currentUserId={user?.id} />
+                <TrendingTopics />
+                <ArticleRecommendations 
+                  currentArticleId={article.id}
+                  category={article.category}
+                  authorId={article.author_id}
+                />
+              </div>
             </aside>
           </div>
 
