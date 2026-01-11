@@ -5,13 +5,16 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Engagement point values
+// Base engagement point values
 const POINTS = {
   FULL_READ: 1,
   COMMENT: 3,
   BOOKMARK: 2,
   LONG_READ_BONUS: 1,
 };
+
+// Follower bonus multiplier (50% extra for follower engagement)
+const FOLLOWER_BONUS_MULTIPLIER = 0.5;
 
 // Average reading time threshold for bonus (in seconds)
 const AVERAGE_READING_TIME = 180; // 3 minutes
@@ -52,10 +55,10 @@ Deno.serve(async (req) => {
     const now = new Date();
     const monthYear = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 
-    // Get article to find creator
+    // Get article to find creator and boost status
     const { data: article, error: articleError } = await supabaseClient
       .from('articles')
-      .select('author_id')
+      .select('author_id, is_boosted, boost_multiplier, boost_expires_at')
       .eq('id', article_id)
       .single();
 
@@ -93,22 +96,37 @@ Deno.serve(async (req) => {
       }
     }
 
-    let points = 0;
+    // Check if user is following the creator (for follower bonus)
+    const { data: followData } = await supabaseClient
+      .from('follows')
+      .select('id')
+      .eq('follower_id', user.id)
+      .eq('author_id', article.author_id)
+      .single();
+
+    const isFollower = !!followData;
+
+    // Check if article is currently boosted
+    const isBoosted = article.is_boosted && 
+      (!article.boost_expires_at || new Date(article.boost_expires_at) > now);
+    const boostMultiplier = isBoosted ? (article.boost_multiplier || 1.5) : 1;
+
+    let basePoints = 0;
     const metadata: Record<string, unknown> = {};
 
     switch (event_type) {
       case 'full_read':
-        points = POINTS.FULL_READ;
+        basePoints = POINTS.FULL_READ;
         break;
       case 'comment':
-        points = POINTS.COMMENT;
+        basePoints = POINTS.COMMENT;
         break;
       case 'bookmark':
-        points = POINTS.BOOKMARK;
+        basePoints = POINTS.BOOKMARK;
         break;
       case 'long_read_bonus':
         if (reading_time && reading_time > AVERAGE_READING_TIME) {
-          points = POINTS.LONG_READ_BONUS;
+          basePoints = POINTS.LONG_READ_BONUS;
           metadata.reading_time = reading_time;
         } else {
           return new Response(JSON.stringify({ 
@@ -124,6 +142,22 @@ Deno.serve(async (req) => {
         });
     }
 
+    // Calculate follower bonus points
+    const followerBonusPoints = isFollower ? Math.floor(basePoints * FOLLOWER_BONUS_MULTIPLIER) : 0;
+    
+    // Apply boost multiplier to total points
+    const totalBasePoints = basePoints + followerBonusPoints;
+    const finalPoints = Math.round(totalBasePoints * boostMultiplier);
+
+    // Add bonus info to metadata
+    if (isFollower) {
+      metadata.follower_bonus = followerBonusPoints;
+    }
+    if (isBoosted) {
+      metadata.boost_multiplier = boostMultiplier;
+      metadata.boosted = true;
+    }
+
     // Insert engagement event
     const { error: insertError } = await supabaseClient
       .from('engagement_events')
@@ -132,19 +166,26 @@ Deno.serve(async (req) => {
         article_id: article_id,
         creator_id: article.author_id,
         event_type: event_type,
-        points: points,
+        points: finalPoints,
         month_year: monthYear,
+        is_follower_engagement: isFollower,
+        follower_bonus_points: followerBonusPoints,
         metadata: Object.keys(metadata).length > 0 ? metadata : null,
       });
 
     if (insertError) throw insertError;
 
-    console.log(`Tracked ${event_type} engagement: ${points} points for creator ${article.author_id}`);
+    console.log(`Tracked ${event_type} engagement: ${finalPoints} points (base: ${basePoints}, follower bonus: ${followerBonusPoints}, boost: ${boostMultiplier}x) for creator ${article.author_id}`);
 
     return new Response(JSON.stringify({ 
       success: true, 
-      points: points,
-      message: `Engagement tracked: +${points} points` 
+      points: finalPoints,
+      base_points: basePoints,
+      follower_bonus: followerBonusPoints,
+      boost_multiplier: boostMultiplier,
+      is_follower: isFollower,
+      is_boosted: isBoosted,
+      message: `Engagement tracked: +${finalPoints} points` 
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
   } catch (error) {
