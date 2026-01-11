@@ -42,6 +42,7 @@ import {
   Type,
   Keyboard,
   FileText,
+  ImagePlus,
 } from "lucide-react";
 
 interface TipTapEditorProps {
@@ -62,9 +63,11 @@ const TipTapEditor = ({ content, onChange, placeholder = "Start writing your sto
   const [linkText, setLinkText] = useState("");
   const [youtubeUrl, setYoutubeUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [wordCount, setWordCount] = useState(0);
   const [charCount, setCharCount] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const editorContainerRef = useRef<HTMLDivElement>(null);
 
   const editor = useEditor({
     extensions: [
@@ -85,14 +88,14 @@ const TipTapEditor = ({ content, onChange, placeholder = "Start writing your sto
       }),
       Image.configure({
         HTMLAttributes: {
-          class: 'rounded-lg max-w-full mx-auto my-4',
+          class: 'rounded-lg max-w-full mx-auto my-6',
         },
       }),
       Youtube.configure({
         width: 640,
         height: 360,
         HTMLAttributes: {
-          class: 'rounded-lg mx-auto my-4',
+          class: 'rounded-lg mx-auto my-6',
         },
       }),
     ],
@@ -108,7 +111,7 @@ const TipTapEditor = ({ content, onChange, placeholder = "Start writing your sto
     },
     editorProps: {
       attributes: {
-        class: 'prose prose-lg dark:prose-invert max-w-none focus:outline-none min-h-[500px] px-0 py-4',
+        class: 'prose prose-lg dark:prose-invert max-w-none focus:outline-none min-h-[400px] px-0 py-4',
       },
     },
   });
@@ -143,7 +146,7 @@ const TipTapEditor = ({ content, onChange, placeholder = "Start writing your sto
         description: "You must be logged in to upload images",
         variant: "destructive",
       });
-      return;
+      return null;
     }
 
     setIsUploading(true);
@@ -167,16 +170,62 @@ const TipTapEditor = ({ content, onChange, placeholder = "Start writing your sto
         title: "Image uploaded",
         description: "Your image has been added to the article",
       });
+      return publicUrl;
     } catch (error: any) {
       toast({
         title: "Upload failed",
         description: error.message,
         variant: "destructive",
       });
+      return null;
     } finally {
       setIsUploading(false);
     }
   }, [user, editor, toast]);
+
+  // Drag and drop handlers
+  const handleDragEnter = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Only set dragging to false if we're leaving the container
+    if (!editorContainerRef.current?.contains(e.relatedTarget as Node)) {
+      setIsDragging(false);
+    }
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }, []);
+
+  const handleDrop = useCallback(async (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const files = Array.from(e.dataTransfer.files);
+    const imageFiles = files.filter(file => file.type.startsWith('image/'));
+
+    if (imageFiles.length === 0) {
+      toast({
+        title: "Invalid file",
+        description: "Please drop an image file (PNG, JPG, GIF)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Upload all dropped images
+    for (const file of imageFiles) {
+      await handleImageUpload(file);
+    }
+  }, [handleImageUpload, toast]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -234,7 +283,7 @@ const TipTapEditor = ({ content, onChange, placeholder = "Start writing your sto
       variant="ghost"
       size="sm"
       onClick={onClick}
-      className={`h-9 w-9 p-0 ${isActive ? "bg-accent text-accent-foreground" : "hover:bg-accent/50"}`}
+      className={`h-8 w-8 p-0 rounded-md ${isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-accent"}`}
       title={title}
     >
       {children}
@@ -242,12 +291,12 @@ const TipTapEditor = ({ content, onChange, placeholder = "Start writing your sto
   );
 
   return (
-    <div className="w-full">
-      {/* Floating Toolbar */}
-      <div className="sticky top-16 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border py-2 mb-4">
-        <div className="flex flex-wrap items-center gap-1">
+    <div className="w-full" ref={editorContainerRef}>
+      {/* Enhanced Toolbar */}
+      <div className="sticky top-16 z-40 bg-background/98 backdrop-blur-md border border-border rounded-xl shadow-sm py-2 px-3 mb-6">
+        <div className="flex flex-wrap items-center gap-0.5">
           {/* Text Formatting */}
-          <div className="flex items-center gap-0.5 border-r border-border pr-2 mr-2">
+          <div className="flex items-center gap-0.5 pr-2 mr-2 border-r border-border/50">
             <ToolbarButton
               onClick={() => editor.chain().focus().toggleBold().run()}
               isActive={editor.isActive("bold")}
@@ -272,7 +321,7 @@ const TipTapEditor = ({ content, onChange, placeholder = "Start writing your sto
           </div>
 
           {/* Headings */}
-          <div className="flex items-center gap-0.5 border-r border-border pr-2 mr-2">
+          <div className="flex items-center gap-0.5 pr-2 mr-2 border-r border-border/50">
             <ToolbarButton
               onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
               isActive={editor.isActive("heading", { level: 1 })}
@@ -304,7 +353,7 @@ const TipTapEditor = ({ content, onChange, placeholder = "Start writing your sto
           </div>
 
           {/* Lists */}
-          <div className="flex items-center gap-0.5 border-r border-border pr-2 mr-2">
+          <div className="flex items-center gap-0.5 pr-2 mr-2 border-r border-border/50">
             <ToolbarButton
               onClick={() => editor.chain().focus().toggleBulletList().run()}
               isActive={editor.isActive("bulletList")}
@@ -335,7 +384,7 @@ const TipTapEditor = ({ content, onChange, placeholder = "Start writing your sto
           </div>
 
           {/* Media & Links */}
-          <div className="flex items-center gap-0.5 border-r border-border pr-2 mr-2">
+          <div className="flex items-center gap-0.5 pr-2 mr-2 border-r border-border/50">
             <ToolbarButton
               onClick={() => setShowLinkDialog(true)}
               isActive={editor.isActive("link")}
@@ -358,7 +407,7 @@ const TipTapEditor = ({ content, onChange, placeholder = "Start writing your sto
           </div>
 
           {/* Utility */}
-          <div className="flex items-center gap-0.5 border-r border-border pr-2 mr-2">
+          <div className="flex items-center gap-0.5 pr-2 mr-2 border-r border-border/50">
             <VoiceInput
               onTranscript={(text) => {
                 editor.commands.insertContent(text);
@@ -386,17 +435,52 @@ const TipTapEditor = ({ content, onChange, placeholder = "Start writing your sto
 
           {/* Word & Character Count */}
           <div className="flex items-center gap-3 ml-auto text-xs text-muted-foreground">
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-1.5 bg-muted/50 px-2 py-1 rounded-md">
               <FileText className="h-3 w-3" />
               {wordCount} words
             </span>
-            <span>{charCount} chars</span>
+            <span className="bg-muted/50 px-2 py-1 rounded-md">{charCount} chars</span>
           </div>
         </div>
       </div>
 
-      {/* Editor Content */}
-      <EditorContent editor={editor} className="min-h-[500px]" />
+      {/* Editor Content with Drag & Drop Zone */}
+      <div
+        className={`relative transition-all duration-200 rounded-xl ${
+          isDragging 
+            ? 'ring-2 ring-primary ring-dashed bg-primary/5' 
+            : ''
+        }`}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+      >
+        {/* Drag overlay */}
+        {isDragging && (
+          <div className="absolute inset-0 flex items-center justify-center bg-primary/5 backdrop-blur-sm rounded-xl z-10 pointer-events-none">
+            <div className="flex flex-col items-center gap-3 p-6 bg-background/90 rounded-xl shadow-lg border border-primary/30">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                <ImagePlus className="h-8 w-8 text-primary" />
+              </div>
+              <p className="text-lg font-medium">Drop image here</p>
+              <p className="text-sm text-muted-foreground">PNG, JPG, or GIF</p>
+            </div>
+          </div>
+        )}
+
+        {/* Upload indicator */}
+        {isUploading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm rounded-xl z-20">
+            <div className="flex flex-col items-center gap-3">
+              <Loader2 className="h-10 w-10 animate-spin text-primary" />
+              <p className="text-sm text-muted-foreground">Uploading image...</p>
+            </div>
+          </div>
+        )}
+
+        <EditorContent editor={editor} className="min-h-[400px]" />
+      </div>
 
       {/* Image Dialog */}
       <Dialog open={showImageDialog} onOpenChange={setShowImageDialog}>
