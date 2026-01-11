@@ -43,6 +43,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import TipTapEditor from "@/components/editor/TipTapEditor";
+import { EditorTableOfContents } from "@/components/editor/EditorTableOfContents";
 import TagSelector from "@/components/article/TagSelector";
 import { useToast } from "@/hooks/use-toast";
 import { generateSlug, calculateReadingTime, extractExcerpt } from "@/utils/articleUtils";
@@ -822,6 +823,18 @@ const WriterDashboard = () => {
               placeholder="Write your story here... Start with a compelling opening that draws readers in."
             />
           </div>
+
+          {/* Table of Contents - Floating */}
+          <EditorTableOfContents 
+            content={content} 
+            onNavigate={(id) => {
+              // Since we're in the editor, we can scroll to the heading preview
+              const element = document.querySelector(`[data-heading-id="${id}"]`);
+              if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
+            }}
+          />
 
           {/* Writing Tips Footer */}
           <div className="mt-16 pt-8 border-t border-border/50">

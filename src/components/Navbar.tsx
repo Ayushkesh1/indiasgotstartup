@@ -16,11 +16,11 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useProfile } from "@/hooks/useProfile";
 
 interface NavbarProps {
-  searchQuery: string;
-  onSearchChange: (query: string) => void;
+  searchQuery?: string;
+  onSearchChange?: (query: string) => void;
 }
 
-const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
+const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) => {
   const { user, signOut } = useAuth();
   const { data: roleData } = useUserRole(user?.id);
   const { data: profile } = useProfile(user?.id);
