@@ -1,4 +1,4 @@
-import { Search, Edit3, LogOut, User, BookMarked, TrendingUp, ArrowLeft, Users, DollarSign, Share2, Twitter, Linkedin, Facebook, Shield, Trophy, Wallet, Sparkles, Settings } from "lucide-react";
+import { Search, Edit3, LogOut, User, BookMarked, TrendingUp, ArrowLeft, Users, Share2, Twitter, Linkedin, Facebook, Shield, Trophy, Wallet, Sparkles, Settings } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -14,6 +14,7 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useProfile } from "@/hooks/useProfile";
+import { useAdminSession } from "@/hooks/useAdminSession";
 
 interface NavbarProps {
   searchQuery?: string;
@@ -24,9 +25,13 @@ const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) =>
   const { user, signOut } = useAuth();
   const { data: roleData } = useUserRole(user?.id);
   const { data: profile } = useProfile(user?.id);
+  const { isAuthenticated: isAdminSession } = useAdminSession();
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
+
+  // Show admin link if user has admin role OR is logged in via admin session
+  const showAdminLink = roleData?.isAdmin || isAdminSession;
 
   const handleSignOut = async () => {
     await signOut();
@@ -181,7 +186,7 @@ const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) =>
                       <TrendingUp className="mr-2 h-4 w-4" />
                       Manage Ads
                     </DropdownMenuItem>
-                    {roleData?.isAdmin && (
+                    {showAdminLink && (
                       <DropdownMenuItem onClick={() => navigate("/admin")}>
                         <Shield className="mr-2 h-4 w-4" />
                         Admin Dashboard
