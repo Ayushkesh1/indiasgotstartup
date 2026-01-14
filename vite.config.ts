@@ -15,8 +15,9 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     mode === "production" &&
       VitePWA({
+        injectRegister: null,
         registerType: "autoUpdate",
-        includeAssets: ["favicon.ico", "logo.png"],
+        includeAssets: ["favicon.ico", "favicon.png", "logo.png"],
         manifest: {
           name: "Pulse of Startups",
           short_name: "Pulse",
