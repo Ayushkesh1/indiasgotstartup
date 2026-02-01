@@ -2,6 +2,8 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 
+const APP_BUILD_ID = __APP_BUILD_ID__;
+
 async function unregisterAllServiceWorkersAndClearCaches() {
   if (!("serviceWorker" in navigator)) return;
 
@@ -25,6 +27,35 @@ async function unregisterAllServiceWorkersAndClearCaches() {
 // Prevent "old version" issues in preview/dev caused by a previously installed PWA service worker.
 if (import.meta.env.DEV) {
   void unregisterAllServiceWorkersAndClearCaches();
+}
+
+// Always expose the current build marker for easy verification.
+console.info(`[app] build=${APP_BUILD_ID} mode=${import.meta.env.MODE}`);
+try {
+  document.documentElement.dataset.build = APP_BUILD_ID;
+} catch {
+  // ignore
+}
+
+// If the build changed since the last visit, force-clear caches/SW once and reload.
+// This prevents users from staying stuck on an older app shell.
+let pendingHardRefresh = false;
+if (import.meta.env.PROD) {
+  const disableSWParam = new URLSearchParams(window.location.search).get("no-sw") === "1";
+  if (!disableSWParam) {
+    const key = "app_build_id";
+    const prev = window.localStorage.getItem(key);
+    if (prev && prev !== APP_BUILD_ID && window.sessionStorage.getItem("build_refresh_done") !== APP_BUILD_ID) {
+      pendingHardRefresh = true;
+      window.sessionStorage.setItem("build_refresh_done", APP_BUILD_ID);
+      void unregisterAllServiceWorkersAndClearCaches().then(() => {
+        window.localStorage.setItem(key, APP_BUILD_ID);
+        window.location.reload();
+      });
+    } else {
+      window.localStorage.setItem(key, APP_BUILD_ID);
+    }
+  }
 }
 
 // Production: register the PWA service worker with an aggressive update strategy.
@@ -74,4 +105,6 @@ if (import.meta.env.PROD && "serviceWorker" in navigator) {
   }
 }
 
-createRoot(document.getElementById("root")!).render(<App />);
+if (!pendingHardRefresh) {
+  createRoot(document.getElementById("root")!).render(<App />);
+}

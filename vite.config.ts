@@ -6,6 +6,11 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  // Build marker used to prove which deployment is currently running.
+  // This changes on every build, helping detect/flush stale SW/browser caches.
+  define: {
+    __APP_BUILD_ID__: JSON.stringify(new Date().toISOString()),
+  },
   server: {
     host: "::",
     port: 8080,
@@ -44,7 +49,9 @@ export default defineConfig(({ mode }) => ({
         clientsClaim: true,
         skipWaiting: true,
         cleanupOutdatedCaches: true,
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff,woff2}"],
+        // Avoid precaching HTML so users don't get stuck on an old app shell.
+        // JS/CSS are hashed and safe to cache; HTML freshness is more important.
+        globPatterns: ["**/*.{js,css,ico,png,svg,woff,woff2}"],
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         runtimeCaching: [
           {
