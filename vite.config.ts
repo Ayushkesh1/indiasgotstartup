@@ -19,6 +19,10 @@ export default defineConfig(({ mode }) => ({
     react(),
     mode === "development" && componentTagger(),
     VitePWA({
+      // Self-destroy mode: this ships a one-time SW that unregisters itself and
+      // clears all caches. Once all users have received the new version, remove
+      // this option (or set selfDestroying: false) and publish again to re-enable PWA.
+      selfDestroying: true,
       injectRegister: null,
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "favicon.png", "logo.png"],
