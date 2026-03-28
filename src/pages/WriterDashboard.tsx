@@ -99,7 +99,7 @@ const WriterDashboard = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [showPublishSettings, setShowPublishSettings] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const readingTime = calculateReadingTime(content);
 
