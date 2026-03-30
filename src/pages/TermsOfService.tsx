@@ -126,7 +126,7 @@ const TermsOfService = () => {
 
               <h2>10. Limitation of Liability</h2>
               <p>
-                In no event shall Not Your World be liable for any indirect, incidental, special, 
+                In no event shall India's Got Startup be liable for any indirect, incidental, special, 
                 consequential, or punitive damages, including loss of profits, data, or other intangible 
                 losses, resulting from your access to or use of or inability to access or use the Platform.
               </p>
