@@ -156,9 +156,8 @@ const PrivacyPolicy = () => {
                 If you have questions about this Privacy Policy or our data practices, please contact us:
               </p>
               <ul>
-                <li>Email: privacy@notyourworld.com</li>
-                <li>Address: 123 Tech Park, Andheri East, Mumbai 400093, India</li>
-                <li>Data Protection Officer: dpo@notyourworld.com</li>
+                <li>Email: connectnotyourworld@gmail.com</li>
+                <li>Address: Gurugram, Haryana 122017, India</li>
               </ul>
             </CardContent>
           </Card>

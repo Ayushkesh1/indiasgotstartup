@@ -87,7 +87,7 @@ const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) =>
             )}
             <Link to="/" className="flex items-center gap-2">
               <span className="font-brand font-bold text-xl tracking-tight text-foreground">
-                Not Your World
+                India's Got Startup
               </span>
             </Link>
           </div>

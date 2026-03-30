@@ -112,7 +112,7 @@ const HelpCenter = () => {
               How Can We Help You?
             </h1>
             <p className="text-lg text-muted-foreground mb-8">
-              Find answers, tips, and guidance for using Not Your World.
+              Find answers, tips, and guidance for using India's Got Startup.
             </p>
             
             {/* Search */}

@@ -156,7 +156,7 @@ export const NewsletterFooter = () => {
 
         {/* Copyright */}
         <div className="pt-4 border-t border-border text-center text-xs text-muted-foreground">
-          <p>&copy; 2025 Not Your World. All rights reserved. | Gurugram, Haryana 122017</p>
+          <p>&copy; 2025 India's Got Startup. All rights reserved. | Gurugram, Haryana 122017</p>
         </div>
       </div>
     </footer>

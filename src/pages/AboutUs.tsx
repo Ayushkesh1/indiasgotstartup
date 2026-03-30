@@ -204,7 +204,7 @@ const AboutUs = () => {
           <h2 className="text-3xl font-bold mb-4">Join Our Community</h2>
           <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
             Whether you're a reader seeking quality content or a creator ready to share your voice, 
-            there's a place for you at Not Your World.
+            there's a place for you at India's Got Startup.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg">

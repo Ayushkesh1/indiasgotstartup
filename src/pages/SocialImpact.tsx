@@ -109,7 +109,7 @@ const SocialImpact = () => {
               <h2 className="text-3xl font-bold mb-6">Our Commitment</h2>
               <div className="space-y-4 text-muted-foreground">
                 <p>
-                  At Not Your World, we believe that access to education should not be determined by 
+                  At India's Got Startup, we believe that access to education should not be determined by 
                   circumstances of birth. Every child deserves the opportunity to learn, grow, and 
                   achieve their potential.
                 </p>

@@ -151,8 +151,8 @@ const TermsOfService = () => {
                 If you have any questions about these Terms, please contact us at:
               </p>
               <ul>
-                <li>Email: legal@notyourworld.com</li>
-                <li>Address: 123 Tech Park, Andheri East, Mumbai 400093, India</li>
+                <li>Email: connectnotyourworld@gmail.com</li>
+                <li>Address: Gurugram, Haryana 122017, India</li>
               </ul>
             </CardContent>
           </Card>

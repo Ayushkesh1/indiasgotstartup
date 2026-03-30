@@ -196,8 +196,8 @@ const CookiePolicy = () => {
                 If you have questions about our use of cookies, please contact us:
               </p>
               <ul>
-                <li>Email: privacy@notyourworld.com</li>
-                <li>Address: 123 Tech Park, Andheri East, Mumbai 400093, India</li>
+                <li>Email: connectnotyourworld@gmail.com</li>
+                <li>Address: Gurugram, Haryana 122017, India</li>
               </ul>
             </CardContent>
           </Card>
