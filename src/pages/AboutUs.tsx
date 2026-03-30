@@ -104,7 +104,7 @@ const AboutUs = () => {
               <h2 className="text-3xl font-bold mb-6">Our Story</h2>
               <div className="space-y-4 text-muted-foreground">
                 <p>
-                  Founded in 2023, Not Your World began with a simple observation: the best insights 
+                  Founded in 2023, India's Got Startup began with a simple observation: the best insights 
                   about technology often come from those closest to the action—developers, entrepreneurs, 
                   researchers, and everyday innovators.
                 </p>
