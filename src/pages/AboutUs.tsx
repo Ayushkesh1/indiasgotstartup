@@ -77,7 +77,7 @@ const AboutUs = () => {
               Empowering Voices, Sharing Knowledge
             </h1>
             <p className="text-lg text-muted-foreground mb-8">
-              Not Your World is more than just a publishing platform. We're a community of thinkers, 
+              India's Got Startup is more than just a publishing platform. We're a community of thinkers, 
               innovators, and storytellers dedicated to exploring how technology shapes our world.
             </p>
           </div>
