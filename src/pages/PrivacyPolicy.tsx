@@ -119,7 +119,7 @@ const PrivacyPolicy = () => {
                 <li><strong>Restrict Processing:</strong> Limit how we use your data</li>
               </ul>
               <p>
-                To exercise these rights, please contact us at privacy@notyourworld.com or through your 
+                To exercise these rights, please contact us at connectnotyourworld@gmail.com or through your 
                 account settings.
               </p>
 
