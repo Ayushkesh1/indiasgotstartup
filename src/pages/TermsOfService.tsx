@@ -28,7 +28,7 @@ const TermsOfService = () => {
             <CardContent className="prose prose-neutral dark:prose-invert max-w-none pt-8">
               <h2>1. Acceptance of Terms</h2>
               <p>
-                By accessing and using Not Your World ("the Platform"), you accept and agree to be bound by 
+                By accessing and using India's Got Startup ("the Platform"), you accept and agree to be bound by 
                 the terms and provisions of this agreement. If you do not agree to abide by these terms, 
                 please do not use this service.
               </p>
