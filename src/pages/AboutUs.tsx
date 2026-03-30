@@ -77,7 +77,7 @@ const AboutUs = () => {
               Empowering Voices, Sharing Knowledge
             </h1>
             <p className="text-lg text-muted-foreground mb-8">
-              Not Your World is more than just a publishing platform. We're a community of thinkers, 
+              India's Got Startup is more than just a publishing platform. We're a community of thinkers, 
               innovators, and storytellers dedicated to exploring how technology shapes our world.
             </p>
           </div>
@@ -104,7 +104,7 @@ const AboutUs = () => {
               <h2 className="text-3xl font-bold mb-6">Our Story</h2>
               <div className="space-y-4 text-muted-foreground">
                 <p>
-                  Founded in 2023, Not Your World began with a simple observation: the best insights 
+                  Founded in 2023, India's Got Startup began with a simple observation: the best insights 
                   about technology often come from those closest to the action—developers, entrepreneurs, 
                   researchers, and everyday innovators.
                 </p>
@@ -204,7 +204,7 @@ const AboutUs = () => {
           <h2 className="text-3xl font-bold mb-4">Join Our Community</h2>
           <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
             Whether you're a reader seeking quality content or a creator ready to share your voice, 
-            there's a place for you at Not Your World.
+            there's a place for you at India's Got Startup.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg">

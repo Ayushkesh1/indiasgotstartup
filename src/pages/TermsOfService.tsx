@@ -28,14 +28,14 @@ const TermsOfService = () => {
             <CardContent className="prose prose-neutral dark:prose-invert max-w-none pt-8">
               <h2>1. Acceptance of Terms</h2>
               <p>
-                By accessing and using Not Your World ("the Platform"), you accept and agree to be bound by 
+                By accessing and using India's Got Startup ("the Platform"), you accept and agree to be bound by 
                 the terms and provisions of this agreement. If you do not agree to abide by these terms, 
                 please do not use this service.
               </p>
 
               <h2>2. Description of Service</h2>
               <p>
-                Not Your World is an online publishing platform that allows users to read, write, and share 
+                India's Got Startup is an online publishing platform that allows users to read, write, and share 
                 articles on technology, fintech, blockchain, and related topics. We provide tools for content 
                 creation, community engagement, and monetization for creators.
               </p>
@@ -94,7 +94,7 @@ const TermsOfService = () => {
               <h2>6. Intellectual Property</h2>
               <p>
                 The Platform, including its original content (excluding user content), features, and 
-                functionality, is owned by Not Your World and is protected by international copyright, 
+                functionality, is owned by India's Got Startup and is protected by international copyright, 
                 trademark, patent, trade secret, and other intellectual property laws.
               </p>
 
@@ -126,7 +126,7 @@ const TermsOfService = () => {
 
               <h2>10. Limitation of Liability</h2>
               <p>
-                In no event shall Not Your World be liable for any indirect, incidental, special, 
+                In no event shall India's Got Startup be liable for any indirect, incidental, special, 
                 consequential, or punitive damages, including loss of profits, data, or other intangible 
                 losses, resulting from your access to or use of or inability to access or use the Platform.
               </p>
@@ -151,8 +151,8 @@ const TermsOfService = () => {
                 If you have any questions about these Terms, please contact us at:
               </p>
               <ul>
-                <li>Email: legal@notyourworld.com</li>
-                <li>Address: 123 Tech Park, Andheri East, Mumbai 400093, India</li>
+                <li>Email: connectnotyourworld@gmail.com</li>
+                <li>Address: Gurugram, Haryana 122017, India</li>
               </ul>
             </CardContent>
           </Card>

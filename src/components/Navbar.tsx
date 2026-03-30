@@ -50,7 +50,7 @@ const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) =>
 
   const handleShare = (platform: string) => {
     const url = window.location.href;
-    const text = "Check out Not Your World";
+    const text = "Check out India's Got Startup";
     
     let shareUrl = "";
     switch (platform) {
@@ -87,7 +87,7 @@ const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) =>
             )}
             <Link to="/" className="flex items-center gap-2">
               <span className="font-brand font-bold text-xl tracking-tight text-foreground">
-                Not Your World
+                India's Got Startup
               </span>
             </Link>
           </div>

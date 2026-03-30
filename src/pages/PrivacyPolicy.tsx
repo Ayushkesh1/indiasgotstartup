@@ -28,7 +28,7 @@ const PrivacyPolicy = () => {
             <CardContent className="prose prose-neutral dark:prose-invert max-w-none pt-8">
               <h2>1. Introduction</h2>
               <p>
-                Not Your World ("we," "our," or "us") is committed to protecting your privacy. This Privacy 
+                India's Got Startup ("we," "our," or "us") is committed to protecting your privacy. This Privacy 
                 Policy explains how we collect, use, disclose, and safeguard your information when you use 
                 our platform and services.
               </p>
@@ -119,7 +119,7 @@ const PrivacyPolicy = () => {
                 <li><strong>Restrict Processing:</strong> Limit how we use your data</li>
               </ul>
               <p>
-                To exercise these rights, please contact us at privacy@notyourworld.com or through your 
+                To exercise these rights, please contact us at connectnotyourworld@gmail.com or through your 
                 account settings.
               </p>
 
@@ -156,9 +156,8 @@ const PrivacyPolicy = () => {
                 If you have questions about this Privacy Policy or our data practices, please contact us:
               </p>
               <ul>
-                <li>Email: privacy@notyourworld.com</li>
-                <li>Address: 123 Tech Park, Andheri East, Mumbai 400093, India</li>
-                <li>Data Protection Officer: dpo@notyourworld.com</li>
+                <li>Email: connectnotyourworld@gmail.com</li>
+                <li>Address: Gurugram, Haryana 122017, India</li>
               </ul>
             </CardContent>
           </Card>
