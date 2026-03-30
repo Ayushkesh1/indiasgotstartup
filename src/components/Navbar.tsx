@@ -50,7 +50,7 @@ const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) =>
 
   const handleShare = (platform: string) => {
     const url = window.location.href;
-    const text = "Check out Not Your World";
+    const text = "Check out India's Got Startup";
     
     let shareUrl = "";
     switch (platform) {
