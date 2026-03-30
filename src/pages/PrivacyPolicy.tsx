@@ -28,7 +28,7 @@ const PrivacyPolicy = () => {
             <CardContent className="prose prose-neutral dark:prose-invert max-w-none pt-8">
               <h2>1. Introduction</h2>
               <p>
-                Not Your World ("we," "our," or "us") is committed to protecting your privacy. This Privacy 
+                India's Got Startup ("we," "our," or "us") is committed to protecting your privacy. This Privacy 
                 Policy explains how we collect, use, disclose, and safeguard your information when you use 
                 our platform and services.
               </p>
