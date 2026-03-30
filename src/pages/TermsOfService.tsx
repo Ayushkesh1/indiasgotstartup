@@ -94,7 +94,7 @@ const TermsOfService = () => {
               <h2>6. Intellectual Property</h2>
               <p>
                 The Platform, including its original content (excluding user content), features, and 
-                functionality, is owned by Not Your World and is protected by international copyright, 
+                functionality, is owned by India's Got Startup and is protected by international copyright, 
                 trademark, patent, trade secret, and other intellectual property laws.
               </p>
 
