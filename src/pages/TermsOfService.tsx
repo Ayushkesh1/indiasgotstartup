@@ -35,7 +35,7 @@ const TermsOfService = () => {
 
               <h2>2. Description of Service</h2>
               <p>
-                Not Your World is an online publishing platform that allows users to read, write, and share 
+                India's Got Startup is an online publishing platform that allows users to read, write, and share 
                 articles on technology, fintech, blockchain, and related topics. We provide tools for content 
                 creation, community engagement, and monetization for creators.
               </p>
