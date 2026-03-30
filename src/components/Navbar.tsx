@@ -1,7 +1,6 @@
 import { Search, Edit3, LogOut, User, BookMarked, TrendingUp, ArrowLeft, Users, Share2, Twitter, Linkedin, Facebook, Shield, Trophy, Wallet, Sparkles, Settings } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -131,7 +130,6 @@ const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) =>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <ThemeToggle />
             {user ? (
               <>
                 <Button 

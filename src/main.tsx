@@ -34,6 +34,10 @@ async function bootstrap() {
   console.info(`[app] build=${APP_BUILD_ID} mode=${import.meta.env.MODE}`);
   try {
     document.documentElement.dataset.build = APP_BUILD_ID;
+    document.documentElement.classList.remove("light");
+    document.documentElement.classList.add("dark");
+    document.documentElement.style.colorScheme = "dark";
+    window.localStorage.setItem("theme", "dark");
   } catch {
     // ignore
   }
