@@ -81,7 +81,7 @@ export default function AdminLogin() {
           </div>
           <CardTitle className="text-2xl">Admin Login</CardTitle>
           <CardDescription>
-            Access the Not Your World admin dashboard
+            Access the India's Got Startup admin dashboard
           </CardDescription>
         </CardHeader>
         <CardContent>
