@@ -5,6 +5,7 @@ import "./index.css";
 const APP_BUILD_ID = __APP_BUILD_ID__;
 const BUILD_STORAGE_KEY = "app_build_id";
 const RESET_MARKER_KEY = "sw_reset_done";
+const PREVIEW_ROUTE_RESET_KEY = "preview_route_reset_done";
 const BUILD_QUERY_KEY = "__build";
 
 function isPreviewHost() {
@@ -36,6 +37,29 @@ async function unregisterAllServiceWorkersAndClearCaches() {
   }
 
   return foundCachedArtifacts;
+}
+
+function hasActiveAdminSession() {
+  try {
+    const stored = window.localStorage.getItem("admin_session");
+    if (!stored) return false;
+
+    const parsed = JSON.parse(stored) as { loginTime?: string };
+    if (!parsed.loginTime) return false;
+
+    const loginTime = new Date(parsed.loginTime);
+    const hoursDiff = (Date.now() - loginTime.getTime()) / (1000 * 60 * 60);
+
+    if (Number.isNaN(hoursDiff) || hoursDiff >= 24) {
+      window.localStorage.removeItem("admin_session");
+      return false;
+    }
+
+    return true;
+  } catch {
+    window.localStorage.removeItem("admin_session");
+    return false;
+  }
 }
 
 async function bootstrap() {
@@ -78,6 +102,22 @@ async function bootstrap() {
     const nextSearch = params.toString();
     const nextUrl = `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ""}${window.location.hash}`;
     window.location.replace(nextUrl);
+    return;
+  }
+
+  const shouldResetPreviewRoute =
+    isPreview &&
+    window.location.pathname === "/admin-login" &&
+    !hasActiveAdminSession() &&
+    window.sessionStorage.getItem(PREVIEW_ROUTE_RESET_KEY) !== APP_BUILD_ID;
+
+  if (shouldResetPreviewRoute) {
+    window.sessionStorage.setItem(PREVIEW_ROUTE_RESET_KEY, APP_BUILD_ID);
+    if (isPreview) {
+      params.set(BUILD_QUERY_KEY, APP_BUILD_ID);
+    }
+    const nextSearch = params.toString();
+    window.location.replace(`/${nextSearch ? `?${nextSearch}` : ""}`);
     return;
   }
 
