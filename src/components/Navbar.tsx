@@ -105,26 +105,50 @@ const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) =>
           </div>
 
           <div className="flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-1 mr-1">
+              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground font-medium" onClick={() => navigate("/grants")}>
+                Grants
+              </Button>
+              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground font-medium" onClick={() => navigate("/events")}>
+                Events
+              </Button>
+            </div>
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="hover:bg-muted">
                   <Share2 className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => handleShare("twitter")}>
+              <DropdownMenuContent 
+                align="end" 
+                className="w-48 p-1.5 transition-all outline-none duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-75 data-[state=open]:zoom-in-75 data-[side=bottom]:slide-in-from-top-2 origin-top-right border border-border/50 shadow-xl rounded-xl"
+              >
+                <DropdownMenuItem 
+                  onClick={() => handleShare("twitter")}
+                  className="cursor-pointer transition-colors duration-200 focus:bg-gray-200 focus:text-black hover:bg-gray-200 hover:text-black mb-1"
+                >
                   <Twitter className="mr-2 h-4 w-4" />
                   Share on Twitter
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleShare("linkedin")}>
+                <DropdownMenuItem 
+                  onClick={() => handleShare("linkedin")}
+                  className="cursor-pointer transition-colors duration-200 focus:bg-[#0077b5] focus:text-white hover:bg-[#0077b5] hover:text-white mb-1"
+                >
                   <Linkedin className="mr-2 h-4 w-4" />
                   Share on LinkedIn
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleShare("facebook")}>
+                <DropdownMenuItem 
+                  onClick={() => handleShare("facebook")}
+                  className="cursor-pointer transition-colors duration-200 focus:bg-[#1877F2] focus:text-white hover:bg-[#1877F2] hover:text-white mb-1"
+                >
                   <Facebook className="mr-2 h-4 w-4" />
                   Share on Facebook
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleShare("copy")}>
+                <DropdownMenuItem 
+                  onClick={() => handleShare("copy")}
+                  className="cursor-pointer transition-colors duration-200 focus:bg-yellow-400 focus:text-black hover:bg-yellow-400 hover:text-black"
+                >
                   <Share2 className="mr-2 h-4 w-4" />
                   Copy Link
                 </DropdownMenuItem>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Mail } from "lucide-react";
+import { Mail, Twitter, Linkedin, Facebook, Instagram } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -145,12 +145,24 @@ export const NewsletterFooter = () => {
           </div>
           <div>
             <h4 className="font-semibold mb-3 text-foreground">Follow Us</h4>
-            <ul className="space-y-1.5 text-muted-foreground">
-              <li><a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Twitter</a></li>
-              <li><a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">LinkedIn</a></li>
-              <li><a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Facebook</a></li>
-              <li><a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Instagram</a></li>
-            </ul>
+            <div className="flex flex-col gap-3 text-muted-foreground">
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 transition-all hover:translate-x-1 hover:text-sky-500 w-fit" aria-label="Twitter">
+                <Twitter className="h-4 w-4" />
+                <span>Twitter</span>
+              </a>
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 transition-all hover:translate-x-1 hover:text-blue-700 w-fit" aria-label="LinkedIn">
+                <Linkedin className="h-4 w-4" />
+                <span>LinkedIn</span>
+              </a>
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 transition-all hover:translate-x-1 hover:text-blue-600 w-fit" aria-label="Facebook">
+                <Facebook className="h-4 w-4" />
+                <span>Facebook</span>
+              </a>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 transition-all hover:translate-x-1 hover:text-pink-500 w-fit" aria-label="Instagram">
+                <Instagram className="h-4 w-4" />
+                <span>Instagram</span>
+              </a>
+            </div>
           </div>
         </div>
 
