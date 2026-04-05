@@ -4,6 +4,7 @@ interface CategoryFilterProps {
   categories: string[];
   selectedCategory: string;
   onCategoryChange: (category: string) => void;
+  allLabel?: string;
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -16,9 +17,14 @@ const CATEGORY_COLORS: Record<string, string> = {
   "Edtech": "bg-pink-500",
   "Funding": "bg-amber-500",
   "Mobility": "bg-teal-500",
+  "Grant": "bg-cyan-600",
+  "Seed Funding": "bg-indigo-500",
+  "Accelerator": "bg-purple-600",
+  "Incubation": "bg-orange-600",
+  "Contest": "bg-pink-600",
 };
 
-const CategoryFilter = ({ categories, selectedCategory, onCategoryChange }: CategoryFilterProps) => {
+const CategoryFilter = ({ categories, selectedCategory, onCategoryChange, allLabel = "For you" }: CategoryFilterProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [pillStyle, setPillStyle] = useState({ left: 0, width: 0, opacity: 0 });
 
@@ -95,7 +101,7 @@ const CategoryFilter = ({ categories, selectedCategory, onCategoryChange }: Cate
                   : "text-foreground/70 hover:text-foreground hover:bg-muted/50"
               }`}
             >
-              {category === "All" ? "For you" : category}
+              {category === "All" ? allLabel : category}
             </button>
           );
         })}

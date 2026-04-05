@@ -30,6 +30,9 @@ import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import CookiePolicy from "./pages/CookiePolicy";
 import SocialImpact from "./pages/SocialImpact";
+import Grants from "./pages/Grants";
+import GrantDetail from "./pages/GrantDetail";
+import Events from "./pages/Events";
 
 import NotFound from "./pages/NotFound";
 
@@ -69,6 +72,9 @@ const App = () => (
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/cookies" element={<CookiePolicy />} />
             <Route path="/social-impact" element={<SocialImpact />} />
+            <Route path="/grants" element={<Grants />} />
+            <Route path="/grants/:id" element={<GrantDetail />} />
+            <Route path="/events" element={<Events />} />
             
             <Route path="/ads" element={<AdsManagement />} />
             

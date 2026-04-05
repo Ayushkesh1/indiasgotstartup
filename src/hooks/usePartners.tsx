@@ -11,6 +11,10 @@ interface Partner {
   partnership_type: string | null;
   is_active: boolean;
   display_order: number;
+  revenue_generated: number | null;
+  active_campaigns: number | null;
+  clicks: number | null;
+  conversions: number | null;
   created_at: string;
   updated_at: string;
 }

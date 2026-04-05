@@ -37,7 +37,7 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | ArticleCategory>("All");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const { user } = useAuth();
-  
+
   const { data: articles, isLoading } = useArticles(selectedCategory);
   const { data: tagFilteredArticles, isLoading: isLoadingTagArticles } = useArticlesByTag(selectedTag || "");
   const { data: followedAuthorIds } = useFollowedAuthors(user?.id);
@@ -47,7 +47,7 @@ const Index = () => {
 
   const filteredArticles = useMemo(() => {
     if (!displayArticles) return [];
-    
+
     return displayArticles.filter((article) => {
       const matchesSearch =
         article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -58,8 +58,8 @@ const Index = () => {
 
   const followedArticles = useMemo(() => {
     if (!followedAuthorIds || followedAuthorIds.length === 0) return [];
-    
-    return filteredArticles.filter((article) => 
+
+    return filteredArticles.filter((article) =>
       followedAuthorIds.includes(article.author_id)
     );
   }, [filteredArticles, followedAuthorIds]);
@@ -70,10 +70,10 @@ const Index = () => {
       <div className="fixed top-[-10%] left-[-10%] w-[60%] h-[600px] bg-purple-600/20 blur-[150px] rounded-full pointer-events-none mix-blend-screen z-0" />
       <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[500px] bg-cyan-500/20 blur-[150px] rounded-full pointer-events-none mix-blend-screen z-0" />
       <div className="fixed top-[40%] right-[20%] w-[30%] h-[300px] bg-orange-500/10 blur-[120px] rounded-full pointer-events-none mix-blend-screen z-0" />
-      
+
       <StartupCompanion />
       <Navbar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
-      
+
       <div className="bg-gradient-hero border-b border-border/40 pb-6 relative">
         <TrendingHero />
       </div>
@@ -83,7 +83,7 @@ const Index = () => {
       </div>
 
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 pb-16 max-w-7xl animate-in fade-in duration-700 delay-150 relative z-10">
-        
+
         {/* Dynamic Search Feedback HUD */}
         {searchQuery && (
           <div className="w-full mb-8 py-4 px-8 rounded-full border border-purple-500/30 bg-purple-500/10 backdrop-blur-xl flex items-center justify-between shadow-[0_0_30px_rgba(168,85,247,0.15)] animate-in slide-in-from-top-4 fade-in duration-500">
@@ -116,7 +116,7 @@ const Index = () => {
                     />
                   </div>
                 </div>
-                
+
                 <div className="pt-4 border-t border-border/30">
                   <TagFilter selectedTag={selectedTag} onTagChange={setSelectedTag} />
                 </div>
@@ -124,7 +124,7 @@ const Index = () => {
             </div>
 
             <FeaturedSection />
-            
+
             {user && followedAuthorIds && followedAuthorIds.length > 0 ? (
               <Tabs defaultValue="all">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
@@ -169,7 +169,7 @@ const Index = () => {
                     <div className="flex flex-col items-center justify-center py-24 text-center max-w-lg mx-auto bg-zinc-900/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] shadow-[0_0_30px_rgba(0,0,0,0.5)] group relative overflow-hidden">
                       <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                       <div className="w-20 h-20 bg-purple-500/10 rounded-full flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(168,85,247,0.2)] border border-purple-500/20 group-hover:scale-110 transition-transform duration-500 relative z-10">
-                         <Zap className="w-10 h-10 text-purple-400 drop-shadow-[0_0_10px_rgba(168,85,247,0.8)] animate-pulse" />
+                        <Zap className="w-10 h-10 text-purple-400 drop-shadow-[0_0_10px_rgba(168,85,247,0.8)] animate-pulse" />
                       </div>
                       <h3 className="text-2xl font-black uppercase tracking-widest text-white mb-3 relative z-10">Void is Empty</h3>
                       <p className="text-zinc-400 mb-8 max-w-sm px-4 relative z-10">
@@ -262,6 +262,39 @@ const Index = () => {
           </div>
         </div>
       </main>
+      {/* Premium Synthwave Introductory Video Section */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 relative">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] md:w-[60%] h-[300px] bg-purple-600/10 blur-[120px] rounded-full mix-blend-screen pointer-events-none" />
+
+        <div className="w-full max-w-4xl mx-auto text-center relative z-10">
+          <div className="inline-flex mb-4 items-center gap-2 px-4 py-1.5 rounded-full bg-zinc-900/80 border border-white/10 backdrop-blur-md shadow-[0_0_15px_rgba(168,85,247,0.15)] animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+            </span>
+            <span className="text-xs font-bold uppercase tracking-widest text-zinc-300">Platform Intro</span>
+          </div>
+
+          <h2 className="text-3xl md:text-5xl font-black mb-10 tracking-tight text-white drop-shadow-[0_0_15px_rgba(168,85,247,0.3)] bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-[#ff0080] to-cyan-400">
+            Welcome to the Hub
+          </h2>
+
+          <div className="relative w-full rounded-[2rem] overflow-hidden shadow-[0_0_50px_rgba(168,85,247,0.25)] border border-purple-500/20 group bg-black/60 backdrop-blur-xl">
+            <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/10 via-transparent to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-10" />
+
+            <div className="relative pt-[56.25%] w-full">
+              <iframe
+                src="https://www.youtube.com/embed/iqwTAzilQWg?rel=0&modestbranding=1&showinfo=0"
+                title="Intro Video"
+                className="absolute top-0 left-0 w-full h-full z-20"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Big Encouraging CTA Banner (Moved & Resized) */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-12">
@@ -274,7 +307,7 @@ const Index = () => {
             <span className="text-purple-500 mt-2 md:mt-3 inline-block">SHARE IT HERE!</span>
             <span className="animate-[pulse_1s_ease-in-out_infinite] inline-block w-[3px] md:w-[4px] h-[1em] ml-1 md:ml-2 align-bottom bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.8)] rounded-sm"></span>
           </h2>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center w-full relative z-10 pt-2">
             {/* Create Button */}
             <div className="relative inline-flex h-10 sm:h-12 overflow-visible rounded-full p-[2px] group shadow-2xl w-full sm:w-auto">
