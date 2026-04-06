@@ -12,6 +12,7 @@ interface CareerPosting {
   requirements: string | null;
   salary_range: string | null;
   is_active: boolean;
+  status: string | null;
   created_at: string;
   updated_at: string;
 }

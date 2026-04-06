@@ -73,39 +73,42 @@ const AuthorSidebar = ({ author, authorId }: AuthorSidebarProps) => {
 
               {id && (
                 <Link to={`/author/${id}`} className="w-full">
-                  <Button variant="outline" size="sm" className="w-full">
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    View Profile
-                  </Button>
+                  <div className="relative inline-flex h-9 w-full overflow-visible rounded-full p-[2px] group cursor-pointer shadow-[0_0_10px_rgba(168,85,247,0.2)] hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] transition-all">
+                    <span className="absolute inset-0 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full blur-[8px] opacity-30 group-hover:opacity-100 transition-opacity duration-700 z-0" />
+                    <div className="absolute inset-0 overflow-hidden rounded-full z-10">
+                      <span className="absolute inset-[-1000%] animate-[spin_20s_linear_infinite] bg-[conic-gradient(from_0deg,#ff0080,#7928ca,#00aaff,#7928ca,#ff0080)]" />
+                    </div>
+                    <Button variant="outline" size="sm" className="relative z-20 h-full w-full bg-black text-white hover:bg-neutral-900 border-none rounded-full text-[11px] uppercase tracking-widest font-bold">
+                      <ExternalLink className="h-3.5 w-3.5 mr-2 text-cyan-400" />
+                      View Profile
+                    </Button>
+                  </div>
                 </Link>
               )}
 
               {(author.twitter_handle || author.linkedin_url) && (
-                <div className="flex gap-2 w-full">
+                <div className="flex gap-3 w-full justify-center">
                   {author.twitter_handle && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="flex-1"
-                      onClick={() =>
-                        window.open(
-                          `https://twitter.com/${author.twitter_handle}`,
-                          "_blank"
-                        )
-                      }
-                    >
-                      <Twitter className="h-4 w-4" />
-                    </Button>
+                    <div className="relative inline-flex h-9 w-9 overflow-visible rounded-full p-[2px] group cursor-pointer shadow-[0_0_10px_rgba(168,85,247,0.2)] hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] transition-all">
+                      <span className="absolute inset-0 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full blur-[8px] opacity-30 group-hover:opacity-100 transition-opacity duration-700 z-0" />
+                      <div className="absolute inset-0 overflow-hidden rounded-full z-10">
+                        <span className="absolute inset-[-1000%] animate-[spin_20s_linear_infinite] bg-[conic-gradient(from_0deg,#ff0080,#7928ca,#00aaff,#7928ca,#ff0080)]" />
+                      </div>
+                      <Button variant="outline" size="icon" className="relative z-20 h-full w-full bg-black text-white hover:bg-neutral-900 border-none rounded-full" onClick={() => window.open(`https://twitter.com/${author.twitter_handle}`, "_blank")}>
+                        <Twitter className="h-4 w-4 text-[#1DA1F2]" />
+                      </Button>
+                    </div>
                   )}
                   {author.linkedin_url && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="flex-1"
-                      onClick={() => window.open(author.linkedin_url!, "_blank")}
-                    >
-                      <Linkedin className="h-4 w-4" />
-                    </Button>
+                    <div className="relative inline-flex h-9 w-9 overflow-visible rounded-full p-[2px] group cursor-pointer shadow-[0_0_10px_rgba(168,85,247,0.2)] hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] transition-all">
+                      <span className="absolute inset-0 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full blur-[8px] opacity-30 group-hover:opacity-100 transition-opacity duration-700 z-0" />
+                      <div className="absolute inset-0 overflow-hidden rounded-full z-10">
+                        <span className="absolute inset-[-1000%] animate-[spin_20s_linear_infinite] bg-[conic-gradient(from_0deg,#ff0080,#7928ca,#00aaff,#7928ca,#ff0080)]" />
+                      </div>
+                      <Button variant="outline" size="icon" className="relative z-20 h-full w-full bg-black text-white hover:bg-neutral-900 border-none rounded-full" onClick={() => window.open(author.linkedin_url!, "_blank")}>
+                        <Linkedin className="h-4 w-4 text-[#0077b5]" />
+                      </Button>
+                    </div>
                   )}
                 </div>
               )}

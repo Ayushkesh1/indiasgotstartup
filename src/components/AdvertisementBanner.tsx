@@ -22,12 +22,20 @@ const AdvertisementBanner = () => {
   };
 
   return (
-    <div className="border-b border-border bg-muted/30">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Sponsored Content
+    <div className="relative py-12 my-8 overflow-hidden bg-neutral-950 border-y border-white/5 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+      {/* Dynamic Ambient Background for Sponsored Area */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-900/10 via-neutral-950 to-neutral-950 pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] max-w-4xl h-[100px] bg-amber-600/10 blur-[80px] pointer-events-none" />
+
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.8)]"></span>
+            </span>
+            <span className="text-sm md:text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-orange-500 uppercase tracking-widest drop-shadow-[0_0_10px_rgba(245,158,11,0.3)]">
+              Sponsored Excellence
             </span>
           </div>
         </div>
@@ -37,40 +45,54 @@ const AdvertisementBanner = () => {
             align: "start",
             loop: true,
           }}
-          className="w-full"
+          className="w-full group/carousel"
         >
-          <CarouselContent>
+          <CarouselContent className="-ml-6">
             {ads.map((ad) => (
-              <CarouselItem key={ad.id} className="md:basis-1/2 lg:basis-1/3">
-                <Card 
-                  className="group cursor-pointer overflow-hidden transition-all hover:shadow-lg border-border/50"
+              <CarouselItem key={ad.id} className="pl-6 md:basis-1/2 lg:basis-1/3">
+                <div 
+                  className="group relative cursor-pointer overflow-hidden rounded-[2rem] bg-zinc-900/40 backdrop-blur-xl border border-white/5 hover:border-amber-500/40 transition-all duration-700 hover:shadow-[0_0_40px_rgba(245,158,11,0.15)] flex flex-col h-full"
                   onClick={() => handleAdClick(ad)}
                 >
-                  <div className="relative aspect-video overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/5 via-transparent to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+                  
+                  <div className="relative aspect-[16/9] w-full overflow-hidden">
                     <img
                       src={ad.image_url}
                       alt={ad.title}
-                      className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 group-hover:rotate-1"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <ExternalLink className="absolute top-2 right-2 h-4 w-4 text-background opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                    
+                    <div className="absolute top-4 right-4 bg-black/40 backdrop-blur-md border border-white/10 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0 shadow-[0_0_15px_rgba(0,0,0,0.5)] hidden sm:block">
+                      <ExternalLink className="h-4 w-4 text-amber-400" />
+                    </div>
+                    
+                    <div className="absolute bottom-0 left-0 right-0 p-6 flex items-end">
+                      <div className="w-full">
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 mb-3 rounded-full bg-amber-500/20 backdrop-blur-md border border-amber-500/30 text-[10px] sm:text-xs font-bold text-amber-300 uppercase tracking-widest relative overflow-hidden group-hover:border-amber-400 group-hover:text-amber-200 transition-colors">
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                          Featured
+                        </div>
+                        <h3 className="font-extrabold text-xl sm:text-2xl text-white mb-2 line-clamp-2 md:line-clamp-1 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-amber-300 group-hover:to-orange-400 transition-all translation-duration-500">
+                          {ad.title}
+                        </h3>
+                        {ad.description && (
+                          <p className="text-xs sm:text-sm text-zinc-300 line-clamp-2 leading-relaxed opacity-80 group-hover:opacity-100 transition-opacity">
+                            {ad.description}
+                          </p>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div className="p-4">
-                    <h3 className="font-semibold text-sm mb-1 line-clamp-1">
-                      {ad.title}
-                    </h3>
-                    {ad.description && (
-                      <p className="text-xs text-muted-foreground line-clamp-2">
-                        {ad.description}
-                      </p>
-                    )}
-                  </div>
-                </Card>
+                </div>
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="-left-4" />
-          <CarouselNext className="-right-4" />
+          <div className="hidden sm:block opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300">
+            <CarouselPrevious className="-left-5 h-12 w-12 bg-black/50 border-white/10 hover:bg-black hover:text-amber-400 hover:border-amber-500/50 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] backdrop-blur-xl text-white z-20" />
+            <CarouselNext className="-right-5 h-12 w-12 bg-black/50 border-white/10 hover:bg-black hover:text-amber-400 hover:border-amber-500/50 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] backdrop-blur-xl text-white z-20" />
+          </div>
         </Carousel>
       </div>
     </div>

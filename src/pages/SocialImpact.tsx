@@ -4,10 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { 
-  Heart, 
-  GraduationCap, 
-  BookOpen, 
+import {
+  Heart,
+  GraduationCap,
+  BookOpen,
   Users,
   Target,
   TrendingUp,
@@ -65,7 +65,7 @@ const SocialImpact = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      
+
       {/* Hero Section */}
       <section className="relative py-20 bg-gradient-to-b from-primary/10 via-background to-background">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
@@ -78,12 +78,18 @@ const SocialImpact = () => {
               2% For Education
             </h1>
             <p className="text-lg text-muted-foreground mb-8">
-              We believe in giving back. That's why we contribute 2% of all our earnings 
+              We believe in giving back. That's why we contribute 2% of all our earnings
               to support underprivileged students across India in accessing quality education.
             </p>
-            <Button size="lg" className="gap-2">
-              Join Our Mission <ArrowRight className="h-4 w-4" />
-            </Button>
+            <div className="relative inline-flex h-12 sm:h-14 overflow-visible rounded-full p-[2px] group shadow-2xl">
+              <span className="absolute inset-0 bg-gradient-to-r from-[#ff0080] via-[#7928ca] to-[#00aaff] rounded-full blur-xl opacity-30 group-hover:opacity-100 transition-opacity duration-700 z-0" />
+              <div className="absolute inset-0 overflow-hidden rounded-full z-10">
+                <span className="absolute inset-[-1000%] animate-[spin_20s_linear_infinite] bg-[conic-gradient(from_0deg,#ff0080,#7928ca,#00aaff,#7928ca,#ff0080)]" />
+              </div>
+              <Button size="lg" className="relative z-20 inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-black px-10 py-0 text-sm sm:text-[15px] font-bold text-white uppercase tracking-widest transition-all hover:bg-neutral-900 border-none outline-none ring-0 gap-2">
+                Join Our Mission <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
 
           {/* Stats */}
@@ -109,18 +115,18 @@ const SocialImpact = () => {
               <h2 className="text-3xl font-bold mb-6">Our Commitment</h2>
               <div className="space-y-4 text-muted-foreground">
                 <p>
-                  At India's Got Startup, we believe that access to education should not be determined by 
-                  circumstances of birth. Every child deserves the opportunity to learn, grow, and 
+                  At India's Got Startup, we believe that access to education should not be determined by
+                  circumstances of birth. Every child deserves the opportunity to learn, grow, and
                   achieve their potential.
                 </p>
                 <p>
-                  That's why we've made a commitment that goes beyond just business. From every rupee 
-                  we earn—whether from subscriptions, advertising, or other revenue—2% goes directly 
+                  That's why we've made a commitment that goes beyond just business. From every rupee
+                  we earn—whether from subscriptions, advertising, or other revenue—2% goes directly
                   to supporting educational initiatives for underprivileged students.
                 </p>
                 <p>
-                  This isn't charity; it's our responsibility. As a platform built on knowledge sharing, 
-                  we understand the transformative power of education. We're here to ensure that power 
+                  This isn't charity; it's our responsibility. As a platform built on knowledge sharing,
+                  we understand the transformative power of education. We're here to ensure that power
                   reaches those who need it most.
                 </p>
               </div>
@@ -133,7 +139,7 @@ const SocialImpact = () => {
                     <div>
                       <h3 className="font-semibold mb-2">Our Promise</h3>
                       <p className="text-sm text-muted-foreground">
-                        2% of all revenue is donated to education NGOs, with full transparency 
+                        2% of all revenue is donated to education NGOs, with full transparency
                         on how funds are used.
                       </p>
                     </div>
@@ -147,7 +153,7 @@ const SocialImpact = () => {
                     <div>
                       <h3 className="font-semibold mb-2">Growing Impact</h3>
                       <p className="text-sm text-muted-foreground">
-                        As our platform grows, so does our contribution. More readers and creators 
+                        As our platform grows, so does our contribution. More readers and creators
                         mean more support for education.
                       </p>
                     </div>
@@ -170,8 +176,8 @@ const SocialImpact = () => {
             {initiatives.map((initiative, index) => (
               <Card key={index} className="overflow-hidden group">
                 <div className="aspect-video overflow-hidden">
-                  <img 
-                    src={initiative.image} 
+                  <img
+                    src={initiative.image}
                     alt={initiative.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
@@ -245,7 +251,7 @@ const SocialImpact = () => {
                 </div>
                 <h3 className="font-semibold text-lg mb-2">Read & Share</h3>
                 <p className="text-sm text-muted-foreground">
-                  Every article you read and share contributes to our revenue, which means more 
+                  Every article you read and share contributes to our revenue, which means more
                   support for education.
                 </p>
               </CardContent>
@@ -257,7 +263,7 @@ const SocialImpact = () => {
                 </div>
                 <h3 className="font-semibold text-lg mb-2">Write Content</h3>
                 <p className="text-sm text-muted-foreground">
-                  Become a creator and help grow the platform. Your content helps us reach more 
+                  Become a creator and help grow the platform. Your content helps us reach more
                   readers and generate more funds.
                 </p>
               </CardContent>
@@ -269,7 +275,7 @@ const SocialImpact = () => {
                 </div>
                 <h3 className="font-semibold text-lg mb-2">Subscribe</h3>
                 <p className="text-sm text-muted-foreground">
-                  A premium subscription not only gives you benefits but also increases our 
+                  A premium subscription not only gives you benefits but also increases our
                   contribution to education.
                 </p>
               </CardContent>
@@ -283,16 +289,33 @@ const SocialImpact = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl text-center">
           <h2 className="text-3xl font-bold mb-4">Together, We Can Make a Difference</h2>
           <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Join our community of readers and creators who are not just consuming content, 
+            Join our community of readers and creators who are not just consuming content,
             but actively contributing to a better future for underprivileged students.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" asChild>
-              <a href="/auth">Join Now</a>
-            </Button>
-            <Button size="lg" variant="outline" asChild>
-              <a href="/contact">Partner With Us</a>
-            </Button>
+            <div className="relative inline-flex h-12 sm:h-14 overflow-visible rounded-full p-[2px] group shadow-2xl">
+              {/* Outer Hover Glow (Matches Image Design) */}
+              <span className="absolute inset-0 bg-gradient-to-r from-[#ff0080] via-[#7928ca] to-[#00aaff] rounded-full blur-xl opacity-30 group-hover:opacity-100 transition-opacity duration-700 z-0" />
+              
+              {/* Live Gradient Border Layer */}
+              <div className="absolute inset-0 overflow-hidden rounded-full z-10">
+                <span className="absolute inset-[-1000%] animate-[spin_20s_linear_infinite] bg-[conic-gradient(from_0deg,#ff0080,#7928ca,#00aaff,#7928ca,#ff0080)]" />
+              </div>
+              
+              {/* Solid Button Body */}
+              <Button size="lg" className="relative z-20 inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-black px-10 py-0 text-sm sm:text-[15px] font-bold text-white uppercase tracking-widest transition-all hover:bg-neutral-900 border-none outline-none ring-0" asChild>
+                <a href="/auth">Join Now</a>
+              </Button>
+            </div>
+            <div className="relative inline-flex h-12 sm:h-14 overflow-visible rounded-full p-[2px] group shadow-2xl">
+              <span className="absolute inset-0 bg-gradient-to-r from-[#ff0080] via-[#7928ca] to-[#00aaff] rounded-full blur-xl opacity-30 group-hover:opacity-100 transition-opacity duration-700 z-0" />
+              <div className="absolute inset-0 overflow-hidden rounded-full z-10">
+                <span className="absolute inset-[-1000%] animate-[spin_20s_linear_infinite] bg-[conic-gradient(from_0deg,#ff0080,#7928ca,#00aaff,#7928ca,#ff0080)]" />
+              </div>
+              <Button size="lg" className="relative z-20 inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-black px-10 py-0 text-sm sm:text-[15px] font-bold text-white uppercase tracking-widest transition-all hover:bg-neutral-900 border-none outline-none ring-0" asChild>
+                <a href="/contact">Partner With Us</a>
+              </Button>
+            </div>
           </div>
         </div>
       </section>

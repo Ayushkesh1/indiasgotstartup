@@ -14,8 +14,18 @@ interface TeamMember {
   twitter_handle: string | null;
   display_order: number;
   is_active: boolean;
+  permissions: string[];
   created_at: string;
   updated_at: string;
+}
+
+interface AdminActivity {
+  id: string;
+  team_member_id: string;
+  action_description: string;
+  affected_module: string;
+  created_at: string;
+  team_member: { name: string; image_url: string | null } | null;
 }
 
 export function useTeamMembers() {
@@ -104,5 +114,41 @@ export function useDeleteTeamMember() {
     onError: (error: Error) => {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     },
+  });
+}
+
+export function useAdminActivityLog() {
+  return useQuery({
+    queryKey: ["admin-activities"],
+    queryFn: async () => {
+      const { data, error } = await (supabase as any)
+        .from("admin_activity_log")
+        .select("*, team_member:team_members(name, image_url)")
+        .order("created_at", { ascending: false })
+        .limit(100);
+      
+      if (error) throw error;
+      return data as AdminActivity[];
+    },
+  });
+}
+
+export function useLogAdminActivity() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (activity: { team_member_id: string; action_description: string; affected_module: string }) => {
+      const { data, error } = await (supabase as any)
+        .from("admin_activity_log")
+        .insert(activity)
+        .select()
+        .single();
+        
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-activities"] });
+    }
   });
 }

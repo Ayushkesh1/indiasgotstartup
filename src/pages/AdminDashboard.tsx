@@ -40,45 +40,45 @@ export default function AdminDashboard() {
             </Button>
           </div>
 
-          <Tabs defaultValue="revenue" className="space-y-6">
-            <TabsList className="flex flex-wrap h-auto gap-1">
-              <TabsTrigger value="revenue" className="gap-2">
+          <Tabs defaultValue="analytics" className="space-y-6">
+            <TabsList className="flex flex-wrap h-auto gap-2 bg-background/40 backdrop-blur-md border border-primary/20 p-2 rounded-xl shadow-[0_0_20px_rgba(var(--primary),0.1)]">
+              <TabsTrigger value="revenue" className="gap-2 data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400 data-[state=active]:shadow-[0_0_10px_rgba(34,197,94,0.3)] transition-all">
                 <IndianRupee className="h-4 w-4" />
                 Revenue
               </TabsTrigger>
-              <TabsTrigger value="partners" className="gap-2">
+              <TabsTrigger value="partners" className="gap-2 data-[state=active]:bg-indigo-500/20 data-[state=active]:text-indigo-400 data-[state=active]:shadow-[0_0_10px_rgba(99,102,241,0.3)] transition-all">
                 <Handshake className="h-4 w-4" />
                 Partners
               </TabsTrigger>
-              <TabsTrigger value="careers" className="gap-2">
+              <TabsTrigger value="careers" className="gap-2 data-[state=active]:bg-teal-500/20 data-[state=active]:text-teal-400 data-[state=active]:shadow-[0_0_10px_rgba(20,184,166,0.3)] transition-all">
                 <Briefcase className="h-4 w-4" />
                 Careers
               </TabsTrigger>
-              <TabsTrigger value="queries" className="gap-2">
+              <TabsTrigger value="queries" className="gap-2 data-[state=active]:bg-yellow-500/20 data-[state=active]:text-yellow-400 data-[state=active]:shadow-[0_0_10px_rgba(234,179,8,0.3)] transition-all">
                 <MessageSquare className="h-4 w-4" />
                 Queries
               </TabsTrigger>
-              <TabsTrigger value="team" className="gap-2">
+              <TabsTrigger value="team" className="gap-2 data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-400 data-[state=active]:shadow-[0_0_10px_rgba(59,130,246,0.3)] transition-all">
                 <Users className="h-4 w-4" />
                 Team
               </TabsTrigger>
-              <TabsTrigger value="newsletter" className="gap-2">
+              <TabsTrigger value="newsletter" className="gap-2 data-[state=active]:bg-pink-500/20 data-[state=active]:text-pink-400 data-[state=active]:shadow-[0_0_10px_rgba(236,72,153,0.3)] transition-all">
                 <Mail className="h-4 w-4" />
                 Newsletter
               </TabsTrigger>
-              <TabsTrigger value="users" className="gap-2">
+              <TabsTrigger value="users" className="gap-2 data-[state=active]:bg-orange-500/20 data-[state=active]:text-orange-400 data-[state=active]:shadow-[0_0_10px_rgba(249,115,22,0.3)] transition-all">
                 <Users className="h-4 w-4" />
                 Users
               </TabsTrigger>
-              <TabsTrigger value="content" className="gap-2">
+              <TabsTrigger value="content" className="gap-2 data-[state=active]:bg-fuchsia-500/20 data-[state=active]:text-fuchsia-400 data-[state=active]:shadow-[0_0_10px_rgba(217,70,239,0.3)] transition-all">
                 <FileText className="h-4 w-4" />
                 Content
               </TabsTrigger>
-              <TabsTrigger value="reports" className="gap-2">
+              <TabsTrigger value="reports" className="gap-2 data-[state=active]:bg-red-500/20 data-[state=active]:text-red-400 data-[state=active]:shadow-[0_0_10px_rgba(239,68,68,0.3)] transition-all">
                 <Shield className="h-4 w-4" />
                 Reports
               </TabsTrigger>
-              <TabsTrigger value="analytics" className="gap-2">
+              <TabsTrigger value="analytics" className="gap-2 data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400 data-[state=active]:shadow-[0_0_10px_rgba(6,182,212,0.3)] transition-all">
                 <BarChart className="h-4 w-4" />
                 Analytics
               </TabsTrigger>

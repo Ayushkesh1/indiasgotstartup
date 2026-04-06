@@ -46,7 +46,7 @@ const NewsCard = ({
             <img
               src={thumbnail}
               alt={title}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              className="w-full h-full object-contain bg-muted/30 transition-transform duration-500 group-hover:scale-105"
             />
           </div>
         )}
@@ -64,7 +64,7 @@ const NewsCard = ({
                   {author.charAt(0)}
                 </AvatarFallback>
               </Avatar>
-              <span className="text-sm text-muted-foreground font-medium">{author}</span>
+              <span className="text-sm text-muted-foreground font-medium group-hover:text-foreground transition-colors duration-300">{author}</span>
             </Link>
           ) : (
             <div className="flex items-center gap-2">
@@ -74,11 +74,11 @@ const NewsCard = ({
                   {author.charAt(0)}
                 </AvatarFallback>
               </Avatar>
-              <span className="text-sm text-muted-foreground font-medium">{author}</span>
+              <span className="text-sm text-muted-foreground font-medium group-hover:text-foreground transition-colors duration-300">{author}</span>
             </div>
           )}
 
-          <h2 className="text-lg md:text-xl font-bold leading-tight line-clamp-2 text-foreground">
+          <h2 className="text-lg md:text-xl font-bold leading-tight line-clamp-2 text-foreground group-hover:text-primary transition-colors duration-300">
             {title}
           </h2>
           

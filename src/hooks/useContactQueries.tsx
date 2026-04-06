@@ -9,6 +9,8 @@ interface ContactQuery {
   subject: string | null;
   message: string;
   status: string;
+  priority: string;
+  assigned_to: string | null;
   responded_at: string | null;
   response_notes: string | null;
   created_at: string;
