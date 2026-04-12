@@ -343,7 +343,7 @@ export function ContactQueriesManagement() {
                     />
                     <div className="flex justify-end gap-2 pt-2">
                       <Button variant="ghost" size="sm" onClick={() => setIsReplying(false)}>Cancel Notes</Button>
-                      <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={handleSaveNotes}>
+                      <Button size="sm" className="bg-green-600 hover:bg-green-700 text-foreground dark:text-white" onClick={handleSaveNotes}>
                         Save & Mark as Resolved
                       </Button>
                     </div>

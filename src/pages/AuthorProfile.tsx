@@ -43,7 +43,7 @@ const AuthorProfile = () => {
 
   if (profileLoading || articlesLoading) {
     return (
-      <div className="min-h-screen bg-neutral-950 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <Loader2 className="h-10 w-10 animate-spin text-purple-500" />
       </div>
     );
@@ -51,12 +51,12 @@ const AuthorProfile = () => {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-neutral-950 text-white">
+      <div className="min-h-screen bg-background text-foreground dark:text-white">
         <Navbar searchQuery="" onSearchChange={() => {}} />
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
-          <div className="flex flex-col items-center justify-center bg-zinc-900/40 backdrop-blur-xl border border-white/10 rounded-[2rem] p-12 max-w-lg mx-auto shadow-[0_0_50px_rgba(168,85,247,0.15)]">
+          <div className="flex flex-col items-center justify-center bg-white/70 dark:bg-zinc-900/40 backdrop-blur-xl border border-border rounded-[2rem] p-12 max-w-lg mx-auto shadow-[0_0_50px_rgba(168,85,247,0.15)]">
             <h1 className="text-4xl font-black mb-4 uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">Void Entity</h1>
-            <p className="text-zinc-400 mb-8 px-4">
+            <p className="text-muted-foreground mb-8 px-4">
               The author profile you're looking for doesn't exist or has fragmented across the mainframe.
             </p>
             <Button onClick={() => navigate("/")} className="rounded-full bg-white text-black hover:bg-zinc-200 font-bold uppercase tracking-widest px-8 shadow-[0_0_20px_rgba(255,255,255,0.3)]">
@@ -71,7 +71,7 @@ const AuthorProfile = () => {
   const publishedArticles = articles?.filter((a) => a.published) || [];
 
   return (
-    <div className="min-h-screen bg-neutral-950 relative selection:bg-purple-500/30 overflow-hidden text-zinc-100 flex flex-col">
+    <div className="min-h-screen bg-background relative selection:bg-purple-500/30 overflow-hidden text-foreground flex flex-col">
       {/* Ambient Lighting Background */}
       <div className="fixed top-[0%] left-[-10%] w-[60%] h-[600px] bg-purple-600/20 blur-[150px] rounded-full pointer-events-none mix-blend-screen z-0" />
       <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[500px] bg-cyan-500/20 blur-[150px] rounded-full pointer-events-none mix-blend-screen z-0" />
@@ -85,7 +85,7 @@ const AuthorProfile = () => {
           <div className="flex-1 min-w-0 flex flex-col gap-8">
             
             {/* Redesigned Glassmorphic Profile Header */}
-            <div className="relative group rounded-[2.5rem] bg-zinc-900/60 backdrop-blur-3xl border border-white/5 overflow-hidden shadow-[0_0_50px_rgba(168,85,247,0.1)]">
+            <div className="relative group rounded-[2.5rem] bg-white/70 dark:bg-zinc-900/60 backdrop-blur-3xl border border-border overflow-hidden shadow-[0_0_50px_rgba(168,85,247,0.1)]">
               <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-cyan-500/10 opacity-50 pointer-events-none" />
               
               <div className="p-6 md:p-10 relative z-10 flex flex-col md:flex-row items-center md:items-start gap-8">
@@ -94,7 +94,7 @@ const AuthorProfile = () => {
                   <div className="absolute inset-0 bg-gradient-to-tr from-purple-500 to-cyan-500 rounded-full blur-[20px] opacity-40 animate-pulse" />
                   <Avatar className="h-32 w-32 md:h-40 md:w-40 border-4 border-neutral-900 shadow-2xl relative z-10">
                     <AvatarImage src={profile.avatar_url || undefined} className="object-cover" />
-                    <AvatarFallback className="text-4xl bg-gradient-to-br from-purple-600 to-cyan-600 text-white font-black">
+                    <AvatarFallback className="text-4xl bg-gradient-to-br from-purple-600 to-cyan-600 text-foreground dark:text-white font-black">
                       {profile.full_name?.charAt(0)?.toUpperCase() || "A"}
                     </AvatarFallback>
                   </Avatar>
@@ -104,10 +104,10 @@ const AuthorProfile = () => {
                 <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left space-y-4">
                   <div className="w-full flex flex-col md:flex-row justify-between items-center md:items-start gap-4">
                     <div>
-                      <h1 className="text-3xl md:text-5xl font-black tracking-tight text-white mb-2 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+                      <h1 className="text-3xl md:text-5xl font-black tracking-tight text-foreground dark:text-white mb-2 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
                         {profile.full_name || "Anonymous Author"}
                       </h1>
-                      <div className="flex items-center justify-center md:justify-start gap-4 text-sm font-semibold tracking-widest uppercase text-zinc-400">
+                      <div className="flex items-center justify-center md:justify-start gap-4 text-sm font-semibold tracking-widest uppercase text-muted-foreground">
                         <span className="flex items-center gap-1.5 hover:text-cyan-400 transition-colors cursor-default">
                           <Users className="w-4 h-4 text-cyan-500" /> {followerCount || 0} Followers
                         </span>
@@ -123,21 +123,21 @@ const AuthorProfile = () => {
                   </div>
 
                   {profile.bio && (
-                    <p className="text-zinc-300 leading-relaxed text-base md:text-lg max-w-2xl mt-4">
+                    <p className="text-foreground/80 leading-relaxed text-base md:text-lg max-w-2xl mt-4">
                       {profile.bio}
                     </p>
                   )}
 
                   {/* Social Handles */}
                   {(profile.twitter_handle || profile.linkedin_url) && (
-                    <div className="flex items-center gap-4 mt-6 pt-4 border-t border-white/10 w-full justify-center md:justify-start">
-                      <span className="text-xs font-bold uppercase tracking-widest text-zinc-500 mr-2">Connect:</span>
+                    <div className="flex items-center gap-4 mt-6 pt-4 border-t border-border w-full justify-center md:justify-start">
+                      <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground mr-2">Connect:</span>
                       {profile.twitter_handle && (
                         <a
                           href={`https://twitter.com/${profile.twitter_handle}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-10 h-10 rounded-full bg-black/40 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-[#1DA1F2] hover:border-[#1DA1F2]/50 hover:shadow-[0_0_15px_rgba(29,161,242,0.3)] transition-all duration-300"
+                          className="w-10 h-10 rounded-full bg-slate-50/80 dark:bg-black/40 border border-border flex items-center justify-center text-muted-foreground hover:text-[#1DA1F2] hover:border-[#1DA1F2]/50 hover:shadow-[0_0_15px_rgba(29,161,242,0.3)] transition-all duration-300"
                         >
                           <Twitter className="h-4 w-4" />
                         </a>
@@ -147,7 +147,7 @@ const AuthorProfile = () => {
                           href={profile.linkedin_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-10 h-10 rounded-full bg-black/40 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-[#0077b5] hover:border-[#0077b5]/50 hover:shadow-[0_0_15px_rgba(0,119,181,0.3)] transition-all duration-300"
+                          className="w-10 h-10 rounded-full bg-slate-50/80 dark:bg-black/40 border border-border flex items-center justify-center text-muted-foreground hover:text-[#0077b5] hover:border-[#0077b5]/50 hover:shadow-[0_0_15px_rgba(0,119,181,0.3)] transition-all duration-300"
                         >
                           <Linkedin className="h-4 w-4" />
                         </a>
@@ -160,12 +160,12 @@ const AuthorProfile = () => {
 
             {/* Extra Feature: Sticky Tabbed Navigation */}
             <Tabs defaultValue="articles" className="w-full">
-              <div className="sticky top-[72px] z-40 bg-neutral-950/80 backdrop-blur-xl border-b border-white/10 py-4 mb-8 translate-y-[-1px]">
-                <TabsList className="bg-zinc-900/60 backdrop-blur-xl border border-white/5 p-1 rounded-full h-auto shadow-[0_0_30px_rgba(0,0,0,0.5)]">
-                  <TabsTrigger value="articles" className="rounded-full px-6 py-2.5 text-xs sm:text-sm font-bold tracking-widest uppercase data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-cyan-600 data-[state=active]:text-white data-[state=active]:shadow-[0_0_20px_rgba(168,85,247,0.5)] text-zinc-400 transition-all duration-300">
+              <div className="sticky top-[72px] z-40 bg-background/80 backdrop-blur-xl border-b border-border py-4 mb-8 translate-y-[-1px]">
+                <TabsList className="bg-white/70 dark:bg-zinc-900/60 backdrop-blur-xl border border-border p-1 rounded-full h-auto shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+                  <TabsTrigger value="articles" className="rounded-full px-6 py-2.5 text-xs sm:text-sm font-bold tracking-widest uppercase data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-cyan-600 data-[state=active]:text-foreground dark:text-white data-[state=active]:shadow-[0_0_20px_rgba(168,85,247,0.5)] text-muted-foreground transition-all duration-300">
                     <FileText className="h-4 w-4 mr-2 inline-block" /> Articles <span className="ml-2 bg-black/30 px-2 py-0.5 rounded-full text-[10px]">{publishedArticles.length}</span>
                   </TabsTrigger>
-                  <TabsTrigger value="grants" className="rounded-full px-6 py-2.5 text-xs sm:text-sm font-bold tracking-widest uppercase data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-cyan-600 data-[state=active]:text-white data-[state=active]:shadow-[0_0_20px_rgba(168,85,247,0.5)] text-zinc-400 transition-all duration-300">
+                  <TabsTrigger value="grants" className="rounded-full px-6 py-2.5 text-xs sm:text-sm font-bold tracking-widest uppercase data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-cyan-600 data-[state=active]:text-foreground dark:text-white data-[state=active]:shadow-[0_0_20px_rgba(168,85,247,0.5)] text-muted-foreground transition-all duration-300">
                     <Award className="h-4 w-4 mr-2 inline-block" /> Affiliations
                   </TabsTrigger>
                 </TabsList>
@@ -195,10 +195,10 @@ const AuthorProfile = () => {
                     ))}
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center justify-center py-24 text-center max-w-lg mx-auto bg-zinc-900/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+                  <div className="flex flex-col items-center justify-center py-24 text-center max-w-lg mx-auto bg-white/70 dark:bg-zinc-900/40 backdrop-blur-xl border border-border rounded-[2.5rem] shadow-[0_0_30px_rgba(0,0,0,0.5)]">
                     <FileText className="h-12 w-12 text-zinc-600 mb-6" />
-                    <h3 className="text-2xl font-black uppercase tracking-widest text-white mb-3">Blank Canvas</h3>
-                    <p className="text-zinc-400 mb-8 px-4">
+                    <h3 className="text-2xl font-black uppercase tracking-widest text-foreground dark:text-white mb-3">Blank Canvas</h3>
+                    <p className="text-muted-foreground mb-8 px-4">
                       This visionary hasn't published any transmissions to the mainframe yet.
                     </p>
                   </div>
@@ -211,34 +211,34 @@ const AuthorProfile = () => {
                   <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
                     <ShieldCheck className="w-48 h-48" />
                   </div>
-                  <h3 className="text-2xl font-black text-white tracking-widest uppercase mb-2 relative z-10 flex items-center gap-3">
+                  <h3 className="text-2xl font-black text-foreground dark:text-white tracking-widest uppercase mb-2 relative z-10 flex items-center gap-3">
                     <Award className="w-8 h-8 text-purple-400" /> Active Affiliations
                   </h3>
-                  <p className="text-zinc-400 max-w-lg relative z-10">Programs and grants this innovator is currently associated with or has successfully acquired.</p>
+                  <p className="text-muted-foreground max-w-lg relative z-10">Programs and grants this innovator is currently associated with or has successfully acquired.</p>
                 </div>
                 
                 {simulatedGrants.length > 0 ? (
                   <div className="grid gap-6 md:grid-cols-2">
                     {simulatedGrants.map((grant, idx) => (
                       <Link to={`/grants/${grant.id}`} key={grant.id} className="block outline-none" style={{ animationDelay: `${idx * 150}ms` }}>
-                        <div className="h-full bg-neutral-900/60 backdrop-blur-xl border border-cyan-500/20 rounded-2xl p-6 hover:border-cyan-400/60 transition-all duration-300 group overflow-hidden flex flex-col hover:-translate-y-1 hover:shadow-[0_10px_40px_-10px_rgba(34,211,238,0.2)] animate-in fade-in slide-in-from-bottom-8 fill-mode-both">
+                        <div className="h-full bg-white/70 dark:bg-zinc-900/60 backdrop-blur-xl border border-cyan-500/20 rounded-2xl p-6 hover:border-cyan-400/60 transition-all duration-300 group overflow-hidden flex flex-col hover:-translate-y-1 hover:shadow-[0_10px_40px_-10px_rgba(34,211,238,0.2)] animate-in fade-in slide-in-from-bottom-8 fill-mode-both">
                           <div className="flex justify-between items-start mb-4">
                             <Badge variant="outline" className="border-cyan-500/30 text-cyan-300 bg-cyan-500/10 uppercase tracking-widest text-[10px]">
                               {grant.deadline}
                             </Badge>
                           </div>
-                          <h4 className="text-xl font-bold text-white leading-tight group-hover:text-cyan-300 transition-colors mb-2">
+                          <h4 className="text-xl font-bold text-foreground dark:text-white leading-tight group-hover:text-cyan-300 transition-colors mb-2">
                             {grant.title}
                           </h4>
-                          <p className="flex items-center text-zinc-400 mb-6 gap-2 text-sm font-medium">
+                          <p className="flex items-center text-muted-foreground mb-6 gap-2 text-sm font-medium">
                             <Building className="w-4 h-4" /> {grant.organization}
                           </p>
-                          <div className="pt-4 border-t border-white/5 flex items-center justify-between mt-auto">
+                          <div className="pt-4 border-t border-border flex items-center justify-between mt-auto">
                             <div className="flex flex-col">
-                              <span className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">Funding Size</span>
+                              <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Funding Size</span>
                               <span className="text-cyan-400 font-bold text-sm">{grant.amount}</span>
                             </div>
-                            <Button variant="ghost" size="icon" className="rounded-full pointer-events-none group-hover:bg-cyan-500/20 group-hover:text-cyan-300 text-zinc-400 group-hover:translate-x-1 transition-transform">
+                            <Button variant="ghost" size="icon" className="rounded-full pointer-events-none group-hover:bg-cyan-500/20 group-hover:text-cyan-300 text-muted-foreground group-hover:translate-x-1 transition-transform">
                               <ArrowRight className="w-5 h-5" />
                             </Button>
                           </div>
@@ -247,10 +247,10 @@ const AuthorProfile = () => {
                     ))}
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center justify-center py-16 text-center bg-zinc-900/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem]">
+                  <div className="flex flex-col items-center justify-center py-16 text-center bg-white/70 dark:bg-zinc-900/40 backdrop-blur-xl border border-border rounded-[2.5rem]">
                     <ShieldCheck className="h-10 w-10 text-zinc-600 mb-4" />
-                    <h3 className="text-xl font-bold text-white mb-2">No active affiliations</h3>
-                    <p className="text-zinc-500 max-w-xs">No known grant programs or accelerators associated with this profile.</p>
+                    <h3 className="text-xl font-bold text-foreground dark:text-white mb-2">No active affiliations</h3>
+                    <p className="text-muted-foreground max-w-xs">No known grant programs or accelerators associated with this profile.</p>
                   </div>
                 )}
               </TabsContent>

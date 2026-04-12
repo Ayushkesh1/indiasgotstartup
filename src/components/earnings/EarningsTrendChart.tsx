@@ -123,7 +123,7 @@ export function EarningsTrendChart({ earnings }: EarningsTrendChartProps) {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="h-12 w-12 rounded-xl bg-gradient-primary flex items-center justify-center">
-              <TrendingUp className="h-6 w-6 text-white" />
+              <TrendingUp className="h-6 w-6 text-foreground dark:text-white" />
             </div>
             <div>
               <CardTitle className="text-2xl">Earnings Trend</CardTitle>

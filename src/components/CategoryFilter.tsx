@@ -20,7 +20,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   "Grant": "bg-cyan-600",
   "Seed Funding": "bg-indigo-500",
   "Accelerator": "bg-purple-600",
-  "Incubation": "bg-orange-600",
+  "Incubator": "bg-orange-600",
   "Contest": "bg-pink-600",
 };
 
@@ -97,7 +97,7 @@ const CategoryFilter = ({ categories, selectedCategory, onCategoryChange, allLab
               onClick={() => onCategoryChange(category)}
               className={`relative z-10 px-4 py-2 text-sm font-medium whitespace-nowrap rounded-full transition-colors duration-300 ${
                 isSelected
-                  ? "text-white"
+                  ? "text-foreground dark:text-white"
                   : "text-foreground/70 hover:text-foreground hover:bg-muted/50"
               }`}
             >

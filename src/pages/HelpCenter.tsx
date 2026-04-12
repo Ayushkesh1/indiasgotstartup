@@ -100,112 +100,120 @@ const HelpCenter = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative selection:bg-emerald-500/30 overflow-hidden text-foreground flex flex-col">
+      {/* Ambient Deep Lighting */}
+      <div className="fixed top-[-10%] right-[-10%] w-[60%] h-[600px] bg-emerald-600/20 blur-[150px] rounded-full pointer-events-none mix-blend-screen z-0" />
+      <div className="fixed bottom-[-10%] left-[-10%] w-[50%] h-[500px] bg-violet-500/20 blur-[150px] rounded-full pointer-events-none mix-blend-screen z-0" />
+      
       <Navbar />
       
-      {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-b from-primary/10 via-background to-background">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
-          <div className="text-center max-w-3xl mx-auto">
-            <Badge className="mb-4" variant="secondary">Help Center</Badge>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
+      <main className="flex-1 w-full relative z-10">
+        {/* Hero Section */}
+        <section className="relative py-24 pb-32 flex items-center justify-center min-h-[40vh]">
+          <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/10 via-background dark:via-neutral-950 to-background/20 dark:to-neutral-950/20 z-0 pointer-events-none" />
+          <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
+          <div className="text-center max-w-3xl mx-auto flex flex-col items-center">
+            <Badge className="mb-6 bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 border border-emerald-500/50 px-4 py-1.5 text-sm uppercase tracking-widest">Help Center</Badge>
+            <h1 className="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(52,211,153,0.3)]">
               How Can We Help You?
             </h1>
-            <p className="text-lg text-muted-foreground mb-8">
+            <p className="text-lg md:text-xl text-foreground/80 font-medium mb-10">
               Find answers, tips, and guidance for using India's Got Startup.
             </p>
             
             {/* Search */}
-            <div className="relative max-w-xl mx-auto">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <Input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search for help..."
-                className="pl-12 h-14 text-lg"
-              />
+            <div className="relative w-full max-w-2xl mx-auto group">
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-2xl blur-md opacity-30 group-focus-within:opacity-60 transition-opacity duration-300" />
+              <div className="relative flex items-center bg-white/70 dark:bg-zinc-900/80 backdrop-blur-xl border border-border rounded-2xl p-2 shadow-2xl">
+                <Search className="absolute left-6 h-6 w-6 text-muted-foreground group-focus-within:text-emerald-400 transition-colors" />
+                <Input
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search for help..."
+                  className="pl-14 h-14 bg-transparent border-none text-lg text-foreground dark:text-foreground dark:text-white placeholder:text-muted-foreground focus-visible:ring-0 w-full"
+                />
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Categories */}
-      <section className="py-12">
+      <section className="py-16 relative z-20 -mt-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
-          <h2 className="text-2xl font-bold mb-8">Browse by Category</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {categories.map((category, index) => (
-              <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer group">
-                <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                      <category.icon className="h-6 w-6 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">
-                        {category.title}
-                      </h3>
-                      <p className="text-sm text-muted-foreground mb-2">
-                        {category.description}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {category.articles} articles
-                      </p>
-                    </div>
+              <div key={index} className="bg-white/70 dark:bg-zinc-900/80 backdrop-blur-xl border border-border rounded-2xl p-6 hover:border-emerald-500/50 hover:bg-muted/90 dark:bg-neutral-800/90 transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.5)] group cursor-pointer hover:-translate-y-2">
+                <div className="flex items-start gap-5">
+                  <div className="w-14 h-14 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(52,211,153,0.3)] transition-all duration-300">
+                    <category.icon className="h-7 w-7 text-emerald-400 group-hover:text-emerald-300 transition-colors" />
                   </div>
-                </CardContent>
-              </Card>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-foreground dark:text-foreground dark:text-white mb-2 group-hover:text-emerald-500 dark:group-hover:text-emerald-300 transition-colors">
+                      {category.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-3 leading-relaxed">
+                      {category.description}
+                    </p>
+                    <p className="text-xs font-semibold text-emerald-500 bg-emerald-500/10 px-3 py-1 rounded-full inline-block border border-emerald-500/20 group-hover:border-emerald-500/40 transition-colors">
+                      {category.articles} articles
+                    </p>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
       {/* Popular FAQs */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
-          <h2 className="text-2xl font-bold mb-8 text-center">Frequently Asked Questions</h2>
-          <Card>
-            <CardContent className="pt-6">
-              <Accordion type="single" collapsible className="w-full">
-                {popularFAQs.map((faq, index) => (
-                  <AccordionItem key={index} value={`item-${index}`}>
-                    <AccordionTrigger className="text-left">
-                      {faq.question}
-                    </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground">
-                      {faq.answer}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </CardContent>
-          </Card>
+      <section className="py-24 relative bg-muted/30 dark:bg-slate-50/80 dark:bg-black/40 border-y border-border">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-900/10 via-transparent to-transparent -z-10" />
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl relative z-10">
+          <h2 className="text-4xl font-black mb-12 text-center text-foreground dark:text-foreground dark:text-white uppercase tracking-widest">Frequently Asked Questions</h2>
+          <div className="bg-white/70 dark:bg-zinc-900/60 backdrop-blur-2xl border border-border rounded-3xl p-6 md:p-10 shadow-2xl">
+            <Accordion type="single" collapsible className="w-full space-y-4">
+              {popularFAQs.map((faq, index) => (
+                <AccordionItem key={index} value={`item-${index}`} className="border-border bg-muted/50 dark:bg-slate-50/80 dark:bg-black/40 rounded-xl px-2">
+                  <AccordionTrigger className="text-left font-bold text-lg text-foreground dark:text-foreground dark:text-white hover:text-emerald-500 dark:hover:text-emerald-400 hover:no-underline py-4 px-2">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-foreground/80 text-base leading-relaxed px-2 pb-6">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
         </div>
       </section>
 
       {/* Contact Support */}
-      <section className="py-16">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
-          <Card className="bg-gradient-to-r from-primary/10 via-primary/5 to-accent/10">
-            <CardContent className="py-12 text-center">
-              <h2 className="text-2xl font-bold mb-4">Still Need Help?</h2>
-              <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
-                Can't find what you're looking for? Our support team is here to help.
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl h-[300px] bg-emerald-600/10 blur-[120px] rounded-full pointer-events-none -z-10" />
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl relative z-10">
+          <div className="bg-white/70 dark:bg-zinc-900/80 backdrop-blur-xl border border-border rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] relative">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 via-cyan-500 to-violet-500" />
+            <div className="py-16 text-center px-4">
+              <h2 className="text-4xl font-black mb-6 text-foreground dark:text-foreground dark:text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">Still Need Help?</h2>
+              <p className="text-xl text-foreground/80 mb-10 max-w-2xl mx-auto leading-relaxed">
+                Can't find what you're looking for? Our dedicated support team is available 24/7 to assist you.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button asChild>
-                  <a href="/contact" className="gap-2">
-                    Contact Support <ExternalLink className="h-4 w-4" />
+              <div className="flex flex-col sm:flex-row gap-6 justify-center">
+                <Button asChild className="h-14 px-10 text-lg font-bold bg-zinc-900 dark:bg-white text-foreground dark:text-white dark:text-black hover:bg-zinc-800 dark:hover:bg-zinc-200 gap-3 border-0 shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] transition-all duration-300 rounded-xl hover:-translate-y-1">
+                  <a href="/contact">
+                    Contact Support <ExternalLink className="h-5 w-5" />
                   </a>
                 </Button>
-                <Button variant="outline">
+                <Button variant="outline" className="h-14 px-10 text-lg font-bold bg-muted dark:bg-neutral-900 border-border hover:bg-muted-foreground/10 dark:hover:bg-neutral-800 transition-all rounded-xl hover:-translate-y-1 duration-300">
                   Browse All Articles
                 </Button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </section>
+      </main>
 
       <NewsletterFooter />
     </div>

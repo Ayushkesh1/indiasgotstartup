@@ -169,7 +169,7 @@ export default function CreatorProgram() {
       <div className="container mx-auto px-4 py-12">
         {/* Hero Section */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <Badge className="mb-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0">
+          <Badge className="mb-4 bg-gradient-to-r from-amber-500 to-orange-500 text-foreground dark:text-white border-0">
             <Sparkles className="h-3 w-3 mr-1" />
             Creator Program
           </Badge>

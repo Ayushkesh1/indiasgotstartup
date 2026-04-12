@@ -37,7 +37,7 @@ export const GRANTS_DATA: Grant[] = [
     organization: "Department of Science and Technology",
     amount: "Up to ₹10 Lakhs",
     deadline: "Dec 31, 2026",
-    tags: ["Grant", "Incubation", "Science"],
+    tags: ["Grant", "Incubator", "Science"],
     description: "NIDHI Promoting and Accelerating Young and Aspiring technology entrepreneurs (PRAYAS) is focused on addressing the funding gap for very early prototype development. It provides grant support to innovators to convert their ideas into working prototypes.",
     eligibility: [
       "Must be individual innovators or very early-stage startups.",
@@ -72,7 +72,7 @@ export const GRANTS_DATA: Grant[] = [
     organization: "Google",
     amount: "Mentorship + Cloud Credits",
     deadline: "Mar 15, 2026",
-    tags: ["Accelerator", "Incubation", "Scale-up"],
+    tags: ["Accelerator", "Incubator", "Scale-up"],
     description: "A three-month accelerator program for seed to investment-ready startups building innovative products with AI/ML. The program brings the best of Google's programs, products, people, and technology to startup founders.",
     eligibility: [
       "Startup must be based in India.",
@@ -89,7 +89,7 @@ export const GRANTS_DATA: Grant[] = [
     organization: "NITI Aayog",
     amount: "Variable",
     deadline: "Rolling Deadline",
-    tags: ["Seed Funding", "Incubation"],
+    tags: ["Seed Funding", "Incubator"],
     description: "A platform designed to support women entrepreneurs with funding access, compliance assistance, and incubation support. WEP brings together diverse stakeholders to facilitate resource sharing and collaborative growth.",
     eligibility: [
       "Must be a woman entrepreneur.",

@@ -262,7 +262,7 @@ export function NewsletterManagement() {
                       ) : (
                         <div className="flex flex-col gap-2 w-full">
                           <Button 
-                            className="w-full bg-green-500 hover:bg-green-600 text-white shadow-[0_0_15px_rgba(34,197,94,0.4)]"
+                            className="w-full bg-green-500 hover:bg-green-600 text-foreground dark:text-white shadow-[0_0_15px_rgba(34,197,94,0.4)]"
                             onClick={() => sendCampaign.mutate(campaign.id)}
                           >
                             <Send className="h-4 w-4 mr-2" /> Execute Launch

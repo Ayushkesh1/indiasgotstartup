@@ -2,18 +2,28 @@ import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 
 const MESSAGES = [
-  "Every great founder started with a blank page. What's your story?",
-  "Fun Fact: Airbnb's first pitch deck was rejected by 7 investors!",
+  "Every great founder started with a blank page. What's your story? Keep writing!",
+  "Fun Fact: Airbnb's first pitch deck was rejected by 7 investors! Stay persistent.",
   "💡 'It's not about ideas. It's about making ideas happen.' - Scott Belsky",
   "The world needs your innovation. Keep building!",
   "🦄 Did you know? The term 'Unicorn' was coined by Aileen Lee in 2013.",
   "🚀 New articles are dropping daily! Keep up the momentum.",
   "Failure is just a resting place. It is an opportunity to begin again more intelligently.",
   "Be stubborn on vision, but flexible on details. - Jeff Bezos",
-  "Don't worry about failures, worry about the chances you miss when you don't even try."
+  "Don't worry about failures, worry about the chances you miss when you don't even try.",
+  "Did you know? YouTube started as a video dating site called 'Tune In Hook Up'. Pivot to progress!",
+  "🔥 Keep the fire burning! Writing an article today might inspire someone's breakthrough tomorrow.",
+  "Success is walking from failure to failure with no loss of enthusiasm. - Winston Churchill",
+  "Fact: WhatsApp's co-founder Brian Acton was rejected for jobs at Twitter and Facebook before creating WhatsApp.",
+  "What's on your mind? Share your latest startup journey insights with the community!",
+  "✨ Your unique perspective matters. Start a new draft today!",
+  "Small daily improvements are the key to staggering long-term results.",
+  "Did you know? Slack was originally an internal communication tool for a gaming company that failed.",
+  "Write loud, innovate harder! Let's build something epic.",
+  "The best time to plant a tree was 20 years ago. The second best time is now. Start your next project!"
 ];
 
-const EMOJIS = ["💡", "🚀", "🦄", "🤓", "🔥", "✨", "🧠", "🎯"];
+const EMOJIS = ["💡", "🚀", "🦄", "🤓", "🔥", "✨", "🧠", "🎯", "🌟", "📚", "✍️", "🌱", "🏆", "⚡️", "💻", "💎"];
 
 const StartupCompanion = () => {
   const [currentMessage, setCurrentMessage] = useState(MESSAGES[0]);

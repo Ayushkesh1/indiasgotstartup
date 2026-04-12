@@ -2,93 +2,118 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
-import Index from "./pages/Index";
-import Auth from "./pages/Auth";
-import WriterDashboard from "./pages/WriterDashboard";
-import Profile from "./pages/Profile";
-import AuthorProfile from "./pages/AuthorProfile";
-import ArticleDetail from "./pages/ArticleDetail";
-import ReadingLists from "./pages/ReadingLists";
-import AdsManagement from "./pages/AdsManagement";
-import FollowingManagement from "./pages/FollowingManagement";
-import Leaderboard from "./pages/Leaderboard";
-import SeriesDetail from "./pages/SeriesDetail";
-import AdminDashboard from "./pages/AdminDashboard";
-import AdminLogin from "./pages/AdminLogin";
-import CreatorDashboard from "./pages/CreatorDashboard";
-import CreatorProgram from "./pages/CreatorProgram";
-import CreatorCheckout from "./pages/CreatorCheckout";
-import SubscriptionManagement from "./pages/SubscriptionManagement";
-import AboutUs from "./pages/AboutUs";
-import Careers from "./pages/Careers";
-import Advertise from "./pages/Advertise";
-import Contact from "./pages/Contact";
-import HelpCenter from "./pages/HelpCenter";
-import TermsOfService from "./pages/TermsOfService";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import CookiePolicy from "./pages/CookiePolicy";
-import SocialImpact from "./pages/SocialImpact";
-import Grants from "./pages/Grants";
-import GrantDetail from "./pages/GrantDetail";
-import Events from "./pages/Events";
+import React, { Suspense, lazy } from "react";
+import { AnimatePresence } from "framer-motion";
+import { PageLoader } from "./components/PageLoader";
+import { PageTransition } from "./components/PageTransition";
+import StartupCompanion from "@/components/StartupCompanion";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
-import NotFound from "./pages/NotFound";
+const Index = lazy(() => import("./pages/Index"));
+const Auth = lazy(() => import("./pages/Auth"));
+const WriterDashboard = lazy(() => import("./pages/WriterDashboard"));
+const Profile = lazy(() => import("./pages/Profile"));
+const AuthorProfile = lazy(() => import("./pages/AuthorProfile"));
+const ArticleDetail = lazy(() => import("./pages/ArticleDetail"));
+const ReadingLists = lazy(() => import("./pages/ReadingLists"));
+const AdsManagement = lazy(() => import("./pages/AdsManagement"));
+const FollowingManagement = lazy(() => import("./pages/FollowingManagement"));
+const Leaderboard = lazy(() => import("./pages/Leaderboard"));
+const SeriesDetail = lazy(() => import("./pages/SeriesDetail"));
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const AdminLogin = lazy(() => import("./pages/AdminLogin"));
+const CreatorDashboard = lazy(() => import("./pages/CreatorDashboard"));
+const CreatorProgram = lazy(() => import("./pages/CreatorProgram"));
+const CreatorCheckout = lazy(() => import("./pages/CreatorCheckout"));
+const SubscriptionManagement = lazy(() => import("./pages/SubscriptionManagement"));
+const AboutUs = lazy(() => import("./pages/AboutUs"));
+const Careers = lazy(() => import("./pages/Careers"));
+const Advertise = lazy(() => import("./pages/Advertise"));
+const Contact = lazy(() => import("./pages/Contact"));
+const HelpCenter = lazy(() => import("./pages/HelpCenter"));
+const TermsOfService = lazy(() => import("./pages/TermsOfService"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
+const SocialImpact = lazy(() => import("./pages/SocialImpact"));
+const Grants = lazy(() => import("./pages/Grants"));
+const GrantDetail = lazy(() => import("./pages/GrantDetail"));
+const Events = lazy(() => import("./pages/Events"));
+const CreateGrant = lazy(() => import("./pages/CreateGrant"));
+const CreateEvent = lazy(() => import("./pages/CreateEvent"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
 
+// Helper Component to animate routes
+const AnimatedRoutes = () => {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait" onExitComplete={() => window.scrollTo({ top: 0, behavior: 'instant' })}>
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<PageTransition><Index /></PageTransition>} />
+        <Route path="/auth" element={<PageTransition><Auth /></PageTransition>} />
+        <Route path="/write" element={<PageTransition><WriterDashboard /></PageTransition>} />
+        <Route path="/write/:id" element={<PageTransition><WriterDashboard /></PageTransition>} />
+        <Route path="/profile" element={<PageTransition><Profile /></PageTransition>} />
+        <Route path="/author/:id" element={<PageTransition><AuthorProfile /></PageTransition>} />
+        <Route path="/article/:slug" element={<PageTransition><ArticleDetail /></PageTransition>} />
+        <Route path="/reading-lists" element={<PageTransition><ReadingLists /></PageTransition>} />
+        <Route path="/following" element={<PageTransition><FollowingManagement /></PageTransition>} />
+        <Route path="/creator-dashboard" element={<PageTransition><CreatorDashboard /></PageTransition>} />
+        <Route path="/creator-program" element={<PageTransition><CreatorProgram /></PageTransition>} />
+        <Route path="/creator-program/checkout" element={<PageTransition><CreatorCheckout /></PageTransition>} />
+        <Route path="/subscription" element={<PageTransition><SubscriptionManagement /></PageTransition>} />
+        <Route path="/leaderboard" element={<PageTransition><Leaderboard /></PageTransition>} />
+        <Route path="/series/:id" element={<PageTransition><SeriesDetail /></PageTransition>} />
+        
+        {/* Static Pages */}
+        <Route path="/about" element={<PageTransition><AboutUs /></PageTransition>} />
+        <Route path="/careers" element={<PageTransition><Careers /></PageTransition>} />
+        <Route path="/advertise" element={<PageTransition><Advertise /></PageTransition>} />
+        <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
+        <Route path="/help-center" element={<PageTransition><HelpCenter /></PageTransition>} />
+        <Route path="/terms" element={<PageTransition><TermsOfService /></PageTransition>} />
+        <Route path="/privacy" element={<PageTransition><PrivacyPolicy /></PageTransition>} />
+        <Route path="/cookies" element={<PageTransition><CookiePolicy /></PageTransition>} />
+        <Route path="/social-impact" element={<PageTransition><SocialImpact /></PageTransition>} />
+        <Route path="/grants" element={<PageTransition><Grants /></PageTransition>} />
+        <Route path="/grants/:id" element={<PageTransition><GrantDetail /></PageTransition>} />
+        <Route path="/create-grant" element={<PageTransition><CreateGrant /></PageTransition>} />
+        <Route path="/events" element={<PageTransition><Events /></PageTransition>} />
+        <Route path="/create-event" element={<PageTransition><CreateEvent /></PageTransition>} />
+        
+        <Route path="/ads" element={<PageTransition><AdsManagement /></PageTransition>} />
+        
+        {/* Admin Routes */}
+        <Route path="/admin-login" element={<PageTransition><AdminLogin /></PageTransition>} />
+        <Route path="/admin" element={<PageTransition><AdminDashboard /></PageTransition>} />
+        
+        <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
+      </Routes>
+    </AnimatePresence>
+  );
+};
+
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <HelmetProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/write" element={<WriterDashboard />} />
-            <Route path="/write/:id" element={<WriterDashboard />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/author/:id" element={<AuthorProfile />} />
-            <Route path="/article/:slug" element={<ArticleDetail />} />
-            <Route path="/reading-lists" element={<ReadingLists />} />
-            <Route path="/following" element={<FollowingManagement />} />
-            <Route path="/creator-dashboard" element={<CreatorDashboard />} />
-            <Route path="/creator-program" element={<CreatorProgram />} />
-            <Route path="/creator-program/checkout" element={<CreatorCheckout />} />
-            <Route path="/subscription" element={<SubscriptionManagement />} />
-            <Route path="/leaderboard" element={<Leaderboard />} />
-            <Route path="/series/:id" element={<SeriesDetail />} />
-            
-            {/* Static Pages */}
-            <Route path="/about" element={<AboutUs />} />
-            <Route path="/careers" element={<Careers />} />
-            <Route path="/advertise" element={<Advertise />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/help-center" element={<HelpCenter />} />
-            <Route path="/terms" element={<TermsOfService />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/cookies" element={<CookiePolicy />} />
-            <Route path="/social-impact" element={<SocialImpact />} />
-            <Route path="/grants" element={<Grants />} />
-            <Route path="/grants/:id" element={<GrantDetail />} />
-            <Route path="/events" element={<Events />} />
-            
-            <Route path="/ads" element={<AdsManagement />} />
-            
-            {/* Admin Routes */}
-            <Route path="/admin-login" element={<AdminLogin />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-            
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </HelmetProvider>
-  </QueryClientProvider>
+  <ThemeProvider defaultTheme="dark" storageKey="app-theme">
+    <QueryClientProvider client={queryClient}>
+      <HelmetProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Suspense fallback={<PageLoader />}>
+              <AnimatedRoutes />
+              <StartupCompanion />
+            </Suspense>
+          </BrowserRouter>
+        </TooltipProvider>
+      </HelmetProvider>
+    </QueryClientProvider>
+  </ThemeProvider>
 );
 
 export default App;

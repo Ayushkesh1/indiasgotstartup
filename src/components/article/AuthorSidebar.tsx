@@ -78,7 +78,7 @@ const AuthorSidebar = ({ author, authorId }: AuthorSidebarProps) => {
                     <div className="absolute inset-0 overflow-hidden rounded-full z-10">
                       <span className="absolute inset-[-1000%] animate-[spin_20s_linear_infinite] bg-[conic-gradient(from_0deg,#ff0080,#7928ca,#00aaff,#7928ca,#ff0080)]" />
                     </div>
-                    <Button variant="outline" size="sm" className="relative z-20 h-full w-full bg-black text-white hover:bg-neutral-900 border-none rounded-full text-[11px] uppercase tracking-widest font-bold">
+                    <Button variant="outline" size="sm" className="relative z-20 h-full w-full bg-black text-foreground dark:text-white hover:bg-neutral-900 border-none rounded-full text-[11px] uppercase tracking-widest font-bold">
                       <ExternalLink className="h-3.5 w-3.5 mr-2 text-cyan-400" />
                       View Profile
                     </Button>
@@ -94,7 +94,7 @@ const AuthorSidebar = ({ author, authorId }: AuthorSidebarProps) => {
                       <div className="absolute inset-0 overflow-hidden rounded-full z-10">
                         <span className="absolute inset-[-1000%] animate-[spin_20s_linear_infinite] bg-[conic-gradient(from_0deg,#ff0080,#7928ca,#00aaff,#7928ca,#ff0080)]" />
                       </div>
-                      <Button variant="outline" size="icon" className="relative z-20 h-full w-full bg-black text-white hover:bg-neutral-900 border-none rounded-full" onClick={() => window.open(`https://twitter.com/${author.twitter_handle}`, "_blank")}>
+                      <Button variant="outline" size="icon" className="relative z-20 h-full w-full bg-black text-foreground dark:text-white hover:bg-neutral-900 border-none rounded-full" onClick={() => window.open(`https://twitter.com/${author.twitter_handle}`, "_blank")}>
                         <Twitter className="h-4 w-4 text-[#1DA1F2]" />
                       </Button>
                     </div>
@@ -105,7 +105,7 @@ const AuthorSidebar = ({ author, authorId }: AuthorSidebarProps) => {
                       <div className="absolute inset-0 overflow-hidden rounded-full z-10">
                         <span className="absolute inset-[-1000%] animate-[spin_20s_linear_infinite] bg-[conic-gradient(from_0deg,#ff0080,#7928ca,#00aaff,#7928ca,#ff0080)]" />
                       </div>
-                      <Button variant="outline" size="icon" className="relative z-20 h-full w-full bg-black text-white hover:bg-neutral-900 border-none rounded-full" onClick={() => window.open(author.linkedin_url!, "_blank")}>
+                      <Button variant="outline" size="icon" className="relative z-20 h-full w-full bg-black text-foreground dark:text-white hover:bg-neutral-900 border-none rounded-full" onClick={() => window.open(author.linkedin_url!, "_blank")}>
                         <Linkedin className="h-4 w-4 text-[#0077b5]" />
                       </Button>
                     </div>

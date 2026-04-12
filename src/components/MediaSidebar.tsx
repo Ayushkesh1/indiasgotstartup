@@ -4,6 +4,7 @@ import { useTrendingArticles } from "@/hooks/useTrendingArticles";
 import { useArticles } from "@/hooks/useArticles";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { SidebarNewsletter } from "./SidebarNewsletter";
 
 export const MediaSidebar = () => {
   const { data: trendingArticles, isLoading: trendingLoading } = useTrendingArticles(5);
@@ -122,6 +123,9 @@ export const MediaSidebar = () => {
           </div>
         )}
       </div>
+
+      {/* Newsletter Signup */}
+      <SidebarNewsletter />
     </aside>
   );
 };

@@ -6,12 +6,12 @@ import { GRANTS_DATA } from "@/data/grants";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { 
-  Building, Calendar, DollarSign, Bookmark, BookmarkCheck, 
-  ArrowLeft, CheckCircle2, Globe, ExternalLink, Zap
-} from "lucide-react";
+import { Building, Calendar, DollarSign, Bookmark, BookmarkCheck, ArrowLeft, CheckCircle2, Globe, ExternalLink, Zap, UploadCloud, Loader2 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { toast } from "sonner";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 const AnimatedMatchScore = ({ score }: { score: number }) => {
   const [currentScore, setCurrentScore] = useState(0);
@@ -43,7 +43,7 @@ const AnimatedMatchScore = ({ score }: { score: number }) => {
       <div className="absolute inset-0 bg-purple-500/20 blur-xl rounded-full animate-pulse" />
       <svg className="w-full h-full transform -rotate-90 relative z-10" viewBox="0 0 120 120">
         <circle
-          className="text-white/10"
+          className="text-foreground dark:text-white/10"
           strokeWidth="8"
           stroke="currentColor"
           fill="transparent"
@@ -66,8 +66,8 @@ const AnimatedMatchScore = ({ score }: { score: number }) => {
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center z-20">
-        <span className="text-3xl font-black text-white drop-shadow-md">{currentScore}%</span>
-        <span className="text-[9px] uppercase tracking-widest text-zinc-400 font-bold">Match</span>
+        <span className="text-3xl font-black text-foreground dark:text-white drop-shadow-md">{currentScore}%</span>
+        <span className="text-[9px] uppercase tracking-widest text-muted-foreground font-bold">Match</span>
       </div>
     </div>
   );
@@ -80,20 +80,34 @@ const GrantDetail = () => {
   
   const grant = GRANTS_DATA.find(g => g.id === Number(id));
   
+  const [matchState, setMatchState] = useState<'form' | 'analyzing' | 'result'>('form');
+  const [deckUploaded, setDeckUploaded] = useState(false);
+  const [ideaText, setIdeaText] = useState("");
+
+  const handleCalculateMatch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setMatchState('analyzing');
+    setTimeout(() => {
+      setMatchState('result');
+    }, 3000);
+  };
+  
   // Find similar grants based on shared tags (exclude current)
   const similarGrants = GRANTS_DATA.filter(g => 
     g.id !== grant?.id && g.tags.some(tag => grant?.tags.includes(tag))
   ).slice(0, 3);
 
-  // Scroll to top when changing ID
   useEffect(() => {
     window.scrollTo(0, 0);
     setIsSaved(false); // Reset save state for demo purposes
+    setMatchState('form');
+    setDeckUploaded(false);
+    setIdeaText("");
   }, [id]);
 
   if (!grant) {
     return (
-      <div className="min-h-screen bg-neutral-950 text-white flex flex-col items-center justify-center">
+      <div className="min-h-screen bg-background text-foreground dark:text-white flex flex-col items-center justify-center">
         <h2 className="text-3xl font-bold mb-4">Grant Not Found</h2>
         <Button onClick={() => navigate("/grants")}>Back to Grants</Button>
       </div>
@@ -110,7 +124,7 @@ const GrantDetail = () => {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 relative selection:bg-purple-500/30 overflow-hidden text-zinc-100 flex flex-col">
+    <div className="min-h-screen bg-background relative selection:bg-purple-500/30 overflow-hidden text-foreground flex flex-col">
       <Helmet>
         <title>{grant.title} | India's Got Startup</title>
       </Helmet>
@@ -125,7 +139,7 @@ const GrantDetail = () => {
         {/* Back Link */}
         <button 
           onClick={() => navigate("/grants")}
-          className="flex items-center text-zinc-400 hover:text-white transition-colors mb-8 group"
+          className="flex items-center text-muted-foreground hover:text-foreground dark:text-white transition-colors mb-8 group"
         >
           <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
           Back to all grants
@@ -137,33 +151,33 @@ const GrantDetail = () => {
           <div className="lg:col-span-2 space-y-8">
             
             {/* Header Section */}
-            <div className="border-b border-white/10 pb-8 relative">
+            <div className="border-b border-border pb-8 relative">
               <div className="flex flex-wrap items-center gap-3 mb-6">
                 <Badge className="bg-purple-500/20 text-purple-300 border border-purple-500/30 px-3 py-1 text-xs uppercase tracking-widest rounded-full">
                   {grant.deadline}
                 </Badge>
                 {grant.tags.map(tag => (
-                  <Badge key={tag} className="bg-white/5 text-zinc-300 border-none px-3 py-1 text-xs">
+                  <Badge key={tag} className="bg-white/5 text-foreground/80 border-none px-3 py-1 text-xs">
                     {tag}
                   </Badge>
                 ))}
               </div>
               
               <div className="flex justify-between items-start gap-4">
-                <h1 className="text-4xl md:text-5xl font-black text-white leading-tight drop-shadow-lg">
+                <h1 className="text-4xl md:text-5xl font-black text-foreground dark:text-white leading-tight drop-shadow-lg">
                   {grant.title}
                 </h1>
                 <Button 
                   variant="ghost" 
                   size="icon" 
                   onClick={handleSave}
-                  className={`rounded-full shrink-0 h-12 w-12 border ${isSaved ? 'border-cyan-500 bg-cyan-500/10 text-cyan-400' : 'border-white/10 bg-white/5 text-zinc-400 hover:bg-white/10 hover:text-white'}`}
+                  className={`rounded-full shrink-0 h-12 w-12 border ${isSaved ? 'border-cyan-500 bg-cyan-500/10 text-cyan-400' : 'border-border bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-foreground dark:text-white'}`}
                 >
                   {isSaved ? <BookmarkCheck className="w-6 h-6" /> : <Bookmark className="w-6 h-6" />}
                 </Button>
               </div>
               
-              <div className="flex flex-wrap items-center gap-6 mt-6 text-zinc-400 text-sm md:text-base font-medium">
+              <div className="flex flex-wrap items-center gap-6 mt-6 text-muted-foreground text-sm md:text-base font-medium">
                 <div className="flex items-center gap-2 text-cyan-300 bg-cyan-500/10 px-4 py-2 rounded-lg border border-cyan-500/20">
                   <DollarSign className="w-5 h-5" />
                   Funding: {grant.amount}
@@ -181,18 +195,18 @@ const GrantDetail = () => {
 
             {/* Description */}
             <div className="prose prose-invert max-w-none">
-              <h3 className="text-xl font-bold text-white mb-4">About this Grant</h3>
-              <p className="text-zinc-300 text-lg leading-relaxed">{grant.description}</p>
+              <h3 className="text-xl font-bold text-foreground dark:text-white mb-4">About this Grant</h3>
+              <p className="text-foreground/80 text-lg leading-relaxed">{grant.description}</p>
             </div>
 
             {/* Eligibility */}
-            <div className="bg-neutral-900/40 backdrop-blur-sm border border-white/5 rounded-2xl p-8">
-              <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+            <div className="bg-white/70 dark:bg-zinc-900/40 backdrop-blur-sm border border-border rounded-2xl p-8">
+              <h3 className="text-xl font-bold text-foreground dark:text-white mb-6 flex items-center gap-2">
                 <CheckCircle2 className="w-6 h-6 text-purple-400" /> Eligibility Criteria
               </h3>
               <ul className="space-y-4">
                 {grant.eligibility.map((item, idx) => (
-                  <li key={idx} className="flex items-start text-zinc-300">
+                  <li key={idx} className="flex items-start text-foreground/80">
                     <span className="w-2 h-2 rounded-full bg-cyan-500 mt-2 mr-4 shrink-0 shadow-[0_0_8px_rgba(34,211,238,0.6)]"></span>
                     <span className="leading-relaxed">{item}</span>
                   </li>
@@ -202,7 +216,7 @@ const GrantDetail = () => {
 
             {/* Expertise Expected */}
             <div>
-              <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+              <h3 className="text-xl font-bold text-foreground dark:text-white mb-4 flex items-center gap-2">
                 <Zap className="w-6 h-6 text-amber-400" /> Field of Expertise
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -215,8 +229,8 @@ const GrantDetail = () => {
             </div>
 
             {/* Apply Button Container */}
-            <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6">
-              <div className="text-sm text-zinc-500 text-center md:text-left">
+            <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="text-sm text-muted-foreground text-center md:text-left">
                 Redirects to the official application portal. Make sure you meet all criteria.
               </div>
               <a 
@@ -225,7 +239,7 @@ const GrantDetail = () => {
                 rel="noreferrer"
                 className="w-full md:w-auto"
               >
-                <Button className="w-full h-14 px-8 text-base font-bold tracking-widest uppercase bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 text-white rounded-full shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:shadow-[0_0_30px_rgba(34,211,238,0.6)] transition-all duration-300 group">
+                <Button className="w-full h-14 px-8 text-base font-bold tracking-widest uppercase bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 text-foreground dark:text-white rounded-full shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:shadow-[0_0_30px_rgba(34,211,238,0.6)] transition-all duration-300 group">
                   Apply Online <ExternalLink className="w-5 h-5 ml-3 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                 </Button>
               </a>
@@ -236,35 +250,98 @@ const GrantDetail = () => {
           {/* Right Column: Side Panel */}
           <div className="lg:col-span-1 space-y-8">
             
-            {/* AI Match Score Component */}
-            <Card className="bg-neutral-900/60 backdrop-blur-xl border border-white/10 overflow-hidden relative">
+            {/* AI Match Component */}
+            <Card className="bg-white/70 dark:bg-zinc-900/60 backdrop-blur-xl border border-border overflow-hidden relative">
               <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-cyan-400 to-purple-500"></div>
-              <CardContent className="pt-8 pb-6 px-6 text-center">
-                <h3 className="text-lg font-bold text-white mb-2">Profile Match</h3>
-                <p className="text-sm text-zinc-400 px-4">Based on your startup's sector, stage, and location.</p>
-                <AnimatedMatchScore score={grant.matchScore || 85} />
-                <div className="text-xs font-medium text-cyan-300 bg-cyan-500/10 py-2 px-4 rounded-full inline-block border border-cyan-500/20">
-                  Excellent fit for your stage
-                </div>
+              <CardContent className="pt-6 pb-6 px-6">
+                {matchState === 'form' && (
+                  <div>
+                    <h3 className="text-lg font-bold text-foreground dark:text-white mb-4 text-center">Calculate AI Match</h3>
+                    <form onSubmit={handleCalculateMatch} className="space-y-4">
+                      {/* Upload Box */}
+                      <div className={`border-2 border-dashed ${deckUploaded ? 'border-cyan-500 bg-cyan-500/5' : 'border-border bg-black/20 hover:border-cyan-500/50'} rounded-xl p-4 text-center cursor-pointer transition-colors`} onClick={() => setDeckUploaded(!deckUploaded)}>
+                        <UploadCloud className={`w-8 h-8 mx-auto mb-2 transition-colors ${deckUploaded ? 'text-cyan-400' : 'text-muted-foreground'}`} />
+                        <span className="text-sm font-medium text-foreground/80">
+                           {deckUploaded ? "Pitch Deck Uploaded! ✓" : "Upload Pitch Deck (PDF)"}
+                        </span>
+                      </div>
+                      
+                      <div className="space-y-2 text-left">
+                        <Label className="text-foreground/80">Describe Your Idea</Label>
+                        <Textarea 
+                          value={ideaText} 
+                          onChange={(e) => setIdeaText(e.target.value)}
+                          placeholder="Briefly describe what you are building..." 
+                          className="h-20 resize-none bg-slate-50/80 dark:bg-black/40 border-border placeholder:text-zinc-600 focus-visible:ring-cyan-500/50" 
+                          required
+                        />
+                      </div>
+                      
+                      <div className="space-y-2 text-left">
+                         <Label className="text-foreground/80">Category</Label>
+                         <Select required>
+                           <SelectTrigger className="bg-slate-50/80 dark:bg-black/40 border-border focus:ring-cyan-500/50"><SelectValue placeholder="Select Category" /></SelectTrigger>
+                           <SelectContent className="bg-neutral-900 border-border">
+                             <SelectItem value="tech">Technology / Software</SelectItem>
+                             <SelectItem value="hardware">Hardware / IoT</SelectItem>
+                             <SelectItem value="health">Healthcare / Biotech</SelectItem>
+                             <SelectItem value="edtech">EdTech</SelectItem>
+                             <SelectItem value="fintech">Fintech</SelectItem>
+                             <SelectItem value="other">Other</SelectItem>
+                           </SelectContent>
+                         </Select>
+                      </div>
+                      
+                      <Button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 font-bold border-none shadow-[0_0_15px_rgba(34,211,238,0.3)]">
+                         Analyze Match
+                      </Button>
+                    </form>
+                  </div>
+                )}
+                
+                {matchState === 'analyzing' && (
+                  <div className="py-12 flex flex-col items-center justify-center text-center animate-in fade-in duration-500">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-cyan-500/20 rounded-full blur-xl animate-pulse"></div>
+                      <Loader2 className="w-12 h-12 text-cyan-400 animate-spin mb-4 relative z-10" />
+                    </div>
+                    <h3 className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-cyan-400 animate-pulse">Analyzing Pitch...</h3>
+                    <p className="text-sm text-muted-foreground mt-2">Checking parameters against grant requirements</p>
+                  </div>
+                )}
+
+                {matchState === 'result' && (
+                  <div className="text-center animate-in zoom-in-95 duration-700 fade-in fill-mode-both">
+                    <h3 className="text-lg font-bold text-foreground dark:text-white mb-2">Profile Match</h3>
+                    <p className="text-sm text-muted-foreground px-4">Based on your pitch deck and idea.</p>
+                    <AnimatedMatchScore score={grant.matchScore || 85} />
+                    <div className="text-xs font-medium text-cyan-300 bg-cyan-500/10 py-2 px-4 rounded-full inline-block border border-cyan-500/20 slide-in-from-bottom-2 animate-in fade-in duration-500 delay-300 fill-mode-both">
+                      Excellent fit for this grant
+                    </div>
+                    <Button variant="outline" onClick={() => setMatchState('form')} className="mt-4 w-full border-border text-muted-foreground hover:text-foreground dark:text-white bg-transparent hover:bg-white/5 py-1 h-8 text-xs">
+                      Recalculate
+                    </Button>
+                  </div>
+                )}
               </CardContent>
             </Card>
 
             {/* Similar Grants */}
             <div>
-              <h3 className="text-lg font-bold text-white mb-4 px-1">Similar Grants</h3>
+              <h3 className="text-lg font-bold text-foreground dark:text-white mb-4 px-1">Similar Grants</h3>
               <div className="space-y-4">
                 {similarGrants.map(smGrant => (
                   <Link to={`/grants/${smGrant.id}`} key={smGrant.id} className="block outline-none">
-                    <Card className="bg-neutral-900/30 border border-white/5 hover:border-white/20 hover:bg-neutral-900/50 transition-all group">
+                    <Card className="bg-white/70 dark:bg-zinc-900/30 border border-border hover:border-border hover:bg-white/70 dark:bg-zinc-900/50 transition-all group">
                       <CardContent className="p-4 flex gap-4">
                         <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center shrink-0 border border-purple-500/20 group-hover:rotate-6 transition-transform">
                           <Globe className="w-5 h-5 text-purple-400" />
                         </div>
                         <div>
-                          <h4 className="font-bold text-white text-sm leading-snug group-hover:text-cyan-300 transition-colors">
+                          <h4 className="font-bold text-foreground dark:text-white text-sm leading-snug group-hover:text-cyan-300 transition-colors">
                             {smGrant.title}
                           </h4>
-                          <p className="text-xs text-zinc-400 mt-1 line-clamp-1">
+                          <p className="text-xs text-muted-foreground mt-1 line-clamp-1">
                             {smGrant.organization}
                           </p>
                           <div className="text-xs font-bold text-cyan-400 mt-2">
