@@ -116,10 +116,10 @@ export function ContentModerationPanel() {
           <h2 className="text-xl font-semibold flex items-center gap-2">
             <FileEdit className="w-5 h-5 text-blue-500"/> Content Moderation Matrix
           </h2>
-          <p className="text-sm text-zinc-400 mt-1">Review drafts, manage publications, and enforce quality standards.</p>
+          <p className="text-sm text-muted-foreground mt-1">Review drafts, manage publications, and enforce quality standards.</p>
         </div>
         <div className="relative w-full sm:w-72">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <Input 
               placeholder="Search title, category..." 
               className="pl-9 bg-zinc-950 border-zinc-800"
@@ -135,8 +135,8 @@ export function ContentModerationPanel() {
           <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
           <div className="flex items-start justify-between">
             <div>
-              <div className="text-sm text-zinc-500 font-medium">Total Articles</div>
-              <div className="text-3xl font-bold text-zinc-100 mt-1">{counts.total}</div>
+              <div className="text-sm text-muted-foreground font-medium">Total Articles</div>
+              <div className="text-3xl font-bold text-foreground mt-1">{counts.total}</div>
             </div>
             <FileEdit className="w-5 h-5 text-zinc-700" />
           </div>
@@ -175,16 +175,16 @@ export function ContentModerationPanel() {
 
       {/* Tabs */}
       <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
-        <Button variant={activeTab === "all" ? "default" : "outline"} onClick={() => setActiveTab("all")} className={activeTab === "all" ? "bg-zinc-800 text-white" : "bg-transparent border-zinc-800 text-zinc-400"}>
+        <Button variant={activeTab === "all" ? "default" : "outline"} onClick={() => setActiveTab("all")} className={activeTab === "all" ? "bg-zinc-800 text-foreground dark:text-white" : "bg-transparent border-zinc-800 text-muted-foreground"}>
           All Records
         </Button>
-        <Button variant={activeTab === "published" ? "default" : "outline"} onClick={() => setActiveTab("published")} className={activeTab === "published" ? "bg-emerald-950/50 text-emerald-400 border-emerald-900" : "bg-transparent border-zinc-800 text-zinc-400"}>
+        <Button variant={activeTab === "published" ? "default" : "outline"} onClick={() => setActiveTab("published")} className={activeTab === "published" ? "bg-emerald-950/50 text-emerald-400 border-emerald-900" : "bg-transparent border-zinc-800 text-muted-foreground"}>
           Published
         </Button>
-        <Button variant={activeTab === "drafts" ? "default" : "outline"} onClick={() => setActiveTab("drafts")} className={activeTab === "drafts" ? "bg-amber-950/50 text-amber-400 border-amber-900" : "bg-transparent border-zinc-800 text-zinc-400"}>
+        <Button variant={activeTab === "drafts" ? "default" : "outline"} onClick={() => setActiveTab("drafts")} className={activeTab === "drafts" ? "bg-amber-950/50 text-amber-400 border-amber-900" : "bg-transparent border-zinc-800 text-muted-foreground"}>
           Drafts (Review)
         </Button>
-        <Button variant={activeTab === "flagged" ? "default" : "outline"} onClick={() => setActiveTab("flagged")} className={activeTab === "flagged" ? "bg-red-950/50 text-red-400 border-red-900" : "bg-transparent border-zinc-800 text-zinc-400"}>
+        <Button variant={activeTab === "flagged" ? "default" : "outline"} onClick={() => setActiveTab("flagged")} className={activeTab === "flagged" ? "bg-red-950/50 text-red-400 border-red-900" : "bg-transparent border-zinc-800 text-muted-foreground"}>
           Flagged / Sensitive
         </Button>
       </div>
@@ -193,17 +193,17 @@ export function ContentModerationPanel() {
       <Card className="bg-zinc-950 border-zinc-800 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <Table>
-            <TableHeader className="bg-zinc-900/50">
+            <TableHeader className="bg-white/70 dark:bg-zinc-900/50">
               <TableRow className="border-b border-zinc-800 hover:bg-transparent">
-                <TableHead className="text-zinc-400 font-medium h-12 w-[35%]">Content Identity</TableHead>
-                <TableHead className="text-zinc-400 font-medium">Status & Flags</TableHead>
-                <TableHead className="text-zinc-400 font-medium">Insights</TableHead>
-                <TableHead className="text-right text-zinc-400 font-medium pr-6">Management</TableHead>
+                <TableHead className="text-muted-foreground font-medium h-12 w-[35%]">Content Identity</TableHead>
+                <TableHead className="text-muted-foreground font-medium">Status & Flags</TableHead>
+                <TableHead className="text-muted-foreground font-medium">Insights</TableHead>
+                <TableHead className="text-right text-muted-foreground font-medium pr-6">Management</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredArticles.length > 0 ? filteredArticles.map((article) => (
-                <TableRow key={article.id} className="border-b border-zinc-800/50 hover:bg-zinc-900/80 transition-colors">
+                <TableRow key={article.id} className="border-b border-zinc-800/50 hover:bg-white/70 dark:bg-zinc-900/80 transition-colors">
                   <TableCell>
                     <div className="flex items-start gap-3">
                       {/* Thumbnail Placeholder */}
@@ -220,10 +220,10 @@ export function ContentModerationPanel() {
                           {article.title}
                         </span>
                         <div className="flex items-center gap-2 mt-1">
-                          <Badge variant="outline" className="text-[9px] bg-zinc-900 border-zinc-700 text-zinc-400 font-mono px-1.5 py-0">
+                          <Badge variant="outline" className="text-[9px] bg-zinc-900 border-zinc-700 text-muted-foreground font-mono px-1.5 py-0">
                             {article.category}
                           </Badge>
-                          <span className="text-[10px] text-zinc-500">by {article.profiles?.full_name || "Unknown"}</span>
+                          <span className="text-[10px] text-muted-foreground">by {article.profiles?.full_name || "Unknown"}</span>
                         </div>
                       </div>
                     </div>
@@ -243,7 +243,7 @@ export function ContentModerationPanel() {
                           <Activity className="w-3 h-3 mr-1" /> Pending Review
                         </Badge>
                       )}
-                      <span className="text-[10px] text-zinc-500 flex items-center gap-1">
+                      <span className="text-[10px] text-muted-foreground flex items-center gap-1">
                         <Clock className="w-3 h-3" /> 
                         {article.published_at ? formatDistanceToNow(new Date(article.published_at), { addSuffix: true }) : 'Not Published'}
                       </span>
@@ -251,11 +251,11 @@ export function ContentModerationPanel() {
                   </TableCell>
                   <TableCell>
                     <div className="space-y-2">
-                       <div className="flex items-center gap-4 text-xs text-zinc-400">
+                       <div className="flex items-center gap-4 text-xs text-muted-foreground">
                           <span title="Total Views" className="flex items-center gap-1"><Eye className="w-3 h-3"/> {article.views_count.toLocaleString()}</span>
                           <span title="Likes/Engagement" className="flex items-center gap-1 text-pink-400/80"><ThumbsUp className="w-3 h-3"/> {article.likes}</span>
                        </div>
-                       <div className="flex items-center gap-4 text-xs text-zinc-400">
+                       <div className="flex items-center gap-4 text-xs text-muted-foreground">
                           <span title="Bounce Rate" className="flex items-center gap-1"><TrendingUp className="w-3 h-3"/> {article.bounceRate}</span>
                           <span title="Read Time" className="flex items-center gap-1"><BarChart className="w-3 h-3"/> {article.reading_time}m read</span>
                        </div>
@@ -277,18 +277,18 @@ export function ContentModerationPanel() {
                         )}
                         {/* Status Toggle & Edit */}
                         {article.published && (
-                           <Button size="sm" variant="ghost" className="h-7 px-2 text-zinc-400 hover:text-white" onClick={() => togglePublish.mutate({ id: article.id, published: false })} title="Unpublish">
+                           <Button size="sm" variant="ghost" className="h-7 px-2 text-muted-foreground hover:text-foreground dark:text-white" onClick={() => togglePublish.mutate({ id: article.id, published: false })} title="Unpublish">
                              <EyeOff className="w-4 h-4" />
                            </Button>
                         )}
-                        <Button size="sm" variant="ghost" className="h-7 px-2 text-zinc-400 hover:text-blue-400" onClick={() => setEditArticle(article)} title="Edit Configuration">
+                        <Button size="sm" variant="ghost" className="h-7 px-2 text-muted-foreground hover:text-blue-400" onClick={() => setEditArticle(article)} title="Edit Configuration">
                           <FileEdit className="w-4 h-4" />
                         </Button>
                       </div>
                       
                       {/* Moderation / Promotion Dropdown */}
                       <Select onValueChange={(action) => handleSimulatedAction(action, "Platform Override Executed")}>
-                        <SelectTrigger className="w-[130px] h-6 text-[10px] bg-black border-zinc-800 text-zinc-400">
+                        <SelectTrigger className="w-[130px] h-6 text-[10px] bg-black border-zinc-800 text-muted-foreground">
                           <SelectValue placeholder="Quick Actions..." />
                         </SelectTrigger>
                         <SelectContent className="bg-zinc-950 border-zinc-800 z-50">
@@ -304,7 +304,7 @@ export function ContentModerationPanel() {
                 </TableRow>
               )) : (
                 <TableRow>
-                  <TableCell colSpan={4} className="h-32 text-center text-zinc-500">
+                  <TableCell colSpan={4} className="h-32 text-center text-muted-foreground">
                     No content entries found for the current filter.
                   </TableCell>
                 </TableRow>
@@ -318,19 +318,19 @@ export function ContentModerationPanel() {
       <Dialog open={!!editArticle} onOpenChange={() => setEditArticle(null)}>
         <DialogContent className="bg-zinc-950 border-zinc-800 sm:max-w-xl">
           <DialogHeader>
-            <DialogTitle className="text-zinc-100 flex items-center gap-2"><FileEdit className="w-5 h-5 text-blue-500" /> Architect Edit Mode</DialogTitle>
-            <DialogDescription className="text-zinc-500">Admin override. Modifying content bypasses creator approval.</DialogDescription>
+            <DialogTitle className="text-foreground flex items-center gap-2"><FileEdit className="w-5 h-5 text-blue-500" /> Architect Edit Mode</DialogTitle>
+            <DialogDescription className="text-muted-foreground">Admin override. Modifying content bypasses creator approval.</DialogDescription>
           </DialogHeader>
           {editArticle && (
              <div className="space-y-4 py-4">
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Title Override</label>
-                  <Input defaultValue={editArticle.title} className="bg-black border-zinc-800 text-zinc-300 focus-visible:ring-blue-500/50" />
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Title Override</label>
+                  <Input defaultValue={editArticle.title} className="bg-black border-zinc-800 text-foreground/80 focus-visible:ring-blue-500/50" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Taxonomy / Category</label>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Taxonomy / Category</label>
                   <Select defaultValue={editArticle.category}>
-                    <SelectTrigger className="w-full bg-black border-zinc-800 text-zinc-300 focus-visible:ring-blue-500/50">
+                    <SelectTrigger className="w-full bg-black border-zinc-800 text-foreground/80 focus-visible:ring-blue-500/50">
                        <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-zinc-950 border-zinc-800">
@@ -342,19 +342,19 @@ export function ContentModerationPanel() {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Content Stub / Excerpt</label>
-                  <Textarea defaultValue={editArticle.excerpt || ""} className="bg-black border-zinc-800 text-zinc-300 focus-visible:ring-blue-500/50 min-h-[100px]" />
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Content Stub / Excerpt</label>
+                  <Textarea defaultValue={editArticle.excerpt || ""} className="bg-black border-zinc-800 text-foreground/80 focus-visible:ring-blue-500/50 min-h-[100px]" />
                 </div>
              </div>
           )}
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEditArticle(null)} className="border-zinc-800 text-zinc-300">Cancel</Button>
+            <Button variant="outline" onClick={() => setEditArticle(null)} className="border-zinc-800 text-foreground/80">Cancel</Button>
             <Button 
                onClick={() => {
                  handleSimulatedAction("Content Modification", "Article Synced successfully");
                  setEditArticle(null);
                }} 
-               className="bg-blue-600 hover:bg-blue-700 text-white"
+               className="bg-blue-600 hover:bg-blue-700 text-foreground dark:text-white"
             >
               Save Overrides
             </Button>
@@ -366,19 +366,19 @@ export function ContentModerationPanel() {
       <Dialog open={!!rejectArticle} onOpenChange={() => { setRejectArticle(null); setFeedbackText(""); }}>
         <DialogContent className="bg-zinc-950 border-zinc-800 sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-zinc-100 flex items-center gap-2"><MessageSquareWarning className="w-5 h-5 text-amber-500" /> Return Draft to Creator</DialogTitle>
-            <DialogDescription className="text-zinc-500">Provide feedback on why this draft does not meet publishing standards.</DialogDescription>
+            <DialogTitle className="text-foreground flex items-center gap-2"><MessageSquareWarning className="w-5 h-5 text-amber-500" /> Return Draft to Creator</DialogTitle>
+            <DialogDescription className="text-muted-foreground">Provide feedback on why this draft does not meet publishing standards.</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
              <Textarea 
                placeholder="Enter mandatory feedback (e.g., Fact-check paragraph 2, Needs higher res cover image)..." 
                value={feedbackText}
                onChange={(e) => setFeedbackText(e.target.value)}
-               className="bg-black border-zinc-800 text-zinc-300 min-h-[150px] focus-visible:ring-amber-500/50" 
+               className="bg-black border-zinc-800 text-foreground/80 min-h-[150px] focus-visible:ring-amber-500/50" 
              />
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => { setRejectArticle(null); setFeedbackText(""); }} className="border-zinc-800 text-zinc-300">Cancel</Button>
+            <Button variant="outline" onClick={() => { setRejectArticle(null); setFeedbackText(""); }} className="border-zinc-800 text-foreground/80">Cancel</Button>
             <Button 
                disabled={feedbackText.trim().length === 0}
                onClick={() => {
@@ -387,7 +387,7 @@ export function ContentModerationPanel() {
                  setRejectArticle(null);
                  setFeedbackText("");
                }} 
-               className="bg-amber-600 hover:bg-amber-700 text-white"
+               className="bg-amber-600 hover:bg-amber-700 text-foreground dark:text-white"
             >
               Dispatch Feedback
             </Button>

@@ -48,7 +48,7 @@ export function ReportArticleDialog({ articleId }: ReportArticleDialogProps) {
           <div className="absolute inset-0 overflow-hidden rounded-full z-10">
             <span className="absolute inset-[-1000%] animate-[spin_20s_linear_infinite] bg-[conic-gradient(from_0deg,#ff0080,#7928ca,#00aaff,#7928ca,#ff0080)]" />
           </div>
-          <Button variant="outline" size="sm" className="relative z-20 h-full flex items-center justify-center bg-black text-white hover:bg-neutral-900 border-none rounded-full px-5 text-[12px] uppercase tracking-widest font-bold">
+          <Button variant="outline" size="sm" className="relative z-20 h-full flex items-center justify-center bg-black text-foreground dark:text-white hover:bg-neutral-900 border-none rounded-full px-5 text-[12px] uppercase tracking-widest font-bold">
             <Flag className="h-3.5 w-3.5 mr-2 text-rose-500" />
             Report
           </Button>

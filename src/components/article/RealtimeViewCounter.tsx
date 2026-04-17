@@ -37,7 +37,7 @@ export const RealtimeViewCounter = ({
   return (
     <div className="flex items-center gap-2">
       <div className={`flex items-center gap-2 text-sm transition-colors ${
-        isTrending ? 'text-primary font-medium' : 'text-muted-foreground'
+        isTrending ? 'text-primary font-medium' : 'text-slate-700 dark:text-muted-foreground font-semibold'
       }`}>
         <Eye className={`h-4 w-4 ${isTrending ? 'animate-pulse' : ''}`} />
         <span>{viewCount.toLocaleString()} views</span>

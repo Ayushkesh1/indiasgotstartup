@@ -176,7 +176,7 @@ const ArticleDetail = () => {
   const description = article.excerpt || contentHtml.substring(0, 160).replace(/<[^>]*>/g, '');
 
   return (
-    <div className="min-h-screen bg-neutral-950 relative overflow-hidden text-zinc-100">
+    <div className="min-h-screen bg-background relative overflow-hidden text-foreground">
       {/* Deep Ambient Lighting */}
       <div className="fixed top-[-10%] left-[-10%] w-[60%] h-[600px] bg-purple-600/15 blur-[150px] rounded-full pointer-events-none mix-blend-screen z-0" />
       <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[500px] bg-cyan-500/15 blur-[150px] rounded-full pointer-events-none mix-blend-screen z-0" />
@@ -218,14 +218,14 @@ const ArticleDetail = () => {
               {article.title}
             </h1>
             {article.excerpt && (
-              <p className="text-xl md:text-2xl text-zinc-400 mb-10 max-w-3xl mx-auto leading-relaxed">
+              <p className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed">
                 {article.excerpt}
               </p>
             )}
 
             {/* Featured Image */}
             {article.featured_image_url && (
-              <div className="aspect-video overflow-hidden rounded-[2.5rem] mb-12 border border-white/5 shadow-2xl bg-zinc-900/50 ring-1 ring-white/10 p-2 relative group">
+              <div className="aspect-video overflow-hidden rounded-[2.5rem] mb-12 border border-border shadow-2xl bg-white/70 dark:bg-zinc-900/50 ring-1 ring-white/10 p-2 relative group">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10 rounded-[2rem] pointer-events-none" />
                 <img
                   src={article.featured_image_url}
@@ -277,7 +277,7 @@ const ArticleDetail = () => {
             </aside>
 
             {/* Article Content */}
-            <div className="lg:col-span-6 bg-zinc-900/20 backdrop-blur-md rounded-[2.5rem] p-6 lg:p-10 border border-white/5 shadow-2xl">
+            <div className="lg:col-span-6 bg-white/70 dark:bg-zinc-900/20 backdrop-blur-md rounded-[2.5rem] p-6 lg:p-10 border border-border shadow-2xl">
               {translatedLanguage && (
                 <div className="mb-8 p-4 bg-purple-500/10 rounded-2xl border border-purple-500/20 flex items-center justify-center">
                   <p className="text-sm font-bold uppercase tracking-widest text-purple-400">
@@ -288,13 +288,13 @@ const ArticleDetail = () => {
               <div
                 id="article-content"
                 className="prose prose-lg md:prose-xl max-w-none prose-invert 
-                  prose-headings:font-extrabold prose-headings:tracking-tight prose-headings:text-white 
-                  prose-p:text-zinc-300 prose-p:leading-relaxed prose-p:font-medium
+                  prose-headings:font-extrabold prose-headings:tracking-tight prose-headings:text-foreground dark:text-white 
+                  prose-p:text-foreground/80 prose-p:leading-relaxed prose-p:font-medium
                   prose-a:text-purple-400 hover:prose-a:text-purple-300 prose-a:font-bold prose-a:no-underline hover:prose-a:underline 
-                  prose-strong:text-white prose-strong:font-bold
-                  prose-blockquote:border-l-purple-500 prose-blockquote:bg-purple-500/5 prose-blockquote:py-3 prose-blockquote:px-6 prose-blockquote:rounded-r-2xl prose-blockquote:text-zinc-300
+                  prose-strong:text-foreground dark:text-white prose-strong:font-bold
+                  prose-blockquote:border-l-purple-500 prose-blockquote:bg-purple-500/5 prose-blockquote:py-3 prose-blockquote:px-6 prose-blockquote:rounded-r-2xl prose-blockquote:text-foreground/80
                   prose-img:rounded-3xl prose-img:shadow-2xl 
-                  prose-ul:text-zinc-300 prose-li:marker:text-purple-500
+                  prose-ul:text-foreground/80 prose-li:marker:text-purple-500
                   selection:bg-purple-500/30"
                 dangerouslySetInnerHTML={{ __html: sanitizedTranslatedContent || sanitizedContent }}
               />
@@ -303,17 +303,17 @@ const ArticleDetail = () => {
             {/* Right Sidebar - Sticky container with all sections */}
             <aside className="lg:col-span-3">
               <div className="sticky top-24 space-y-6 max-h-[calc(100vh-6rem)] overflow-y-auto pb-4 scrollbar-hide">
-                <div className="bg-zinc-900/40 backdrop-blur-xl border border-white/5 rounded-3xl p-6 shadow-2xl">
+                <div className="bg-white/70 dark:bg-zinc-900/40 backdrop-blur-xl border border-border rounded-3xl p-6 shadow-2xl">
                   <AuthorSidebar author={article.profiles} authorId={article.author_id} />
                 </div>
-                <div className="bg-zinc-900/40 backdrop-blur-xl border border-white/5 rounded-3xl p-6 shadow-2xl">
+                <div className="bg-white/70 dark:bg-zinc-900/40 backdrop-blur-xl border border-border rounded-3xl p-6 shadow-2xl">
                   <MoreFromAuthor 
                     authorId={article.author_id} 
                     authorName={article.profiles.full_name}
                     currentArticleId={article.id} 
                   />
                 </div>
-                <div className="bg-zinc-900/40 backdrop-blur-xl border border-white/5 rounded-3xl p-6 shadow-2xl">
+                <div className="bg-white/70 dark:bg-zinc-900/40 backdrop-blur-xl border border-border rounded-3xl p-6 shadow-2xl">
                   <WhoToFollow currentAuthorId={article.author_id} currentUserId={user?.id} />
                 </div>
                 <TrendingTopics />

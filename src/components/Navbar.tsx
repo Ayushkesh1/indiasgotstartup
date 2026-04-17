@@ -1,4 +1,4 @@
-import { Search, Edit3, LogOut, User, BookMarked, TrendingUp, ArrowLeft, Users, Share2, Twitter, Linkedin, Facebook, Shield, Trophy, Wallet, Sparkles, Settings } from "lucide-react";
+import { Search, Edit3, LogOut, User, BookMarked, TrendingUp, ArrowLeft, Users, Share2, Twitter, Linkedin, Facebook, Shield, Trophy, Wallet, Sparkles, Settings, Calendar, FileText, Lightbulb } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useProfile } from "@/hooks/useProfile";
 import { useAdminSession } from "@/hooks/useAdminSession";
+import { useTheme } from "@/components/ThemeProvider";
 
 interface NavbarProps {
   searchQuery?: string;
@@ -28,6 +29,7 @@ const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) =>
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
+  const { theme, setTheme } = useTheme();
 
   // Show admin link if user has admin role OR is logged in via admin session
   const showAdminLink = roleData?.isAdmin || isAdminSession;
@@ -75,7 +77,7 @@ const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) =>
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/95 shadow-sm">
+    <nav className="sticky top-0 z-50 w-full border-b border-border bg-white/70 dark:bg-zinc-900/95 backdrop-blur supports-[backdrop-filter]:bg-white/70 dark:bg-zinc-900/95 shadow-sm">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         <div className="flex h-14 items-center justify-between">
           <div className="flex items-center gap-2">
@@ -114,6 +116,21 @@ const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) =>
               </Button>
             </div>
 
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="relative overflow-hidden group"
+            >
+              <Lightbulb 
+                className={`h-5 w-5 transition-all duration-500 ease-in-out ${
+                  theme === 'light' 
+                    ? 'text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.8)] fill-yellow-400 dark:fill-transparent' 
+                    : 'text-muted-foreground'
+                }`} 
+              />
+            </Button>
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="hover:bg-muted">
@@ -133,14 +150,14 @@ const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) =>
                 </DropdownMenuItem>
                 <DropdownMenuItem 
                   onClick={() => handleShare("linkedin")}
-                  className="cursor-pointer transition-colors duration-200 focus:bg-[#0077b5] focus:text-white hover:bg-[#0077b5] hover:text-white mb-1"
+                  className="cursor-pointer transition-colors duration-200 focus:bg-[#0077b5] focus:text-foreground dark:text-white hover:bg-[#0077b5] hover:text-foreground dark:text-white mb-1"
                 >
                   <Linkedin className="mr-2 h-4 w-4" />
                   Share on LinkedIn
                 </DropdownMenuItem>
                 <DropdownMenuItem 
                   onClick={() => handleShare("facebook")}
-                  className="cursor-pointer transition-colors duration-200 focus:bg-[#1877F2] focus:text-white hover:bg-[#1877F2] hover:text-white mb-1"
+                  className="cursor-pointer transition-colors duration-200 focus:bg-[#1877F2] focus:text-foreground dark:text-white hover:bg-[#1877F2] hover:text-foreground dark:text-white mb-1"
                 >
                   <Facebook className="mr-2 h-4 w-4" />
                   Share on Facebook
@@ -179,6 +196,14 @@ const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) =>
                     <DropdownMenuItem onClick={() => navigate("/profile")}>
                       <User className="mr-2 h-4 w-4" />
                       Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/create-grant")}>
+                      <FileText className="mr-2 h-4 w-4" />
+                      Create Grant
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/create-event")}>
+                      <Calendar className="mr-2 h-4 w-4" />
+                      Create Event
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate("/creator-program")}>
                       <Sparkles className="mr-2 h-4 w-4" />

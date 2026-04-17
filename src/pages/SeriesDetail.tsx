@@ -133,7 +133,7 @@ export default function SeriesDetail() {
         </div>
 
         {/* Call to Action */}
-        <Card className="mt-12 bg-gradient-primary text-white">
+        <Card className="mt-12 bg-gradient-primary text-foreground dark:text-white">
           <CardContent className="p-8 text-center">
             <h2 className="text-2xl font-bold mb-4">Enjoying this series?</h2>
             <p className="mb-6">

@@ -159,7 +159,7 @@ export default function Leaderboard() {
                   </div>
                   <Avatar className="h-20 w-20 mx-auto mb-4 ring-4 ring-gray-400/20">
                     <AvatarImage src={leaderboard[1].avatar_url || undefined} />
-                    <AvatarFallback className="bg-gray-400 text-white text-xl">
+                    <AvatarFallback className="bg-gray-400 text-foreground dark:text-white text-xl">
                       {leaderboard[1].full_name?.charAt(0)?.toUpperCase() || "A"}
                     </AvatarFallback>
                   </Avatar>
@@ -192,7 +192,7 @@ export default function Leaderboard() {
                   </div>
                   <Avatar className="h-24 w-24 mx-auto mb-4 ring-4 ring-yellow-500/30">
                     <AvatarImage src={leaderboard[0].avatar_url || undefined} />
-                    <AvatarFallback className="bg-yellow-500 text-white text-2xl">
+                    <AvatarFallback className="bg-yellow-500 text-foreground dark:text-white text-2xl">
                       {leaderboard[0].full_name?.charAt(0)?.toUpperCase() || "A"}
                     </AvatarFallback>
                   </Avatar>
@@ -229,7 +229,7 @@ export default function Leaderboard() {
                   </div>
                   <Avatar className="h-20 w-20 mx-auto mb-4 ring-4 ring-amber-600/20">
                     <AvatarImage src={leaderboard[2].avatar_url || undefined} />
-                    <AvatarFallback className="bg-amber-600 text-white text-xl">
+                    <AvatarFallback className="bg-amber-600 text-foreground dark:text-white text-xl">
                       {leaderboard[2].full_name?.charAt(0)?.toUpperCase() || "A"}
                     </AvatarFallback>
                   </Avatar>
@@ -252,7 +252,7 @@ export default function Leaderboard() {
         )}
 
         {/* Full Leaderboard */}
-        <Card className="border-0 shadow-sm bg-card/50 backdrop-blur-sm">
+        <Card className="border-0 shadow-sm bg-white/70 dark:bg-zinc-900/50 backdrop-blur-sm">
           <CardContent className="p-0">
             {isLoading ? (
               <div className="flex items-center justify-center py-20">
