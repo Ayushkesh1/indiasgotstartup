@@ -12,7 +12,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { slugify, uploadEcosystemMedia } from "@/hooks/useEcosystem";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { TeamMemberSection, TeamMemberInput, ImageUploadPreview, MultiSelectGrid } from "@/components/ecosystem/DynamicFormFields";
+import { TeamMemberSection, TeamMemberInput, ImageUploadPreview, MultiSelectGrid, OpenRolesSection, OpenRoleInput } from "@/components/ecosystem/DynamicFormFields";
 import { Briefcase, MapPin, Globe, Users, Target, Building } from "lucide-react";
 
 const STAGES = ["Ideation", "Prototype", "MVP", "Early Traction", "Revenue", "Scaling"];
@@ -54,6 +54,7 @@ const SubmitInvestor = () => {
 
   const [selectedStages, setSelectedStages] = useState<string[]>([]);
   const [teamMembers, setTeamMembers] = useState<TeamMemberInput[]>([]);
+  const [openRoles, setOpenRoles] = useState<OpenRoleInput[]>([]);
 
   useEffect(() => {
     if (!loading && !user) navigate(`/auth?redirect=${encodeURIComponent("/investors/submit")}`);
@@ -87,6 +88,15 @@ const SubmitInvestor = () => {
         else if (form.type === "Accelerator Fund") typeEnum = "accelerator";
       }
 
+      // Process team member images
+      const processedTeam = await Promise.all(teamMembers.map(async (m) => {
+        let member_image_url = m.image_url;
+        if (m.imageFile) {
+          member_image_url = await uploadEcosystemMedia(user.id, m.imageFile, `investor_team_${m.id}`);
+        }
+        return { ...m, image_url: member_image_url, imageFile: undefined };
+      }));
+
       // Pack extra fields into notable_investments as JSON to survive schema limitations
       const notableData = {
         short_description: form.short_description,
@@ -95,7 +105,7 @@ const SubmitInvestor = () => {
         portfolio_companies: form.portfolio_companies,
         thesis: form.thesis,
         address: form.address,
-        team_members: teamMembers
+        team_members: processedTeam
       };
 
       const payload = {
@@ -123,6 +133,29 @@ const SubmitInvestor = () => {
 
       const { data: invData, error: invError } = await supabase.from('investors').insert(payload).select().single();
       if (invError) throw invError;
+
+      // Insert Job Postings
+      if (openRoles.length > 0) {
+        const jobsPayload = openRoles.map(r => ({
+          owner_id: user.id,
+          entity_type: 'investor',
+          entity_id: invData.id,
+          role_title: r.title,
+          department: r.department,
+          work_mode: r.work_mode,
+          city: r.city,
+          experience: r.experience,
+          skills: r.skills,
+          description: r.description,
+          apply_link: r.apply_link,
+          contact_email: r.apply_email,
+          deadline: r.deadline ? new Date(r.deadline).toISOString() : null
+        }));
+
+        const { error: jobsError } = await supabase.from('job_postings').insert(jobsPayload);
+        if (jobsError) console.error("Error inserting job postings:", jobsError);
+        else toast({ title: "Hiring Notified", description: "Your job postings have been recorded and we will notify the admin." });
+      }
 
       toast({ title: "Investor Profile Submitted!", description: "Your investor profile is now live." });
       navigate(`/investors/${invData.slug}`);
@@ -284,6 +317,20 @@ const SubmitInvestor = () => {
             </div>
             
             <TeamMemberSection members={teamMembers} onChange={setTeamMembers} />
+          </Card>
+
+          <Card className="p-6 md:p-8 shadow-sm border-border/50">
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border/50">
+              <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                <Briefcase className="h-5 w-5" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold">Hiring & Open Roles</h2>
+                <p className="text-sm text-muted-foreground">Are you looking to hire talent?</p>
+              </div>
+            </div>
+            
+            <OpenRolesSection roles={openRoles} onChange={setOpenRoles} />
           </Card>
 
           <div className="sticky bottom-4 z-10 p-4 bg-background/80 backdrop-blur-md border border-border/50 rounded-2xl shadow-xl flex items-center justify-between">

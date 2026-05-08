@@ -1,272 +1,168 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import Navbar from "@/components/Navbar";
-import CategoryFilter from "@/components/CategoryFilter";
-import TagFilter from "@/components/TagFilter";
-import NewsCard from "@/components/NewsCard";
-import { FeaturedSection } from "@/components/FeaturedSection";
 import { NewsletterFooter } from "@/components/NewsletterFooter";
-import { useArticles, ArticleCategory } from "@/hooks/useArticles";
-import { useArticlesByTag } from "@/hooks/useTags";
-import { useFollowedAuthors } from "@/hooks/useFollows";
 import { useAuth } from "@/hooks/useAuth";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useEcosystemList } from "@/hooks/useEcosystem";
+import { useArticles } from "@/hooks/useArticles";
+import NewsCard from "@/components/NewsCard";
 import {
-  TrendingUp, Loader2, Heart, ChevronRight, Search, Rocket, Users, Building2, Coins, CalendarDays, ArrowRight,
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+
+import {
+  TrendingUp, Search, Rocket, Building2, Coins, CalendarDays, 
+  ArrowRight, Users, Briefcase, Network, MessageCircle
 } from "lucide-react";
-import {
-  Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious,
-} from "@/components/ui/pagination";
 
 import { dummyStartups } from "@/data/startups";
 import { dummyInvestors } from "@/data/investors";
 import { dummyIncubators } from "@/data/incubators";
 import { GRANTS_DATA } from "@/data/grants";
 import { EVENTS_DATA } from "@/data/events";
-
-const PREDEFINED_CATEGORIES: ArticleCategory[] = [
-  "Fintech", "Tech", "Blockchain", "eCommerce", "Government", "Edtech", "Funding", "Mobility",
-];
+import { StartupCard } from "@/components/ecosystem/StartupCard";
+import { InvestorCard } from "@/components/ecosystem/InvestorCard";
 
 const ECOSYSTEM_SECTIONS = [
   { label: "Startups", path: "/startups", icon: Rocket, count: dummyStartups.length, color: "text-blue-500", bg: "bg-blue-500/10", desc: "Discover innovative companies" },
   { label: "Investors", path: "/investors", icon: TrendingUp, count: dummyInvestors.length, color: "text-emerald-500", bg: "bg-emerald-500/10", desc: "Angels, VCs & family offices" },
-  { label: "Incubators", path: "/incubators", icon: Building2, count: dummyIncubators.length, color: "text-purple-500", bg: "bg-purple-500/10", desc: "Accelerators & incubation programs" },
-  { label: "Grants", path: "/grants", icon: Coins, count: GRANTS_DATA.length, color: "text-amber-500", bg: "bg-amber-500/10", desc: "Non-dilutive funding opportunities" },
-  { label: "Events", path: "/events", icon: CalendarDays, count: EVENTS_DATA.length, color: "text-rose-500", bg: "bg-rose-500/10", desc: "Hackathons, meetups & conferences" },
+  { label: "Incubators", path: "/incubators", icon: Building2, count: dummyIncubators.length, color: "text-purple-500", bg: "bg-purple-500/10", desc: "Accelerators & incubation" },
+  { label: "Grants", path: "/grants", icon: Coins, count: GRANTS_DATA.length, color: "text-amber-500", bg: "bg-amber-500/10", desc: "Non-dilutive funding" },
+  { label: "Network", path: "/profile", icon: Network, count: "New", color: "text-rose-500", bg: "bg-rose-500/10", desc: "Connect with founders" },
 ];
 
 const Index = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string | ArticleCategory>("All");
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const { user } = useAuth();
 
-  const { data: articles, isLoading } = useArticles(selectedCategory);
-  const { data: tagFilteredArticles, isLoading: isLoadingTagArticles } = useArticlesByTag(selectedTag || "");
-  const { data: followedAuthorIds } = useFollowedAuthors(user?.id);
+  // Fetch db items to check what user owns
+  const { data: dbStartups } = useEcosystemList("startups");
+  const { data: dbIncubators } = useEcosystemList("incubators");
+  const { data: dbInvestors } = useEcosystemList("investors");
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [followingPage, setFollowingPage] = useState(1);
-  const ITEMS_PER_PAGE = 6;
+  const [hasStartup, setHasStartup] = useState(false);
+  const [hasIncubator, setHasIncubator] = useState(false);
+  const [hasInvestor, setHasInvestor] = useState(false);
 
-  const displayArticles = selectedTag ? tagFilteredArticles : articles;
-  const isLoadingArticles = selectedTag ? isLoadingTagArticles : isLoading;
+  useEffect(() => {
+    if (user) {
+      if (dbStartups?.some(s => s.owner_id === user.id)) setHasStartup(true);
+      if (dbIncubators?.some(i => i.owner_id === user.id)) setHasIncubator(true);
+      if (dbInvestors?.some(i => i.owner_id === user.id)) setHasInvestor(true);
+    }
+  }, [user, dbStartups, dbIncubators, dbInvestors]);
 
-  const filteredArticles = useMemo(() => {
-    if (!displayArticles) return [];
-    return displayArticles.filter((article) => {
-      const matchesSearch =
-        article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        article.excerpt?.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesSearch;
-    });
-  }, [displayArticles, searchQuery]);
+  const { data: articles } = useArticles();
 
-  const followedArticles = useMemo(() => {
-    if (!followedAuthorIds || followedAuthorIds.length === 0) return [];
-    return filteredArticles.filter((article) =>
-      followedAuthorIds.includes(article.author_id)
-    );
-  }, [filteredArticles, followedAuthorIds]);
+  // Combine data for sliders
+  const mergedStartups = useMemo(() => {
+    const db = (dbStartups || []).map(s => ({
+      id: s.id, slug: s.slug, name: s.name, shortDescription: s.tagline || s.description,
+      city: s.city, state: s.state, sector: s.sector, logo: s.logo_url
+    }));
+    return [...db, ...dummyStartups].slice(0, 10);
+  }, [dbStartups]);
 
+  const mergedInvestors = useMemo(() => {
+    const db = (dbInvestors || []).map(i => ({
+      id: i.id, slug: i.slug, name: i.name, tagline: i.tagline,
+      type: i.type, city: i.city, state: i.state, logo: i.logo_url,
+      ticketSizeMin: i.ticket_size_min ? `₹${(i.ticket_size_min/10000000).toFixed(1)}Cr` : null,
+      ticketSizeMax: i.ticket_size_max ? `₹${(i.ticket_size_max/10000000).toFixed(1)}Cr` : null,
+      isVerified: true
+    }));
+    return [...db, ...dummyInvestors].slice(0, 10);
+  }, [dbInvestors]);
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/startups?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col items-center w-full">
+    <div className="min-h-screen bg-background text-foreground flex flex-col w-full overflow-x-hidden">
       <Helmet>
-        <title>India's Got Startup — Discover India's Startup Ecosystem</title>
-        <meta name="description" content="India's premier startup ecosystem platform. Discover startups, connect with investors, find incubators, explore grants, and attend events." />
+        <title>India's Got Startup — Premium Startup Ecosystem</title>
+        <meta name="description" content="India's premier startup ecosystem platform. Discover startups, connect with investors, find incubators, explore grants, and expand your network." />
       </Helmet>
 
-      <Navbar searchQuery={searchQuery} onSearchChange={(q) => { setSearchQuery(q); setCurrentPage(1); }} />
+      <Navbar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
 
       {/* ═══════════════════════════════════════════
-          1. HERO SECTION
+          1. PREMIUM HERO & SEARCH
           ═══════════════════════════════════════════ */}
-      <section className="w-full pt-20 pb-12 sm:pt-28 sm:pb-20 relative overflow-hidden bg-gradient-to-b from-primary/5 via-background to-background">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[300px] bg-primary/10 blur-[100px] rounded-full pointer-events-none" />
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl relative z-10 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold tracking-wider uppercase mb-8">
-            <span className="relative flex h-1.5 w-1.5">
+      <section className="w-full pt-28 pb-20 relative bg-gradient-to-b from-primary/5 via-background to-background flex flex-col items-center justify-center text-center px-4">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[400px] bg-primary/10 blur-[120px] rounded-full pointer-events-none" />
+        
+        <div className="relative z-10 w-full max-w-5xl mx-auto space-y-8">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-semibold tracking-wider uppercase mx-auto">
+            <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-75 animate-ping"></span>
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
             </span>
-            India's Got Startup
-          </div>
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight mb-6 leading-tight">
-            India's startup landscape,<br/>
-            <span className="text-muted-foreground">curated beautifully.</span>
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-            The definitive editorial platform to discover startups, connect with investors, and stay updated with India's innovation ecosystem.
-          </p>
-
-          {/* Unified Search */}
-          <div className="max-w-xl mx-auto relative mb-12">
-            <div className="relative flex items-center bg-card border border-border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-              <Search className="absolute left-4 h-5 w-5 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="Search startups, investors, grants..."
-                className="w-full bg-transparent h-14 pl-12 pr-4 text-base outline-none placeholder:text-muted-foreground"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    const q = (e.target as HTMLInputElement).value.trim();
-                    if (q) navigate(`/startups?q=${encodeURIComponent(q)}`);
-                  }
-                }}
-              />
-              <Button size="sm" className="mr-1.5 h-11 px-6 rounded-lg font-semibold" onClick={() => navigate("/startups")}>
-                Explore
-              </Button>
-            </div>
+            The Premium Network
           </div>
           
-          <p className="text-sm text-muted-foreground/70 font-medium tracking-wide">
-            "The next unicorn may still be undiscovered."
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight">
+            India's Startup Ecosystem,<br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60">
+              Curated & Connected.
+            </span>
+          </h1>
+          
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            Discover rising startups, connect with active investors, apply for top incubators, and hire the best talent across India.
           </p>
+
+          <form onSubmit={handleSearch} className="max-w-2xl mx-auto w-full relative mt-10">
+            <div className="relative flex items-center bg-card border border-border/60 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl hover:border-primary/40 transition-all duration-300">
+              <Search className="absolute left-5 h-6 w-6 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Search for startups, investors, sectors, cities..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-transparent h-16 pl-14 pr-32 text-lg outline-none placeholder:text-muted-foreground/70"
+              />
+              <div className="absolute right-2">
+                <Button type="submit" size="lg" className="h-12 px-8 rounded-xl font-semibold text-base shadow-md">
+                  Explore
+                </Button>
+              </div>
+            </div>
+          </form>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════
-          5. ARTICLES SECTION
+          2. ECOSYSTEM NAVIGATION CARDS
           ═══════════════════════════════════════════ */}
-      <main className="flex-1 w-full px-4 sm:px-6 lg:px-8 pb-16 max-w-7xl relative z-10 mx-auto">
-        {/* Search Feedback */}
-        {searchQuery && (
-          <div className="w-full mb-6 py-3 px-6 rounded-xl border border-primary/20 bg-primary/5 flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">
-              Showing <strong className="text-foreground">{filteredArticles.length}</strong> result{filteredArticles.length !== 1 ? 's' : ''} for <strong className="text-foreground">"{searchQuery}"</strong>
-            </span>
-            <button onClick={() => setSearchQuery("")} className="text-primary hover:text-primary-hover text-sm font-medium transition-colors">
-              Clear
-            </button>
-          </div>
-        )}
-
-        <div className="flex gap-8">
-          <div className="flex-1 min-w-0">
-            {/* Filters */}
-            <div className="mb-8">
-              <div className="glass-panel rounded-xl p-4 flex flex-col gap-4">
-                <div className="flex-1 w-full overflow-x-auto scrollbar-hide">
-                  <CategoryFilter
-                    categories={PREDEFINED_CATEGORIES}
-                    selectedCategory={selectedCategory}
-                    onCategoryChange={(cat) => {
-                      setSelectedCategory(cat);
-                      setSelectedTag(null);
-                      setCurrentPage(1);
-                    }}
-                  />
-                </div>
-                <div className="pt-3 border-t border-border/40">
-                  <TagFilter selectedTag={selectedTag} onTagChange={setSelectedTag} />
-                </div>
-              </div>
-            </div>
-
-            <FeaturedSection />
-
-            {/* Article Feed */}
-            {user && followedAuthorIds && followedAuthorIds.length > 0 ? (
-              <Tabs defaultValue="all">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
-                  <h2 id="latest-stories" className="text-xl font-bold text-foreground">Latest Stories</h2>
-                  <TabsList className="bg-muted border border-border p-1 rounded-lg h-auto">
-                    <TabsTrigger value="all" className="rounded-md px-4 py-1.5 text-sm font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm">
-                      <TrendingUp className="h-3.5 w-3.5 mr-1.5" /> All
-                    </TabsTrigger>
-                    <TabsTrigger value="following" className="rounded-md px-4 py-1.5 text-sm font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm">
-                      <Heart className="h-3.5 w-3.5 mr-1.5" /> Following ({followedArticles.length})
-                    </TabsTrigger>
-                  </TabsList>
-                </div>
-
-                <TabsContent value="all" className="mt-0">
-                  <ArticleGrid
-                    articles={filteredArticles}
-                    isLoading={isLoadingArticles}
-                    currentPage={currentPage}
-                    setCurrentPage={setCurrentPage}
-                    itemsPerPage={ITEMS_PER_PAGE}
-                    user={user}
-                    navigate={navigate}
-                  />
-                </TabsContent>
-
-                <TabsContent value="following" className="mt-0">
-                  <ArticleGrid
-                    articles={followedArticles}
-                    isLoading={false}
-                    currentPage={followingPage}
-                    setCurrentPage={setFollowingPage}
-                    itemsPerPage={ITEMS_PER_PAGE}
-                    user={user}
-                    navigate={navigate}
-                    emptyMessage="Follow authors to see their stories here."
-                  />
-                </TabsContent>
-              </Tabs>
-            ) : (
-              <div className="mt-8">
-                <h2 id="latest-stories" className="text-xl font-bold text-foreground mb-6">Latest Stories</h2>
-                <ArticleGrid
-                  articles={filteredArticles}
-                  isLoading={isLoadingArticles}
-                  currentPage={currentPage}
-                  setCurrentPage={setCurrentPage}
-                  itemsPerPage={ITEMS_PER_PAGE}
-                  user={user}
-                  navigate={navigate}
-                />
-              </div>
-            )}
-          </div>
-        </div>
-      </main>
-
-            {/* Write CTA */}
-      <section className="w-full bg-muted/50 border-y border-border py-16 mb-16">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-4">
-            Have a story to share?
-          </h2>
-          <p className="text-base text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-            Whether it's a funding announcement, an inspiring founder journey, or an ecosystem insight, we'd love to feature it. Join hundreds of founders sharing their voice.
-          </p>
-          <Button onClick={() => !user ? navigate("/auth") : navigate("/write")} size="lg" className="px-8 font-semibold shadow-sm">
-            Submit Your Story
-          </Button>
-        </div>
-      </section>
-
-{/* ═══════════════════════════════════════════
-          2. ECOSYSTEM QUICK-ACCESS GRID
-          ═══════════════════════════════════════════ */}
-      <section className="w-full -mt-8 relative z-20 pb-4">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+      <section className="w-full relative z-20 pb-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1400px] mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
             {ECOSYSTEM_SECTIONS.map(sec => (
               <Link
                 key={sec.path}
                 to={sec.path}
-                className="group premium-card p-4 sm:p-5"
+                className="group bg-card/40 backdrop-blur-md border border-border/50 rounded-2xl p-6 hover:border-primary/50 hover:bg-card hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 flex flex-col items-center text-center"
               >
-                <div className={`h-10 w-10 rounded-xl ${sec.bg} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300`}>
-                  <sec.icon className={`h-5 w-5 ${sec.color}`} />
+                <div className={`h-14 w-14 rounded-2xl ${sec.bg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
+                  <sec.icon className={`h-7 w-7 ${sec.color}`} />
                 </div>
-                <div className="flex items-center gap-2 mb-1.5">
-                  <span className="font-semibold text-sm text-foreground">{sec.label}</span>
-                  <span className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded-md font-semibold tabular-nums">{sec.count}</span>
+                <h3 className="font-bold text-lg text-foreground mb-1 group-hover:text-primary transition-colors">{sec.label}</h3>
+                <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{sec.desc}</p>
+                <div className="mt-auto flex items-center text-xs font-semibold uppercase tracking-wider text-muted-foreground group-hover:text-primary transition-colors">
+                  Explore <ArrowRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
                 </div>
-                <p className="text-xs text-muted-foreground leading-relaxed">{sec.desc}</p>
-                <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/50 mt-3 group-hover:text-primary group-hover:translate-x-1 transition-all duration-200" />
               </Link>
             ))}
           </div>
@@ -274,90 +170,125 @@ const Index = () => {
       </section>
 
       {/* ═══════════════════════════════════════════
-          3. FEATURED STARTUPS
+          3. LATEST STORIES
           ═══════════════════════════════════════════ */}
-      <section className="w-full py-12 sm:py-16">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-2">
-              <Rocket className="h-5 w-5 text-primary" />
-              <h2 className="text-xl sm:text-2xl font-bold">Featured Startups</h2>
-            </div>
-            <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={() => navigate("/startups")}>
-              View all <ChevronRight className="h-4 w-4 ml-1" />
+      <section className="w-full py-12 px-4 sm:px-6 lg:px-8 bg-muted/10 border-t border-border/50">
+        <div className="max-w-[1400px] mx-auto">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-3xl font-bold tracking-tight">Latest Stories</h2>
+            <Button variant="outline" size="sm" onClick={() => navigate("/articles")}>
+              View All <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {dummyStartups.slice(0, 4).map(startup => (
-              <Link key={startup.id} to={`/startups/${startup.slug}`} className="group">
-                <Card className="h-full p-5 premium-card">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="h-10 w-10 rounded-lg bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0">
-                      {startup.logo ? (
-                        <img src={startup.logo} alt={startup.name} className="h-full w-full object-cover" loading="lazy" />
-                      ) : (
-                        <Rocket className="h-5 w-5 text-muted-foreground" />
-                      )}
-                    </div>
-                    <div className="min-w-0">
-                      <h3 className="font-semibold text-sm truncate group-hover:text-primary transition-colors">{startup.name}</h3>
-                      <p className="text-xs text-muted-foreground truncate">{startup.city}, {startup.state}</p>
-                    </div>
-                  </div>
-                  <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed mb-3">{startup.tagline}</p>
-                  <div className="flex flex-wrap gap-1">
-                    {startup.sectors?.slice(0, 2).map(s => (
-                      <span key={s} className="text-[10px] font-medium px-2 py-0.5 rounded bg-muted text-muted-foreground">{s}</span>
-                    ))}
-                  </div>
-                </Card>
-              </Link>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {articles?.slice(0, 8).map((article) => (
+              <NewsCard
+                key={article.id}
+                articleId={article.id}
+                title={article.title}
+                description={article.excerpt || ""}
+                category={article.category}
+                date={new Date(article.published_at || article.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                source="India's Got Startup"
+                sourceUrl={`/article/${article.slug}`}
+                thumbnail={article.featured_image_url || undefined}
+                author={article.profiles?.full_name || "Editorial Team"}
+                authorId={article.author_id}
+                authorImage={article.profiles?.avatar_url || undefined}
+                readTime={`${article.reading_time || 5} min read`}
+              />
             ))}
           </div>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════
-          4. FEATURED INVESTORS
+          4. FEATURED STARTUPS CAROUSEL
           ═══════════════════════════════════════════ */}
-      <section className="w-full pb-12 sm:pb-16">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-emerald-500" />
-              <h2 className="text-xl sm:text-2xl font-bold">Active Investors</h2>
+      <section className="w-full py-12 px-4 sm:px-6 lg:px-8 border-t border-border/50">
+        <div className="max-w-[1400px] mx-auto">
+          <div className="flex items-center justify-between mb-10">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <Rocket className="h-6 w-6 text-primary" />
+                <h2 className="text-3xl font-bold tracking-tight">Featured Startups</h2>
+              </div>
+              <p className="text-muted-foreground text-lg">Discover the fastest-growing companies in the ecosystem.</p>
             </div>
-            <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={() => navigate("/investors")}>
-              View all <ChevronRight className="h-4 w-4 ml-1" />
+            <Button variant="outline" size="lg" className="hidden sm:flex" onClick={() => navigate("/startups")}>
+              View All Directory <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {dummyInvestors.slice(0, 4).map(inv => (
-              <Link key={inv.id} to={`/investors/${inv.slug}`} className="group">
-                <Card className="h-full p-5 premium-card">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="h-10 w-10 rounded-lg bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0">
-                      {inv.logo ? (
-                        <img src={inv.logo} alt={inv.name} className="h-full w-full object-cover" loading="lazy" />
-                      ) : (
-                        <TrendingUp className="h-5 w-5 text-muted-foreground" />
-                      )}
-                    </div>
-                    <div className="min-w-0">
-                      <h3 className="font-semibold text-sm truncate group-hover:text-primary transition-colors">{inv.name}</h3>
-                      <p className="text-xs text-muted-foreground">{inv.type}</p>
-                    </div>
+
+          <Carousel
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            className="w-full"
+          >
+            <CarouselContent className="-ml-4 sm:-ml-6">
+              {mergedStartups.map((startup: any, index) => (
+                <CarouselItem key={startup.id || index} className="pl-4 sm:pl-6 md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                  <div className="h-full">
+                    <StartupCard startup={startup as any} />
                   </div>
-                  <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed mb-3">{inv.tagline}</p>
-                  <div className="flex flex-wrap gap-1">
-                    {inv.preferredStages?.slice(0, 2).map(s => (
-                      <span key={s} className="text-[10px] font-medium px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">{s}</span>
-                    ))}
-                  </div>
-                </Card>
-              </Link>
-            ))}
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <div className="flex items-center justify-end gap-2 mt-8">
+              <CarouselPrevious className="relative left-0 top-0 translate-y-0 h-12 w-12 bg-card border-border hover:bg-primary hover:text-primary-foreground transition-colors" />
+              <CarouselNext className="relative right-0 top-0 translate-y-0 h-12 w-12 bg-card border-border hover:bg-primary hover:text-primary-foreground transition-colors" />
+            </div>
+          </Carousel>
+          <Button variant="outline" className="w-full mt-6 sm:hidden" onClick={() => navigate("/startups")}>
+            View All Startups
+          </Button>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════
+          5. ACTIVE INVESTORS CAROUSEL
+          ═══════════════════════════════════════════ */}
+      <section className="w-full py-12 bg-muted/10 border-t border-border/50 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1400px] mx-auto">
+          <div className="flex items-center justify-between mb-10">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <TrendingUp className="h-6 w-6 text-emerald-500" />
+                <h2 className="text-3xl font-bold tracking-tight">Active Investors</h2>
+              </div>
+              <p className="text-muted-foreground text-lg">Firms and angels actively deploying capital.</p>
+            </div>
+            <Button variant="outline" size="lg" className="hidden sm:flex" onClick={() => navigate("/investors")}>
+              View All Investors <ArrowRight className="h-4 w-4 ml-2" />
+            </Button>
           </div>
+
+          <Carousel
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            className="w-full"
+          >
+            <CarouselContent className="-ml-4 sm:-ml-6">
+              {mergedInvestors.map((inv: any, index) => (
+                <CarouselItem key={inv.id || index} className="pl-4 sm:pl-6 md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                  <div className="h-full">
+                    <InvestorCard investor={inv as any} />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <div className="flex items-center justify-end gap-2 mt-8">
+              <CarouselPrevious className="relative left-0 top-0 translate-y-0 h-12 w-12 bg-card border-border hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-colors" />
+              <CarouselNext className="relative right-0 top-0 translate-y-0 h-12 w-12 bg-card border-border hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-colors" />
+            </div>
+          </Carousel>
+          <Button variant="outline" className="w-full mt-6 sm:hidden" onClick={() => navigate("/investors")}>
+            View All Investors
+          </Button>
         </div>
       </section>
 
@@ -365,134 +296,5 @@ const Index = () => {
     </div>
   );
 };
-
-/* ─────────────────────────────────────────────
-   Extracted ArticleGrid Component
-   ───────────────────────────────────────────── */
-function ArticleGrid({
-  articles,
-  isLoading,
-  currentPage,
-  setCurrentPage,
-  itemsPerPage,
-  user,
-  navigate,
-  emptyMessage,
-}: {
-  articles: any[];
-  isLoading: boolean;
-  currentPage: number;
-  setCurrentPage: (p: number | ((p: number) => number)) => void;
-  itemsPerPage: number;
-  user: any;
-  navigate: (path: string) => void;
-  emptyMessage?: string;
-}) {
-  const totalPages = Math.ceil(articles.length / itemsPerPage);
-  const paginatedArticles = articles.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (articles.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-16 text-center border border-dashed border-border rounded-xl bg-card/50">
-        <h3 className="text-lg font-semibold mb-2 text-foreground">{emptyMessage ? "No articles yet" : "No stories yet"}</h3>
-        <p className="text-muted-foreground text-sm mb-5 max-w-sm">
-          {emptyMessage || "Be the first to share your startup story."}
-        </p>
-        {!emptyMessage && (
-          <Button variant="outline" onClick={() => user ? navigate("/write") : navigate("/auth")}>
-            Start Writing
-          </Button>
-        )}
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-8">
-      {/* Top pagination */}
-      {totalPages > 1 && (
-        <div className="flex justify-between items-center bg-card border border-border p-2 rounded-xl text-sm">
-          <p className="text-xs text-muted-foreground font-medium ml-3">
-            Page {currentPage} of {totalPages}
-          </p>
-          <div className="flex gap-1">
-            <Button variant="ghost" size="sm" disabled={currentPage === 1} onClick={() => { setCurrentPage(p => Math.max(1, p - 1)); scrollToStories(); }}>
-              Prev
-            </Button>
-            <Button variant="ghost" size="sm" disabled={currentPage === totalPages} onClick={() => { setCurrentPage(p => Math.min(totalPages, p + 1)); scrollToStories(); }}>
-              Next
-            </Button>
-          </div>
-        </div>
-      )}
-
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {paginatedArticles.map((article: any, idx: number) => (
-          <div key={article.id} className="animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both" style={{ animationDelay: `${idx * 50}ms` }}>
-            <NewsCard
-              articleId={article.id}
-              title={article.title}
-              description={article.excerpt || ""}
-              category={article.category}
-              date={new Date(article.published_at || article.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-              source="India Got Startup"
-              sourceUrl={`/article/${article.slug}`}
-              thumbnail={article.featured_image_url || undefined}
-              author={article.profiles?.full_name || "Anonymous"}
-              authorImage={article.profiles?.avatar_url || undefined}
-              readTime={`${article.reading_time} min read`}
-              authorId={article.author_id}
-            />
-          </div>
-        ))}
-      </div>
-
-      {/* Bottom pagination */}
-      {totalPages > 1 && (
-        <div className="pt-6 border-t border-border">
-          <Pagination>
-            <PaginationContent className="bg-card border border-border p-1 rounded-xl">
-              <PaginationItem>
-                <PaginationPrevious
-                  onClick={() => { setCurrentPage(p => Math.max(1, p - 1)); scrollToStories(); }}
-                  className={`cursor-pointer ${currentPage === 1 ? 'opacity-50 pointer-events-none' : ''}`}
-                />
-              </PaginationItem>
-              {[...Array(totalPages)].map((_, i) => (
-                <PaginationItem key={i}>
-                  <PaginationLink
-                    onClick={() => { setCurrentPage(i + 1); scrollToStories(); }}
-                    isActive={currentPage === i + 1}
-                    className="cursor-pointer rounded-lg font-medium"
-                  >
-                    {i + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-              <PaginationItem>
-                <PaginationNext
-                  onClick={() => { setCurrentPage(p => Math.min(totalPages, p + 1)); scrollToStories(); }}
-                  className={`cursor-pointer ${currentPage === totalPages ? 'opacity-50 pointer-events-none' : ''}`}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function scrollToStories() {
-  setTimeout(() => document.getElementById('latest-stories')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
-}
 
 export default Index;

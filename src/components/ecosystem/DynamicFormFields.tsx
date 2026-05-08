@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Trash2, UploadCloud, Check } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -44,12 +45,22 @@ export const TeamMemberSection: React.FC<TeamMemberSectionProps> = ({ members, o
     <div className="space-y-4">
       {members.map((member, index) => (
         <div key={member.id} className="p-4 border border-border/50 rounded-lg bg-card/50 relative group">
-          <div className="absolute right-4 top-4 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="absolute right-4 top-4 opacity-0 group-hover:opacity-100 transition-opacity z-10">
             <Button type="button" variant="destructive" size="icon" className="h-8 w-8" onClick={() => removeMember(member.id)}>
               <Trash2 className="h-4 w-4" />
             </Button>
           </div>
           <h4 className="text-sm font-semibold mb-4">Team Member {index + 1}</h4>
+          
+          <div className="mb-6">
+            <ImageUploadPreview 
+              id={`team-image-${member.id}`}
+              label="Profile Photo"
+              file={member.imageFile || null}
+              onFileSelect={(f) => updateMember(member.id, "imageFile", f)}
+            />
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Name</Label>
@@ -93,9 +104,15 @@ export interface OpenRoleInput {
   id: string;
   title: string;
   department: string;
-  location: string;
+  work_mode: string;
+  city: string;
+  experience: string;
+  skills: string;
   description: string;
   apply_link: string;
+  apply_email: string;
+  contact_person: string;
+  deadline: string;
 }
 
 interface OpenRolesSectionProps {
@@ -107,7 +124,7 @@ export const OpenRolesSection: React.FC<OpenRolesSectionProps> = ({ roles, onCha
   const addRole = () => {
     onChange([
       ...roles,
-      { id: Math.random().toString(), title: "", department: "", location: "", description: "", apply_link: "" }
+      { id: Math.random().toString(), title: "", department: "", work_mode: "Remote", city: "", experience: "", skills: "", description: "", apply_link: "", apply_email: "", contact_person: "", deadline: "" }
     ]);
   };
 
@@ -138,16 +155,54 @@ export const OpenRolesSection: React.FC<OpenRolesSectionProps> = ({ roles, onCha
               <Label>Department</Label>
               <Input value={role.department} onChange={e => updateRole(role.id, "department", e.target.value)} placeholder="e.g. Engineering" />
             </div>
+            
             <div className="space-y-2">
-              <Label>Location / Remote</Label>
-              <Input value={role.location} onChange={e => updateRole(role.id, "location", e.target.value)} placeholder="e.g. Remote, India" />
+              <Label>Work Mode</Label>
+              <Select value={role.work_mode} onValueChange={(v) => updateRole(role.id, "work_mode", v)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select mode" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Remote">Remote</SelectItem>
+                  <SelectItem value="Hybrid">Hybrid</SelectItem>
+                  <SelectItem value="On-site">On-site</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
-              <Label>Apply Link / Email</Label>
-              <Input value={role.apply_link} onChange={e => updateRole(role.id, "apply_link", e.target.value)} placeholder="URL or email address" />
+              <Label>City (if Hybrid/On-site)</Label>
+              <Input value={role.city} onChange={e => updateRole(role.id, "city", e.target.value)} placeholder="e.g. Bangalore" />
             </div>
+            
+            <div className="space-y-2">
+              <Label>Experience Required</Label>
+              <Input value={role.experience} onChange={e => updateRole(role.id, "experience", e.target.value)} placeholder="e.g. 2-4 Years" />
+            </div>
+            <div className="space-y-2">
+              <Label>Skills Required</Label>
+              <Input value={role.skills} onChange={e => updateRole(role.id, "skills", e.target.value)} placeholder="e.g. React, Node.js" />
+            </div>
+            
+            <div className="space-y-2">
+              <Label>Apply Link</Label>
+              <Input value={role.apply_link} onChange={e => updateRole(role.id, "apply_link", e.target.value)} placeholder="URL to career page" />
+            </div>
+            <div className="space-y-2">
+              <Label>Apply Email</Label>
+              <Input type="email" value={role.apply_email} onChange={e => updateRole(role.id, "apply_email", e.target.value)} placeholder="jobs@company.com" />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Contact Person</Label>
+              <Input value={role.contact_person} onChange={e => updateRole(role.id, "contact_person", e.target.value)} placeholder="Name of Hiring Manager" />
+            </div>
+            <div className="space-y-2">
+              <Label>Deadline</Label>
+              <Input type="date" value={role.deadline} onChange={e => updateRole(role.id, "deadline", e.target.value)} />
+            </div>
+
             <div className="sm:col-span-2 space-y-2">
-              <Label>Short Description</Label>
+              <Label>Job Description</Label>
               <Textarea value={role.description} onChange={e => updateRole(role.id, "description", e.target.value)} placeholder="Briefly describe the responsibilities..." className="h-20" />
             </div>
           </div>
@@ -160,34 +215,68 @@ export const OpenRolesSection: React.FC<OpenRolesSectionProps> = ({ roles, onCha
   );
 };
 
-export const MultiSelectGrid = ({ options, selected, onChange }: { options: string[], selected: string[], onChange: (val: string[]) => void }) => {
+export const MultiSelectGrid = ({ options, selected, onChange, allowCustom = false }: { options: string[], selected: string[], onChange: (val: string[]) => void, allowCustom?: boolean }) => {
+  const [customInput, setCustomInput] = React.useState("");
+
   const toggle = (opt: string) => {
     if (selected.includes(opt)) onChange(selected.filter(x => x !== opt));
     else onChange([...selected, opt]);
   };
+
+  const handleCustomAdd = () => {
+    if (customInput.trim() && !selected.includes(customInput.trim())) {
+      onChange([...selected, customInput.trim()]);
+      setCustomInput("");
+    }
+  };
+
   return (
-    <div className="flex flex-wrap gap-2">
-      {options.map(opt => {
-        const isSelected = selected.includes(opt);
-        return (
+    <div className="space-y-3">
+      <div className="flex flex-wrap gap-2">
+        {options.map(opt => {
+          const isSelected = selected.includes(opt);
+          return (
+            <Badge 
+              key={opt} 
+              variant={isSelected ? "default" : "outline"} 
+              className={`cursor-pointer px-3 py-1.5 ${isSelected ? 'bg-primary' : 'bg-background hover:bg-muted'}`}
+              onClick={() => toggle(opt)}
+            >
+              {isSelected && <Check className="h-3 w-3 mr-1" />}
+              {opt}
+            </Badge>
+          );
+        })}
+        {allowCustom && selected.filter(s => !options.includes(s)).map(opt => (
           <Badge 
             key={opt} 
-            variant={isSelected ? "default" : "outline"} 
-            className={`cursor-pointer px-3 py-1.5 ${isSelected ? 'bg-primary' : 'bg-background hover:bg-muted'}`}
+            variant="default" 
+            className="cursor-pointer px-3 py-1.5 bg-primary"
             onClick={() => toggle(opt)}
           >
-            {isSelected && <Check className="h-3 w-3 mr-1" />}
+            <Check className="h-3 w-3 mr-1" />
             {opt}
           </Badge>
-        );
-      })}
+        ))}
+      </div>
+      {allowCustom && (
+        <div className="flex gap-2 max-w-sm">
+          <Input 
+            placeholder="Other (specify)" 
+            value={customInput} 
+            onChange={(e) => setCustomInput(e.target.value)}
+            onKeyDown={(e) => { if(e.key === 'Enter') { e.preventDefault(); handleCustomAdd(); }}}
+          />
+          <Button type="button" variant="secondary" onClick={handleCustomAdd}>Add</Button>
+        </div>
+      )}
     </div>
   );
 };
 
 export const ImageUploadPreview = ({ file, onFileSelect, label, id }: { file: File | null, onFileSelect: (f: File | null) => void, label: string, id: string }) => {
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 w-full">
       <Label htmlFor={id}>{label}</Label>
       <div className="flex items-center gap-4">
         <div className="flex-1">

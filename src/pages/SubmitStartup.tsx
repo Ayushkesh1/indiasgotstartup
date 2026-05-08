@@ -88,7 +88,7 @@ const SubmitStartup = () => {
         tagline: form.tagline,
         description: form.description,
         problem_statement: form.problemSolved,
-        solution: form.about + "\n\n### Open Roles:\n" + JSON.stringify(openRoles), // Pack open roles
+        solution: form.about,
         logo_url,
         banner_url,
         website_url: form.website_url,
@@ -116,19 +116,51 @@ const SubmitStartup = () => {
 
       // 3. Insert Team Members
       if (teamMembers.length > 0) {
-        const teamPayload = teamMembers.map((m, i) => ({
-          startup_id: startupData.id,
-          name: m.name,
-          role: m.role,
-          bio: m.bio,
-          linkedin_url: m.linkedin_url,
-          email: m.email,
-          image_url: m.image_url, // For real usage, we should upload their images too
-          display_order: i
+        // Upload team member images first
+        const teamPayload = await Promise.all(teamMembers.map(async (m, i) => {
+          let member_image_url = m.image_url;
+          if (m.imageFile) {
+            member_image_url = await uploadEcosystemMedia(user.id, m.imageFile, `team_${m.id}`);
+          }
+          return {
+            startup_id: startupData.id,
+            name: m.name,
+            role: m.role,
+            bio: m.bio,
+            linkedin_url: m.linkedin_url,
+            instagram_url: m.instagram_url,
+            city: m.city,
+            email: m.email,
+            image_url: member_image_url,
+            display_order: i
+          };
         }));
 
         const { error: teamError } = await supabase.from('startup_team').insert(teamPayload);
         if (teamError) console.error("Error inserting team:", teamError);
+      }
+
+      // 4. Insert Job Postings
+      if (openRoles.length > 0) {
+        const jobsPayload = openRoles.map(r => ({
+          owner_id: user.id,
+          entity_type: 'startup',
+          entity_id: startupData.id,
+          role_title: r.title,
+          department: r.department,
+          work_mode: r.work_mode,
+          city: r.city,
+          experience: r.experience,
+          skills: r.skills,
+          description: r.description,
+          apply_link: r.apply_link,
+          contact_email: r.apply_email,
+          deadline: r.deadline ? new Date(r.deadline).toISOString() : null
+        }));
+
+        const { error: jobsError } = await supabase.from('job_postings').insert(jobsPayload);
+        if (jobsError) console.error("Error inserting job postings:", jobsError);
+        else toast({ title: "Hiring Notified", description: "Your job postings have been recorded and we will notify the admin." });
       }
 
       toast({ title: "Startup Submitted!", description: "Your startup profile is now live." });

@@ -65,3 +65,17 @@ export function useUpdateProfile() {
     },
   });
 }
+
+export function useAllProfiles() {
+  return useQuery({
+    queryKey: ["profiles_all"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles_public")
+        .select("id, full_name, bio, avatar_url, username")
+        .limit(50);
+      if (error) throw error;
+      return data;
+    },
+  });
+}

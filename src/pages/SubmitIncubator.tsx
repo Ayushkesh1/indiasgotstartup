@@ -12,8 +12,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { slugify, uploadEcosystemMedia } from "@/hooks/useEcosystem";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { TeamMemberSection, TeamMemberInput, ImageUploadPreview, MultiSelectGrid } from "@/components/ecosystem/DynamicFormFields";
-import { Building, MapPin, Globe, Award, Users } from "lucide-react";
+import { TeamMemberSection, TeamMemberInput, ImageUploadPreview, MultiSelectGrid, OpenRolesSection, OpenRoleInput } from "@/components/ecosystem/DynamicFormFields";
+import { Building, MapPin, Globe, Award, Users, Briefcase } from "lucide-react";
 
 const STAGES = ["Ideation", "Prototype", "MVP", "Early Traction", "Revenue", "Scaling"];
 const SCHEMES = ["Startup India Seed Fund Scheme", "NIDHI PRAYAS", "NIDHI EIR", "TIDE 2.0", "MeitY Startup Hub", "Other"];
@@ -51,6 +51,7 @@ const SubmitIncubator = () => {
   const [selectedStages, setSelectedStages] = useState<string[]>([]);
   const [selectedSchemes, setSelectedSchemes] = useState<string[]>([]);
   const [teamMembers, setTeamMembers] = useState<TeamMemberInput[]>([]);
+  const [openRoles, setOpenRoles] = useState<OpenRoleInput[]>([]);
 
   useEffect(() => {
     if (!loading && !user) navigate(`/auth?redirect=${encodeURIComponent("/incubators/submit")}`);
@@ -104,16 +105,48 @@ const SubmitIncubator = () => {
 
       // Insert Team Members as Incubator Mentors
       if (teamMembers.length > 0) {
-        const teamPayload = teamMembers.map((m, i) => ({
-          incubator_id: incData.id,
-          name: m.name,
-          role: m.role,
-          bio: m.bio,
-          linkedin_url: m.linkedin_url,
-          image_url: m.image_url,
-          display_order: i
+        const teamPayload = await Promise.all(teamMembers.map(async (m, i) => {
+          let member_image_url = m.image_url;
+          if (m.imageFile) {
+            member_image_url = await uploadEcosystemMedia(user.id, m.imageFile, `mentor_${m.id}`);
+          }
+          return {
+            incubator_id: incData.id,
+            name: m.name,
+            role: m.role,
+            bio: m.bio,
+            linkedin_url: m.linkedin_url,
+            instagram_url: m.instagram_url,
+            city: m.city,
+            email: m.email,
+            image_url: member_image_url,
+            display_order: i
+          };
         }));
         await supabase.from('incubator_mentors').insert(teamPayload);
+      }
+
+      // Insert Job Postings
+      if (openRoles.length > 0) {
+        const jobsPayload = openRoles.map(r => ({
+          owner_id: user.id,
+          entity_type: 'incubator',
+          entity_id: incData.id,
+          role_title: r.title,
+          department: r.department,
+          work_mode: r.work_mode,
+          city: r.city,
+          experience: r.experience,
+          skills: r.skills,
+          description: r.description,
+          apply_link: r.apply_link,
+          contact_email: r.apply_email,
+          deadline: r.deadline ? new Date(r.deadline).toISOString() : null
+        }));
+
+        const { error: jobsError } = await supabase.from('job_postings').insert(jobsPayload);
+        if (jobsError) console.error("Error inserting job postings:", jobsError);
+        else toast({ title: "Hiring Notified", description: "Your job postings have been recorded and we will notify the admin." });
       }
 
       toast({ title: "Incubator Submitted!", description: "Your incubator profile is now live." });
@@ -255,7 +288,7 @@ const SubmitIncubator = () => {
             
             <div className="space-y-4">
               <p className="text-sm text-muted-foreground mb-4">Select the government grants and schemes available at your incubator.</p>
-              <MultiSelectGrid options={SCHEMES} selected={selectedSchemes} onChange={setSelectedSchemes} />
+              <MultiSelectGrid options={SCHEMES} selected={selectedSchemes} onChange={setSelectedSchemes} allowCustom={true} />
             </div>
           </Card>
 
@@ -268,6 +301,20 @@ const SubmitIncubator = () => {
             </div>
             
             <TeamMemberSection members={teamMembers} onChange={setTeamMembers} />
+          </Card>
+
+          <Card className="p-6 md:p-8 shadow-sm border-border/50">
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border/50">
+              <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                <Briefcase className="h-5 w-5" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold">Hiring & Open Roles</h2>
+                <p className="text-sm text-muted-foreground">Are you looking to hire talent?</p>
+              </div>
+            </div>
+            
+            <OpenRolesSection roles={openRoles} onChange={setOpenRoles} />
           </Card>
 
           <div className="sticky bottom-4 z-10 p-4 bg-background/80 backdrop-blur-md border border-border/50 rounded-2xl shadow-xl flex items-center justify-between">

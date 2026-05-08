@@ -15,7 +15,9 @@ const Index = lazy(() => import("./pages/Index"));
 const Auth = lazy(() => import("./pages/Auth"));
 const WriterDashboard = lazy(() => import("./pages/WriterDashboard"));
 const Profile = lazy(() => import("./pages/Profile"));
+const UserProfile = lazy(() => import("./pages/UserProfile"));
 const AuthorProfile = lazy(() => import("./pages/AuthorProfile"));
+const Articles = lazy(() => import("./pages/Articles"));
 const ArticleDetail = lazy(() => import("./pages/ArticleDetail"));
 const ReadingLists = lazy(() => import("./pages/ReadingLists"));
 const AdsManagement = lazy(() => import("./pages/AdsManagement"));
@@ -67,7 +69,9 @@ const AnimatedRoutes = () => {
         <Route path="/write" element={<PageTransition><WriterDashboard /></PageTransition>} />
         <Route path="/write/:id" element={<PageTransition><WriterDashboard /></PageTransition>} />
         <Route path="/profile" element={<PageTransition><Profile /></PageTransition>} />
+        <Route path="/user/:id" element={<PageTransition><UserProfile /></PageTransition>} />
         <Route path="/author/:id" element={<PageTransition><AuthorProfile /></PageTransition>} />
+        <Route path="/articles" element={<PageTransition><Articles /></PageTransition>} />
         <Route path="/article/:slug" element={<PageTransition><ArticleDetail /></PageTransition>} />
         <Route path="/reading-lists" element={<PageTransition><ReadingLists /></PageTransition>} />
         <Route path="/following" element={<PageTransition><FollowingManagement /></PageTransition>} />
