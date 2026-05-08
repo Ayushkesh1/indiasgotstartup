@@ -5,10 +5,12 @@ import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Building2, Search, Plus, ChevronLeft, ChevronRight } from "lucide-react";
+import { Building2, Search, Plus, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { IncubatorCard } from "@/components/ecosystem/IncubatorCard";
 import { dummyIncubators } from "@/data/incubators";
+import { NewsletterFooter } from "@/components/NewsletterFooter";
+import { useEcosystemList } from "@/hooks/useEcosystem";
 
 const ITEMS_PER_PAGE = 50;
 
@@ -16,46 +18,75 @@ const Incubators = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   
+  const { data: dbIncubators, isLoading } = useEcosystemList("incubators");
+
   const [search, setSearch] = useState("");
   const [city, setCity] = useState("all");
   const [state, setState] = useState("all");
   const [sector, setSector] = useState("all");
   const [page, setPage] = useState(1);
 
+  // Merge dummy and DB data
+  const allIncubators = useMemo(() => {
+    const mappedDbIncubators = (dbIncubators || []).map((i: any) => {
+      let grantAvailable = false;
+      try {
+        const facilities = JSON.parse(i.facilities || "{}");
+        if (facilities.schemes && facilities.schemes.length > 0) grantAvailable = true;
+      } catch (e) {}
+
+      return {
+        id: i.id,
+        name: i.name,
+        slug: i.slug,
+        shortDescription: i.about || i.tagline || "",
+        city: i.city || "",
+        state: i.state || "",
+        sectors: i.sector_focus ? i.sector_focus.split(",").map((s: string) => s.trim()) : [],
+        logo: i.logo_url || null,
+        investmentStages: i.startup_stages_supported ? i.startup_stages_supported.split(",").map((s: string) => s.trim()) : [],
+        grantAvailable,
+        programs: [],
+        mentors: []
+      };
+    });
+    
+    // Combine and deduplicate by slug
+    const combined = [...mappedDbIncubators, ...dummyIncubators];
+    const unique = Array.from(new Map(combined.map(item => [item.slug, item])).values());
+    return unique;
+  }, [dbIncubators]);
+
   // Extract unique values for filters
-  const cities = useMemo(() => Array.from(new Set(dummyIncubators.map(i => i.city).filter(Boolean))).sort(), []);
-  const states = useMemo(() => Array.from(new Set(dummyIncubators.map(i => i.state).filter(Boolean))).sort(), []);
+  const cities = useMemo(() => Array.from(new Set(allIncubators.map(i => i.city).filter(Boolean))).sort(), [allIncubators]);
+  const states = useMemo(() => Array.from(new Set(allIncubators.map(i => i.state).filter(Boolean))).sort(), [allIncubators]);
   const sectors = useMemo(() => {
-    const allSectors = dummyIncubators.flatMap(i => i.sectors || []);
+    const allSectors = allIncubators.flatMap(i => i.sectors || []);
     return Array.from(new Set(allSectors)).sort();
-  }, []);
+  }, [allIncubators]);
 
   // Filter logic
   const filteredIncubators = useMemo(() => {
-    return dummyIncubators.filter(i => {
-      // Search logic (name, city, state, sectors, description keywords)
+    return allIncubators.filter(i => {
       const q = search.toLowerCase();
       const matchesSearch = !search || 
         i.name.toLowerCase().includes(q) ||
         i.city.toLowerCase().includes(q) ||
         i.state.toLowerCase().includes(q) ||
-        (i.sectors && i.sectors.some(s => s.toLowerCase().includes(q))) ||
+        (i.sectors && i.sectors.some((s: string) => s.toLowerCase().includes(q))) ||
         (i.shortDescription && i.shortDescription.toLowerCase().includes(q));
 
-      // Dropdown logic
       const matchesCity = city === "all" || i.city === city;
       const matchesState = state === "all" || i.state === state;
       const matchesSector = sector === "all" || (i.sectors && i.sectors.includes(sector));
 
       return matchesSearch && matchesCity && matchesState && matchesSector;
     });
-  }, [search, city, state, sector]);
+  }, [search, city, state, sector, allIncubators]);
 
-  // Pagination logic
   const totalPages = Math.ceil(filteredIncubators.length / ITEMS_PER_PAGE);
   const paginatedIncubators = filteredIncubators.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
 
-  // Reset page when filters change
   useMemo(() => setPage(1), [search, city, state, sector]);
 
   const PaginationControls = () => {
@@ -96,7 +127,6 @@ const Incubators = () => {
           </Button>
         </header>
 
-        {/* Search & Filters */}
         <div className="bg-card border border-border/50 rounded-xl p-4 mb-8 space-y-4 shadow-sm">
           <div className="relative">
             <Search className="absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
@@ -140,7 +170,6 @@ const Incubators = () => {
           </div>
         </div>
 
-        {/* Top Pagination */}
         <div className="flex justify-between items-center mb-6">
           <p className="text-sm text-muted-foreground">
             Showing <span className="font-semibold text-foreground">{filteredIncubators.length}</span> incubators
@@ -148,11 +177,14 @@ const Incubators = () => {
           {totalPages > 1 && <PaginationControls />}
         </div>
 
-        {/* Grid */}
         <section>
-          {paginatedIncubators.length > 0 ? (
+          {isLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : paginatedIncubators.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {paginatedIncubators.map(i => <IncubatorCard key={i.id} incubator={i} />)}
+              {paginatedIncubators.map(i => <IncubatorCard key={i.id || i.slug} incubator={i as any} />)}
             </div>
           ) : (
             <div className="text-center py-20 border border-dashed border-border/50 rounded-xl bg-card/30">
@@ -166,13 +198,13 @@ const Incubators = () => {
           )}
         </section>
 
-        {/* Bottom Pagination */}
         {paginatedIncubators.length > 0 && totalPages > 1 && (
           <div className="mt-8 pt-8 border-t border-border/50">
             <PaginationControls />
           </div>
         )}
       </main>
+      <NewsletterFooter />
     </div>
   );
 };

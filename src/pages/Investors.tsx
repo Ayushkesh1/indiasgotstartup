@@ -5,10 +5,12 @@ import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { TrendingUp, Search, Plus, ChevronLeft, ChevronRight } from "lucide-react";
+import { TrendingUp, Search, Plus, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { InvestorCard } from "@/components/ecosystem/InvestorCard";
 import { dummyInvestors } from "@/data/investors";
+import { NewsletterFooter } from "@/components/NewsletterFooter";
+import { useEcosystemList } from "@/hooks/useEcosystem";
 
 const ITEMS_PER_PAGE = 50;
 
@@ -19,6 +21,8 @@ const Investors = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
+  const { data: dbInvestors, isLoading } = useEcosystemList("investors");
+
   const [search, setSearch] = useState("");
   const [city, setCity] = useState("all");
   const [state, setState] = useState("all");
@@ -26,13 +30,54 @@ const Investors = () => {
   const [stage, setStage] = useState("all");
   const [page, setPage] = useState(1);
 
+  // Merge dummy and DB data
+  const allInvestors = useMemo(() => {
+    const mappedDbInvestors = (dbInvestors || []).map((inv: any) => {
+      let extraData: any = {};
+      try {
+        if (inv.notable_investments) extraData = JSON.parse(inv.notable_investments);
+      } catch (e) {}
+
+      // Map type back to display strings
+      let displayType = inv.type;
+      if (inv.type === 'angel') displayType = 'Angel Investor';
+      if (inv.type === 'vc') displayType = 'VC Fund';
+      if (inv.type === 'micro_vc') displayType = 'Micro VC';
+      if (inv.type === 'corporate_vc') displayType = 'Corporate VC';
+      if (inv.type === 'family_office') displayType = 'Family Office';
+      if (inv.type === 'accelerator') displayType = 'Accelerator Fund';
+
+      return {
+        id: inv.id,
+        name: inv.name,
+        slug: inv.slug,
+        type: displayType || "Other",
+        tagline: inv.tagline || "",
+        about: inv.bio || "",
+        city: inv.city || "",
+        state: inv.state || "",
+        logo: inv.logo_url || null,
+        ticketSizeMin: inv.ticket_size_min ? `₹${(inv.ticket_size_min/10000000).toFixed(1)}Cr` : null,
+        ticketSizeMax: inv.ticket_size_max ? `₹${(inv.ticket_size_max/10000000).toFixed(1)}Cr` : null,
+        preferredSectors: inv.preferred_sectors ? inv.preferred_sectors.split(",").map((s: string) => s.trim()) : [],
+        preferredStages: inv.preferred_stages ? inv.preferred_stages.split(",").map((s: string) => s.trim()) : [],
+        notableInvestments: extraData.portfolio_companies ? extraData.portfolio_companies.split(",").map((s: string) => s.trim()) : [],
+        isVerified: true
+      };
+    });
+
+    const combined = [...mappedDbInvestors, ...dummyInvestors];
+    const unique = Array.from(new Map(combined.map(item => [item.slug, item])).values());
+    return unique;
+  }, [dbInvestors]);
+
   // Extract unique values for filters
-  const cities = useMemo(() => Array.from(new Set(dummyInvestors.map(i => i.city).filter(Boolean))).sort(), []);
-  const states = useMemo(() => Array.from(new Set(dummyInvestors.map(i => i.state).filter(Boolean))).sort(), []);
+  const cities = useMemo(() => Array.from(new Set(allInvestors.map(i => i.city).filter(Boolean))).sort(), [allInvestors]);
+  const states = useMemo(() => Array.from(new Set(allInvestors.map(i => i.state).filter(Boolean))).sort(), [allInvestors]);
 
   // Filter logic
   const filteredInvestors = useMemo(() => {
-    return dummyInvestors.filter(inv => {
+    return allInvestors.filter(inv => {
       const q = search.toLowerCase();
       const matchesSearch = !search ||
         inv.name.toLowerCase().includes(q) ||
@@ -41,23 +86,21 @@ const Investors = () => {
         inv.type.toLowerCase().includes(q) ||
         (inv.tagline && inv.tagline.toLowerCase().includes(q)) ||
         (inv.about && inv.about.toLowerCase().includes(q)) ||
-        (inv.preferredSectors && inv.preferredSectors.some(s => s.toLowerCase().includes(q))) ||
-        (inv.notableInvestments && inv.notableInvestments.some(ni => ni.toLowerCase().includes(q)));
+        (inv.preferredSectors && inv.preferredSectors.some((s: string) => s.toLowerCase().includes(q))) ||
+        (inv.notableInvestments && inv.notableInvestments.some((ni: string) => ni.toLowerCase().includes(q)));
 
       const matchesCity = city === "all" || inv.city === city;
       const matchesState = state === "all" || inv.state === state;
-      const matchesType = type === "all" || inv.type === type;
+      const matchesType = type === "all" || inv.type.includes(type);
       const matchesStage = stage === "all" || (inv.preferredStages && inv.preferredStages.includes(stage));
 
       return matchesSearch && matchesCity && matchesState && matchesType && matchesStage;
     });
-  }, [search, city, state, type, stage]);
+  }, [search, city, state, type, stage, allInvestors]);
 
-  // Pagination logic
   const totalPages = Math.ceil(filteredInvestors.length / ITEMS_PER_PAGE);
   const paginatedInvestors = filteredInvestors.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
 
-  // Reset page when filters change
   useMemo(() => setPage(1), [search, city, state, type, stage]);
 
   const PaginationControls = () => {
@@ -114,7 +157,6 @@ const Investors = () => {
           </Button>
         </header>
 
-        {/* Search & Filters */}
         <div className="bg-card border border-border/50 rounded-xl p-4 mb-8 space-y-4 shadow-sm">
           <div className="relative">
             <Search className="absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
@@ -168,7 +210,6 @@ const Investors = () => {
           </div>
         </div>
 
-        {/* Top Pagination */}
         <div className="flex justify-between items-center mb-6">
           <p className="text-sm text-muted-foreground">
             Showing <span className="font-semibold text-foreground">{filteredInvestors.length}</span> investors
@@ -176,11 +217,14 @@ const Investors = () => {
           {totalPages > 1 && <PaginationControls />}
         </div>
 
-        {/* Grid */}
         <section>
-          {paginatedInvestors.length > 0 ? (
+          {isLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : paginatedInvestors.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {paginatedInvestors.map(inv => <InvestorCard key={inv.id} investor={inv} />)}
+              {paginatedInvestors.map(inv => <InvestorCard key={inv.id || inv.slug} investor={inv as any} />)}
             </div>
           ) : (
             <div className="text-center py-20 border border-dashed border-border/50 rounded-xl bg-card/30">
@@ -194,13 +238,13 @@ const Investors = () => {
           )}
         </section>
 
-        {/* Bottom Pagination */}
         {paginatedInvestors.length > 0 && totalPages > 1 && (
           <div className="mt-8 pt-8 border-t border-border/50">
             <PaginationControls />
           </div>
         )}
       </main>
+      <NewsletterFooter />
     </div>
   );
 };

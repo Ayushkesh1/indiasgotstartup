@@ -5,10 +5,12 @@ import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Sparkles, Search, Plus, ChevronLeft, ChevronRight, Rocket } from "lucide-react";
+import { Sparkles, Search, Plus, ChevronLeft, ChevronRight, Rocket, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { StartupCard } from "@/components/ecosystem/StartupCard";
 import { dummyStartups } from "@/data/startups";
+import { NewsletterFooter } from "@/components/NewsletterFooter";
+import { useEcosystemList } from "@/hooks/useEcosystem";
 
 const ITEMS_PER_PAGE = 50;
 
@@ -16,15 +18,37 @@ const Startups = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   
+  const { data: dbStartups, isLoading } = useEcosystemList("startups");
+
   const [search, setSearch] = useState("");
   const [city, setCity] = useState("all");
   const [state, setState] = useState("all");
   const [sector, setSector] = useState("all");
   const [page, setPage] = useState(1);
 
+  // Merge dummy and DB data
+  const allStartups = useMemo(() => {
+    const mappedDbStartups = (dbStartups || []).map((s: any) => ({
+      id: s.id,
+      name: s.name,
+      slug: s.slug,
+      shortDescription: s.description || s.tagline || "",
+      city: s.city || "",
+      state: s.state || "",
+      sector: s.sector || "",
+      logo: s.logo_url || null,
+      teamMembers: [] // We don't fetch team on list page
+    }));
+    
+    // Combine and deduplicate by slug
+    const combined = [...mappedDbStartups, ...dummyStartups];
+    const unique = Array.from(new Map(combined.map(item => [item.slug, item])).values());
+    return unique;
+  }, [dbStartups]);
+
   // Extract unique values for filters
-  const cities = useMemo(() => Array.from(new Set(dummyStartups.map(s => s.city).filter(Boolean))).sort(), []);
-  const states = useMemo(() => Array.from(new Set(dummyStartups.map(s => s.state).filter(Boolean))).sort(), []);
+  const cities = useMemo(() => Array.from(new Set(allStartups.map(s => s.city).filter(Boolean))).sort(), [allStartups]);
+  const states = useMemo(() => Array.from(new Set(allStartups.map(s => s.state).filter(Boolean))).sort(), [allStartups]);
   const sectors = useMemo(() => [
     "SaaS", "AI", "AgriTech", "HealthTech", "FinTech", "EdTech", "D2C", 
     "ClimateTech", "DeepTech", "Social Impact", "Hardware", "Web3", 
@@ -33,37 +57,31 @@ const Startups = () => {
 
   // Filter logic
   const filteredStartups = useMemo(() => {
-    return dummyStartups.filter(s => {
-      // Search logic (name, city, state, sector, description keywords, team member names)
+    return allStartups.filter(s => {
       const q = search.toLowerCase();
       const matchesSearch = !search || 
         s.name.toLowerCase().includes(q) ||
         s.city.toLowerCase().includes(q) ||
         s.state.toLowerCase().includes(q) ||
         s.sector.toLowerCase().includes(q) ||
-        (s.shortDescription && s.shortDescription.toLowerCase().includes(q)) ||
-        (s.teamMembers && s.teamMembers.some(tm => tm.name.toLowerCase().includes(q)));
+        (s.shortDescription && s.shortDescription.toLowerCase().includes(q));
 
-      // Dropdown logic
       const matchesCity = city === "all" || s.city === city;
       const matchesState = state === "all" || s.state === state;
       const matchesSector = sector === "all" || (sector === "Other" ? !sectors.slice(0, -1).includes(s.sector) : s.sector === sector);
 
       return matchesSearch && matchesCity && matchesState && matchesSector;
     });
-  }, [search, city, state, sector, sectors]);
+  }, [search, city, state, sector, sectors, allStartups]);
 
-  // Pagination logic
   const totalPages = Math.ceil(filteredStartups.length / ITEMS_PER_PAGE);
   const paginatedStartups = filteredStartups.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
 
-  // Reset page when filters change
   useMemo(() => setPage(1), [search, city, state, sector]);
 
   const PaginationControls = () => {
     if (totalPages <= 1) return null;
     
-    // Page numbers generation
     const pageNumbers = [];
     for (let i = 1; i <= totalPages; i++) {
       pageNumbers.push(
@@ -115,12 +133,11 @@ const Startups = () => {
           </Button>
         </header>
 
-        {/* Search & Filters */}
         <div className="bg-card border border-border/50 rounded-xl p-4 mb-8 space-y-4 shadow-sm">
           <div className="relative">
             <Search className="absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
             <Input 
-              placeholder="Search by startup name, city, sector, keywords, or founder..." 
+              placeholder="Search by startup name, city, sector, or keywords..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="pl-11 h-12 text-base bg-background"
@@ -159,7 +176,6 @@ const Startups = () => {
           </div>
         </div>
 
-        {/* Top Pagination */}
         <div className="flex justify-between items-center mb-6">
           <p className="text-sm text-muted-foreground">
             Showing <span className="font-semibold text-foreground">{filteredStartups.length}</span> startups
@@ -167,11 +183,14 @@ const Startups = () => {
           {totalPages > 1 && <PaginationControls />}
         </div>
 
-        {/* Grid */}
         <section>
-          {paginatedStartups.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {paginatedStartups.map(s => <StartupCard key={s.id} startup={s} />)}
+          {isLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : paginatedStartups.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {paginatedStartups.map(s => <StartupCard key={s.id || s.slug} startup={s as any} />)}
             </div>
           ) : (
             <div className="text-center py-20 border border-dashed border-border/50 rounded-xl bg-card/30">
@@ -185,13 +204,13 @@ const Startups = () => {
           )}
         </section>
 
-        {/* Bottom Pagination */}
         {paginatedStartups.length > 0 && totalPages > 1 && (
           <div className="mt-8 pt-8 border-t border-border/50">
             <PaginationControls />
           </div>
         )}
       </main>
+      <NewsletterFooter />
     </div>
   );
 };

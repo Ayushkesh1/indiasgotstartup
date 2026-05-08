@@ -6,13 +6,77 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   ArrowLeft, BadgeCheck, Mail, Linkedin, Globe, Twitter,
-  Phone, MapPin, Map, TrendingUp, IndianRupee, Briefcase, CheckCircle2
+  Phone, MapPin, Map, TrendingUp, IndianRupee, Briefcase, CheckCircle2, Loader2
 } from "lucide-react";
 import { dummyInvestors } from "@/data/investors";
+import { NewsletterFooter } from "@/components/NewsletterFooter";
+import { useEcosystemBySlug } from "@/hooks/useEcosystem";
 
 const InvestorProfile = () => {
   const { slug } = useParams<{ slug: string }>();
-  const inv = dummyInvestors.find(i => i.slug === slug);
+  
+  const { data: dbInvestor, isLoading } = useEcosystemBySlug("investors", slug);
+  const dummy = dummyInvestors.find(i => i.slug === slug);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <p className="mt-4 text-muted-foreground">Loading profile...</p>
+      </div>
+    );
+  }
+
+  let inv: any = null;
+
+  if (dbInvestor) {
+    let extraData: any = {};
+    try {
+      if (dbInvestor.notable_investments) extraData = JSON.parse(dbInvestor.notable_investments);
+    } catch (e) {}
+
+    // Map type back to display strings
+    let displayType = dbInvestor.type;
+    if (dbInvestor.type === 'angel') displayType = 'Angel Investor';
+    if (dbInvestor.type === 'vc') displayType = 'VC Fund';
+    if (dbInvestor.type === 'micro_vc') displayType = 'Micro VC';
+    if (dbInvestor.type === 'corporate_vc') displayType = 'Corporate VC';
+    if (dbInvestor.type === 'family_office') displayType = 'Family Office';
+    if (dbInvestor.type === 'accelerator') displayType = 'Accelerator Fund';
+
+    inv = {
+      name: dbInvestor.name,
+      slug: dbInvestor.slug,
+      type: displayType || "Other",
+      tagline: dbInvestor.tagline || extraData.short_description || "",
+      about: dbInvestor.bio || "",
+      coverImage: dbInvestor.banner_url,
+      logo: dbInvestor.logo_url,
+      city: dbInvestor.city,
+      state: dbInvestor.state,
+      address: extraData.address || "",
+      email: dbInvestor.email,
+      phone: extraData.phone || "", // Not in schema directly, fallback just in case
+      website: dbInvestor.website_url,
+      socials: {
+        linkedin: dbInvestor.linkedin_url,
+        twitter: dbInvestor.twitter_url,
+      },
+      aum: extraData.fund_size || null,
+      ticketSizeMin: dbInvestor.ticket_size_min ? `₹${(dbInvestor.ticket_size_min/10000000).toFixed(1)}Cr` : null,
+      ticketSizeMax: dbInvestor.ticket_size_max ? `₹${(dbInvestor.ticket_size_max/10000000).toFixed(1)}Cr` : null,
+      portfolioCount: dbInvestor.portfolio_count || 0,
+      openToDeals: true, // Hardcoded for active profiles
+      isVerified: true,
+      preferredSectors: dbInvestor.preferred_sectors ? dbInvestor.preferred_sectors.split(",").map((s: string) => s.trim()) : [],
+      preferredStages: dbInvestor.preferred_stages ? dbInvestor.preferred_stages.split(",").map((s: string) => s.trim()) : [],
+      investmentThesis: extraData.thesis || "",
+      notableInvestments: extraData.portfolio_companies ? extraData.portfolio_companies.split(",").map((s: string) => s.trim()) : [],
+      teamMembers: extraData.team_members || []
+    };
+  } else if (dummy) {
+    inv = dummy;
+  }
 
   if (!inv) {
     return (
@@ -35,7 +99,7 @@ const InvestorProfile = () => {
       <Navbar />
 
       <main>
-        {/* 1. Hero Cover */}
+        {/* Hero Cover */}
         <div className="relative h-56 sm:h-72 lg:h-80 bg-gradient-to-br from-primary/10 via-background to-background overflow-hidden border-b border-border/50">
           {inv.coverImage && (
             <img src={inv.coverImage} alt={`${inv.name} cover`} className="absolute inset-0 w-full h-full object-cover opacity-70" />
@@ -114,7 +178,7 @@ const InvestorProfile = () => {
             </div>
           </div>
 
-          {/* 2. Quick Stats Bar */}
+          {/* Quick Stats Bar */}
           <Card className="mb-8 border-border/50 shadow-sm">
             <CardContent className="p-5 grid grid-cols-2 sm:grid-cols-4 gap-6">
               <StatItem label="Investor Type" value={inv.type} />
@@ -128,7 +192,7 @@ const InvestorProfile = () => {
             {/* Left / Main Content */}
             <div className="lg:col-span-2 space-y-8">
 
-              {/* 3. About Section */}
+              {/* About Section */}
               <section className="bg-card border border-border/50 rounded-2xl p-6 sm:p-8 shadow-sm">
                 <h2 className="text-2xl font-semibold mb-6">About {inv.name}</h2>
                 <p className="text-foreground/90 leading-relaxed whitespace-pre-line mb-6">{inv.about}</p>
@@ -140,7 +204,7 @@ const InvestorProfile = () => {
                 )}
               </section>
 
-              {/* 4. Preferred Sectors & Stages */}
+              {/* Preferred Sectors & Stages */}
               <section className="bg-card border border-border/50 rounded-2xl p-6 sm:p-8 shadow-sm">
                 <h2 className="text-xl font-semibold mb-6">Investment Focus</h2>
                 <div className="space-y-5">
@@ -148,7 +212,7 @@ const InvestorProfile = () => {
                     <div>
                       <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">Preferred Sectors</h3>
                       <div className="flex flex-wrap gap-2">
-                        {inv.preferredSectors.map(s => (
+                        {inv.preferredSectors.map((s: string) => (
                           <Badge key={s} variant="secondary" className="px-3 py-1.5 text-sm bg-primary/10 text-primary border-primary/20">
                             {s}
                           </Badge>
@@ -160,7 +224,7 @@ const InvestorProfile = () => {
                     <div>
                       <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">Preferred Stages</h3>
                       <div className="flex flex-wrap gap-2">
-                        {inv.preferredStages.map(stage => (
+                        {inv.preferredStages.map((stage: string) => (
                           <span key={stage} className="text-sm font-semibold px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                             {stage}
                           </span>
@@ -171,12 +235,12 @@ const InvestorProfile = () => {
                 </div>
               </section>
 
-              {/* 5. Notable Investments */}
+              {/* Notable Investments */}
               {inv.notableInvestments && inv.notableInvestments.length > 0 && (
                 <section className="bg-card border border-border/50 rounded-2xl p-6 sm:p-8 shadow-sm">
                   <h2 className="text-xl font-semibold mb-6">Notable Investments</h2>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    {inv.notableInvestments.map(company => (
+                    {inv.notableInvestments.map((company: string) => (
                       <div key={company} className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border border-border/50 hover:bg-muted/40 transition-colors">
                         <Briefcase className="h-4 w-4 text-primary shrink-0" />
                         <span className="text-sm font-medium truncate">{company}</span>
@@ -186,12 +250,12 @@ const InvestorProfile = () => {
                 </section>
               )}
 
-              {/* 6. Badges / Highlights */}
+              {/* Badges / Highlights */}
               {inv.badges && inv.badges.length > 0 && (
                 <section className="bg-card border border-border/50 rounded-2xl p-6 sm:p-8 shadow-sm">
                   <h2 className="text-xl font-semibold mb-6">Highlights</h2>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    {inv.badges.map(badge => (
+                    {inv.badges.map((badge: string) => (
                       <div key={badge} className="flex flex-col items-center justify-center p-4 bg-muted/20 border border-border/50 rounded-xl text-center gap-2 hover:bg-muted/40 transition-colors">
                         <CheckCircle2 className="h-6 w-6 text-primary" />
                         <span className="text-xs font-medium">{badge}</span>
@@ -201,13 +265,13 @@ const InvestorProfile = () => {
                 </section>
               )}
 
-              {/* 7. Team Members */}
+              {/* Team Members */}
               {inv.teamMembers && inv.teamMembers.length > 0 && (
                 <section>
                   <h2 className="text-2xl font-semibold mb-6">Team</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {inv.teamMembers.map(member => (
-                      <Card key={member.id} className="overflow-hidden border-border/50 hover:border-primary/30 transition-colors shadow-sm">
+                    {inv.teamMembers.map((member: any) => (
+                      <Card key={member.id || member.name} className="overflow-hidden border-border/50 hover:border-primary/30 transition-colors shadow-sm">
                         <CardContent className="p-5 flex items-start gap-4">
                           <img
                             src={member.image_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}`}
@@ -216,7 +280,7 @@ const InvestorProfile = () => {
                           />
                           <div className="flex-1 min-w-0">
                             <h3 className="font-semibold text-base truncate">{member.name}</h3>
-                            <p className="text-xs text-primary font-medium mb-1 truncate">{member.designation}</p>
+                            <p className="text-xs text-primary font-medium mb-1 truncate">{member.role || member.designation}</p>
                             {member.location && <p className="text-xs text-muted-foreground mb-2 truncate">{member.location}</p>}
                             {member.bio && <p className="text-xs text-foreground/80 mb-3 line-clamp-2">{member.bio}</p>}
                             <div className="flex gap-2">
@@ -246,7 +310,7 @@ const InvestorProfile = () => {
 
             {/* Sidebar / Right Column */}
             <div className="space-y-6">
-              {/* 8. Investment Terms */}
+              {/* Investment Terms */}
               <Card className="border-border/50 shadow-sm overflow-hidden">
                 <div className="bg-muted p-4 border-b border-border/50 flex items-center gap-2">
                   <IndianRupee className="h-5 w-5 text-primary" />
@@ -278,7 +342,7 @@ const InvestorProfile = () => {
                 </CardContent>
               </Card>
 
-              {/* 9. Contact & Location */}
+              {/* Contact & Location */}
               <Card className="border-border/50 shadow-sm overflow-hidden sticky top-24">
                 <div className="bg-muted p-4 border-b border-border/50 flex items-center gap-2">
                   <Map className="h-5 w-5 text-primary" />
@@ -334,6 +398,7 @@ const InvestorProfile = () => {
           </div>
         </div>
       </main>
+      <NewsletterFooter />
     </div>
   );
 };

@@ -13,7 +13,6 @@ import { useArticles, ArticleCategory } from "@/hooks/useArticles";
 import { useArticlesByTag } from "@/hooks/useTags";
 import { useFollowedAuthors } from "@/hooks/useFollows";
 import { useAuth } from "@/hooks/useAuth";
-import { useCountUp } from "@/hooks/useCountUp";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   TrendingUp, Loader2, Heart, ChevronRight, Search, Rocket, Users, Building2, Coins, CalendarDays, ArrowRight,
@@ -75,10 +74,7 @@ const Index = () => {
     );
   }, [filteredArticles, followedAuthorIds]);
 
-  // Animated stat counters
-  const startupCount = useCountUp({ end: 850, duration: 2000 });
-  const investorCount = useCountUp({ end: 220, duration: 2200 });
-  const fundingCount = useCountUp({ end: 12, duration: 2400 });
+
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col items-center w-full">
@@ -92,67 +88,165 @@ const Index = () => {
       {/* ═══════════════════════════════════════════
           1. HERO SECTION
           ═══════════════════════════════════════════ */}
-      <section className="w-full bg-gradient-hero pt-16 pb-12 sm:pt-20 sm:pb-16 relative overflow-hidden">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold tracking-wider uppercase mb-6">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary"></span>
-              </span>
-              India's Startup Ecosystem Platform
-            </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6 leading-[1.1]">
-              Discover, Connect &{" "}
-              <span className="text-gradient-brand bg-[length:200%_auto] animate-gradient">Build Together</span>
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8 leading-relaxed">
-              The definitive platform to discover startups, connect with investors, find incubators, explore grants, and stay updated with India's innovation landscape.
-            </p>
+      <section className="w-full pt-20 pb-12 sm:pt-28 sm:pb-20 relative overflow-hidden bg-gradient-to-b from-primary/5 via-background to-background">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[300px] bg-primary/10 blur-[100px] rounded-full pointer-events-none" />
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl relative z-10 text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold tracking-wider uppercase mb-8">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-75 animate-ping"></span>
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary"></span>
+            </span>
+            India's Got Startup
+          </div>
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight mb-6 leading-tight">
+            India's startup landscape,<br/>
+            <span className="text-muted-foreground">curated beautifully.</span>
+          </h1>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
+            The definitive editorial platform to discover startups, connect with investors, and stay updated with India's innovation ecosystem.
+          </p>
 
-            {/* Unified Search */}
-            <div className="max-w-xl mx-auto relative mb-10">
-              <div className="relative flex items-center bg-card border border-border rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
-                <Search className="absolute left-4 h-5 w-5 text-muted-foreground" />
-                <input
-                  type="text"
-                  placeholder="Search startups, investors, grants..."
-                  className="w-full bg-transparent h-12 pl-12 pr-4 text-base outline-none placeholder:text-muted-foreground"
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      const q = (e.target as HTMLInputElement).value.trim();
-                      if (q) navigate(`/startups?q=${encodeURIComponent(q)}`);
-                    }
-                  }}
-                />
-                <Button size="sm" className="mr-1.5 h-9 px-5 rounded-lg font-semibold" onClick={() => navigate("/startups")}>
-                  Explore
-                </Button>
-              </div>
-            </div>
-
-            {/* Stats Bar */}
-            <div className="flex items-center justify-center gap-8 sm:gap-12 text-center">
-              <div>
-                <p className="text-2xl sm:text-3xl font-bold text-foreground tabular-nums">{startupCount}+</p>
-                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mt-0.5">Startups</p>
-              </div>
-              <div className="w-px h-8 bg-border" />
-              <div>
-                <p className="text-2xl sm:text-3xl font-bold text-foreground tabular-nums">{investorCount}+</p>
-                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mt-0.5">Investors</p>
-              </div>
-              <div className="w-px h-8 bg-border" />
-              <div>
-                <p className="text-2xl sm:text-3xl font-bold text-foreground tabular-nums">₹{fundingCount}K Cr+</p>
-                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mt-0.5">Funding Tracked</p>
-              </div>
+          {/* Unified Search */}
+          <div className="max-w-xl mx-auto relative mb-12">
+            <div className="relative flex items-center bg-card border border-border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+              <Search className="absolute left-4 h-5 w-5 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Search startups, investors, grants..."
+                className="w-full bg-transparent h-14 pl-12 pr-4 text-base outline-none placeholder:text-muted-foreground"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    const q = (e.target as HTMLInputElement).value.trim();
+                    if (q) navigate(`/startups?q=${encodeURIComponent(q)}`);
+                  }
+                }}
+              />
+              <Button size="sm" className="mr-1.5 h-11 px-6 rounded-lg font-semibold" onClick={() => navigate("/startups")}>
+                Explore
+              </Button>
             </div>
           </div>
+          
+          <p className="text-sm text-muted-foreground/70 font-medium tracking-wide">
+            "The next unicorn may still be undiscovered."
+          </p>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════
+          5. ARTICLES SECTION
+          ═══════════════════════════════════════════ */}
+      <main className="flex-1 w-full px-4 sm:px-6 lg:px-8 pb-16 max-w-7xl relative z-10 mx-auto">
+        {/* Search Feedback */}
+        {searchQuery && (
+          <div className="w-full mb-6 py-3 px-6 rounded-xl border border-primary/20 bg-primary/5 flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">
+              Showing <strong className="text-foreground">{filteredArticles.length}</strong> result{filteredArticles.length !== 1 ? 's' : ''} for <strong className="text-foreground">"{searchQuery}"</strong>
+            </span>
+            <button onClick={() => setSearchQuery("")} className="text-primary hover:text-primary-hover text-sm font-medium transition-colors">
+              Clear
+            </button>
+          </div>
+        )}
+
+        <div className="flex gap-8">
+          <div className="flex-1 min-w-0">
+            {/* Filters */}
+            <div className="mb-8">
+              <div className="glass-panel rounded-xl p-4 flex flex-col gap-4">
+                <div className="flex-1 w-full overflow-x-auto scrollbar-hide">
+                  <CategoryFilter
+                    categories={PREDEFINED_CATEGORIES}
+                    selectedCategory={selectedCategory}
+                    onCategoryChange={(cat) => {
+                      setSelectedCategory(cat);
+                      setSelectedTag(null);
+                      setCurrentPage(1);
+                    }}
+                  />
+                </div>
+                <div className="pt-3 border-t border-border/40">
+                  <TagFilter selectedTag={selectedTag} onTagChange={setSelectedTag} />
+                </div>
+              </div>
+            </div>
+
+            <FeaturedSection />
+
+            {/* Article Feed */}
+            {user && followedAuthorIds && followedAuthorIds.length > 0 ? (
+              <Tabs defaultValue="all">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+                  <h2 id="latest-stories" className="text-xl font-bold text-foreground">Latest Stories</h2>
+                  <TabsList className="bg-muted border border-border p-1 rounded-lg h-auto">
+                    <TabsTrigger value="all" className="rounded-md px-4 py-1.5 text-sm font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                      <TrendingUp className="h-3.5 w-3.5 mr-1.5" /> All
+                    </TabsTrigger>
+                    <TabsTrigger value="following" className="rounded-md px-4 py-1.5 text-sm font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                      <Heart className="h-3.5 w-3.5 mr-1.5" /> Following ({followedArticles.length})
+                    </TabsTrigger>
+                  </TabsList>
+                </div>
+
+                <TabsContent value="all" className="mt-0">
+                  <ArticleGrid
+                    articles={filteredArticles}
+                    isLoading={isLoadingArticles}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    itemsPerPage={ITEMS_PER_PAGE}
+                    user={user}
+                    navigate={navigate}
+                  />
+                </TabsContent>
+
+                <TabsContent value="following" className="mt-0">
+                  <ArticleGrid
+                    articles={followedArticles}
+                    isLoading={false}
+                    currentPage={followingPage}
+                    setCurrentPage={setFollowingPage}
+                    itemsPerPage={ITEMS_PER_PAGE}
+                    user={user}
+                    navigate={navigate}
+                    emptyMessage="Follow authors to see their stories here."
+                  />
+                </TabsContent>
+              </Tabs>
+            ) : (
+              <div className="mt-8">
+                <h2 id="latest-stories" className="text-xl font-bold text-foreground mb-6">Latest Stories</h2>
+                <ArticleGrid
+                  articles={filteredArticles}
+                  isLoading={isLoadingArticles}
+                  currentPage={currentPage}
+                  setCurrentPage={setCurrentPage}
+                  itemsPerPage={ITEMS_PER_PAGE}
+                  user={user}
+                  navigate={navigate}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
+
+            {/* Write CTA */}
+      <section className="w-full bg-muted/50 border-y border-border py-16 mb-16">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl text-center">
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-4">
+            Have a story to share?
+          </h2>
+          <p className="text-base text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
+            Whether it's a funding announcement, an inspiring founder journey, or an ecosystem insight, we'd love to feature it. Join hundreds of founders sharing their voice.
+          </p>
+          <Button onClick={() => !user ? navigate("/auth") : navigate("/write")} size="lg" className="px-8 font-semibold shadow-sm">
+            Submit Your Story
+          </Button>
+        </div>
+      </section>
+
+{/* ═══════════════════════════════════════════
           2. ECOSYSTEM QUICK-ACCESS GRID
           ═══════════════════════════════════════════ */}
       <section className="w-full -mt-8 relative z-20 pb-4">
@@ -267,119 +361,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════
-          5. ARTICLES SECTION
-          ═══════════════════════════════════════════ */}
-      <main className="flex-1 w-full px-4 sm:px-6 lg:px-8 pb-16 max-w-7xl relative z-10 mx-auto">
-        {/* Search Feedback */}
-        {searchQuery && (
-          <div className="w-full mb-6 py-3 px-6 rounded-xl border border-primary/20 bg-primary/5 flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">
-              Showing <strong className="text-foreground">{filteredArticles.length}</strong> result{filteredArticles.length !== 1 ? 's' : ''} for <strong className="text-foreground">"{searchQuery}"</strong>
-            </span>
-            <button onClick={() => setSearchQuery("")} className="text-primary hover:text-primary-hover text-sm font-medium transition-colors">
-              Clear
-            </button>
-          </div>
-        )}
-
-        <div className="flex gap-8">
-          <div className="flex-1 min-w-0">
-            {/* Filters */}
-            <div className="mb-8">
-              <div className="glass-panel rounded-xl p-4 flex flex-col gap-4">
-                <div className="flex-1 w-full overflow-x-auto scrollbar-hide">
-                  <CategoryFilter
-                    categories={PREDEFINED_CATEGORIES}
-                    selectedCategory={selectedCategory}
-                    onCategoryChange={(cat) => {
-                      setSelectedCategory(cat);
-                      setSelectedTag(null);
-                      setCurrentPage(1);
-                    }}
-                  />
-                </div>
-                <div className="pt-3 border-t border-border/40">
-                  <TagFilter selectedTag={selectedTag} onTagChange={setSelectedTag} />
-                </div>
-              </div>
-            </div>
-
-            <FeaturedSection />
-
-            {/* Article Feed */}
-            {user && followedAuthorIds && followedAuthorIds.length > 0 ? (
-              <Tabs defaultValue="all">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
-                  <h2 id="latest-stories" className="text-xl font-bold text-foreground">Latest Stories</h2>
-                  <TabsList className="bg-muted border border-border p-1 rounded-lg h-auto">
-                    <TabsTrigger value="all" className="rounded-md px-4 py-1.5 text-sm font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm">
-                      <TrendingUp className="h-3.5 w-3.5 mr-1.5" /> All
-                    </TabsTrigger>
-                    <TabsTrigger value="following" className="rounded-md px-4 py-1.5 text-sm font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm">
-                      <Heart className="h-3.5 w-3.5 mr-1.5" /> Following ({followedArticles.length})
-                    </TabsTrigger>
-                  </TabsList>
-                </div>
-
-                <TabsContent value="all" className="mt-0">
-                  <ArticleGrid
-                    articles={filteredArticles}
-                    isLoading={isLoadingArticles}
-                    currentPage={currentPage}
-                    setCurrentPage={setCurrentPage}
-                    itemsPerPage={ITEMS_PER_PAGE}
-                    user={user}
-                    navigate={navigate}
-                  />
-                </TabsContent>
-
-                <TabsContent value="following" className="mt-0">
-                  <ArticleGrid
-                    articles={followedArticles}
-                    isLoading={false}
-                    currentPage={followingPage}
-                    setCurrentPage={setFollowingPage}
-                    itemsPerPage={ITEMS_PER_PAGE}
-                    user={user}
-                    navigate={navigate}
-                    emptyMessage="Follow authors to see their stories here."
-                  />
-                </TabsContent>
-              </Tabs>
-            ) : (
-              <div className="mt-8">
-                <h2 id="latest-stories" className="text-xl font-bold text-foreground mb-6">Latest Stories</h2>
-                <ArticleGrid
-                  articles={filteredArticles}
-                  isLoading={isLoadingArticles}
-                  currentPage={currentPage}
-                  setCurrentPage={setCurrentPage}
-                  itemsPerPage={ITEMS_PER_PAGE}
-                  user={user}
-                  navigate={navigate}
-                />
-              </div>
-            )}
-          </div>
-        </div>
-      </main>
-
-      {/* Write CTA */}
-      <div className="w-full max-w-3xl mx-auto px-4 pb-12">
-        <div className="text-center py-8 px-6 bg-card border border-border rounded-2xl shadow-sm">
-          <h2 className="text-xl font-semibold mb-2 text-foreground">
-            Have a story to share?
-          </h2>
-          <p className="text-sm text-muted-foreground mb-5">
-            Write about your startup journey, funding insights, or ecosystem updates.
-          </p>
-          <Button onClick={() => !user ? navigate("/auth") : navigate("/write")} className="px-8">
-            Write an Article
-          </Button>
-        </div>
-      </div>
-
       <NewsletterFooter />
     </div>
   );
@@ -453,7 +434,7 @@ function ArticleGrid({
         </div>
       )}
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {paginatedArticles.map((article: any, idx: number) => (
           <div key={article.id} className="animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both" style={{ animationDelay: `${idx * 50}ms` }}>
             <NewsCard

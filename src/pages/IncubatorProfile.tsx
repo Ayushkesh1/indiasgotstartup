@@ -4,12 +4,70 @@ import Navbar from "@/components/Navbar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, BadgeCheck, Mail, Linkedin, Globe, Building2, Twitter, Instagram, Phone, MapPin, Map, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, BadgeCheck, Mail, Linkedin, Globe, Building2, Twitter, Instagram, Phone, MapPin, Map, CheckCircle2, Loader2 } from "lucide-react";
 import { dummyIncubators } from "@/data/incubators";
+import { NewsletterFooter } from "@/components/NewsletterFooter";
+import { useEcosystemBySlug, useIncubatorMentors } from "@/hooks/useEcosystem";
 
 const IncubatorProfile = () => {
   const { slug } = useParams<{ slug: string }>();
-  const i = dummyIncubators.find((inc) => inc.slug === slug);
+  
+  const { data: dbIncubator, isLoading } = useEcosystemBySlug("incubators", slug);
+  const { data: dbMentors } = useIncubatorMentors(dbIncubator?.id);
+
+  const dummy = dummyIncubators.find((inc) => inc.slug === slug);
+  
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <p className="mt-4 text-muted-foreground">Loading profile...</p>
+      </div>
+    );
+  }
+
+  let i: any = null;
+
+  if (dbIncubator) {
+    let facilities: any = {};
+    try {
+      if (dbIncubator.facilities) facilities = JSON.parse(dbIncubator.facilities);
+    } catch (e) {}
+
+    let badges = [];
+    if (dbIncubator.offers_mentorship) badges.push("Mentorship");
+    if (dbIncubator.offers_funding) badges.push("Funding Support");
+    if (facilities.schemes && facilities.schemes.length > 0) badges.push(...facilities.schemes);
+
+    i = {
+      name: dbIncubator.name,
+      slug: dbIncubator.slug,
+      shortDescription: dbIncubator.tagline || dbIncubator.about,
+      about: dbIncubator.about || dbIncubator.mission,
+      programDescription: facilities.programs || "",
+      coverImage: dbIncubator.banner_url,
+      logo: dbIncubator.logo_url,
+      city: dbIncubator.city,
+      state: dbIncubator.state,
+      address: dbIncubator.address,
+      website: dbIncubator.website_url,
+      phone: dbIncubator.phone,
+      socials: {
+        linkedin: dbIncubator.linkedin_url,
+        twitter: dbIncubator.twitter_url,
+        email: dbIncubator.email
+      },
+      sectors: dbIncubator.sector_focus ? dbIncubator.sector_focus.split(",").map((s: string) => s.trim()) : [],
+      investmentStages: dbIncubator.startup_stages_supported ? dbIncubator.startup_stages_supported.split(",").map((s: string) => s.trim()) : [],
+      applicationStatus: 'Open',
+      grantAvailable: facilities.schemes && facilities.schemes.length > 0,
+      grantAmount: dbIncubator.funding_support_max ? `₹${(dbIncubator.funding_support_max/10000000).toFixed(1)}Cr Max` : null,
+      badges: badges,
+      teamMembers: dbMentors || []
+    };
+  } else if (dummy) {
+    i = dummy;
+  }
 
   if (!i) {
     return (
@@ -31,7 +89,7 @@ const IncubatorProfile = () => {
       <Navbar />
       
       <main>
-        {/* 1. Hero Section */}
+        {/* Hero Section */}
         <div className="relative h-48 sm:h-64 lg:h-80 bg-gradient-to-br from-primary/20 via-background to-background overflow-hidden border-b border-border/50">
           {i.coverImage && <img src={i.coverImage} alt={`${i.name} cover`} className="absolute inset-0 w-full h-full object-cover opacity-80" />}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
@@ -54,7 +112,7 @@ const IncubatorProfile = () => {
                 </div>
                 {i.sectors && i.sectors.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-4">
-                    {i.sectors.map((sector) => (
+                    {i.sectors.map((sector: string) => (
                       <Badge key={sector} variant="secondary" className="font-medium">{sector}</Badge>
                     ))}
                   </div>
@@ -87,7 +145,7 @@ const IncubatorProfile = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-8">
-              {/* 2. About Section */}
+              {/* About Section */}
               <section className="bg-card border border-border/50 rounded-2xl p-6 sm:p-8">
                 <h2 className="text-2xl font-semibold mb-4">About the Incubator</h2>
                 <p className="text-foreground/80 leading-relaxed whitespace-pre-line mb-6">
@@ -101,12 +159,12 @@ const IncubatorProfile = () => {
                 )}
               </section>
 
-              {/* 3. Investment / Funding Stage Section */}
+              {/* Investment / Funding Stage Section */}
               {i.investmentStages && i.investmentStages.length > 0 && (
                 <section className="bg-card border border-border/50 rounded-2xl p-6 sm:p-8">
                   <h2 className="text-xl font-semibold mb-4">Supported Stages & Focus</h2>
                   <div className="flex flex-wrap gap-2">
-                    {i.investmentStages.map((stage) => (
+                    {i.investmentStages.map((stage: string) => (
                       <Badge key={stage} variant="outline" className="px-3 py-1.5 text-sm bg-background border-primary/20 text-foreground">
                         {stage}
                       </Badge>
@@ -115,7 +173,7 @@ const IncubatorProfile = () => {
                 </section>
               )}
 
-              {/* 4. Grants / Funding Available Section */}
+              {/* Grants / Funding Available Section */}
               <section className="bg-card border border-border/50 rounded-2xl p-6 sm:p-8">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-semibold">Grants & Funding</h2>
@@ -140,9 +198,9 @@ const IncubatorProfile = () => {
 
                 {i.badges && i.badges.length > 0 && (
                   <div>
-                    <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">Highlights</h3>
+                    <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">Highlights & Schemes</h3>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                      {i.badges.map((badge) => (
+                      {i.badges.map((badge: string) => (
                         <div key={badge} className="flex flex-col items-center justify-center p-4 bg-muted/20 border border-border/50 rounded-xl text-center gap-2 transition-colors hover:bg-muted/40">
                           <CheckCircle2 className="h-6 w-6 text-primary" />
                           <span className="text-xs font-medium">{badge}</span>
@@ -153,19 +211,19 @@ const IncubatorProfile = () => {
                 )}
               </section>
 
-              {/* 5. Team Members Section */}
+              {/* Team Members Section */}
               {i.teamMembers && i.teamMembers.length > 0 && (
                 <section>
-                  <h2 className="text-2xl font-semibold mb-6">Team Members</h2>
+                  <h2 className="text-2xl font-semibold mb-6">Mentors & Team Members</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {i.teamMembers.map((member) => (
+                    {i.teamMembers.map((member: any) => (
                       <Card key={member.id} className="overflow-hidden border-border/50 hover:border-primary/30 transition-colors">
                         <CardContent className="p-5 flex items-start gap-4">
-                          <img src={member.image_url} alt={member.name} className="h-16 w-16 rounded-full object-cover border-2 border-muted" />
+                          <img src={member.image_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}`} alt={member.name} className="h-16 w-16 rounded-full object-cover border-2 border-muted" />
                           <div className="flex-1 min-w-0">
                             <h3 className="font-semibold truncate">{member.name}</h3>
-                            <p className="text-xs text-primary font-medium mb-1 truncate">{member.designation}</p>
-                            <p className="text-xs text-muted-foreground mb-3 truncate">{member.location}</p>
+                            <p className="text-xs text-primary font-medium mb-1 truncate">{member.role || member.designation}</p>
+                            {member.location && <p className="text-xs text-muted-foreground mb-3 truncate">{member.location}</p>}
                             <div className="flex gap-2">
                               {member.linkedin_url && (
                                 <Button asChild variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground">
@@ -189,7 +247,7 @@ const IncubatorProfile = () => {
 
             {/* Sidebar / Right Column */}
             <div className="space-y-6">
-              {/* 6. Contact / Address Section */}
+              {/* Contact / Address Section */}
               <Card className="border-border/50 overflow-hidden sticky top-24">
                 <div className="bg-muted p-4 border-b border-border/50 flex items-center gap-2">
                   <Map className="h-5 w-5 text-primary" />
@@ -198,7 +256,7 @@ const IncubatorProfile = () => {
                 <CardContent className="p-6 space-y-6">
                   <div>
                     <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Address</h4>
-                    <p className="text-sm text-foreground/90">{i.address}</p>
+                    <p className="text-sm text-foreground/90">{i.address || [i.city, i.state].filter(Boolean).join(", ")}</p>
                   </div>
                   {(i.phone || i.socials?.email) && (
                     <div>
@@ -231,6 +289,7 @@ const IncubatorProfile = () => {
 
         </div>
       </main>
+      <NewsletterFooter />
     </div>
   );
 };
