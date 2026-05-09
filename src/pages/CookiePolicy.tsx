@@ -1,5 +1,4 @@
 import Navbar from "@/components/Navbar";
-import { NewsletterFooter } from "@/components/NewsletterFooter";
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -245,7 +244,7 @@ const CookiePolicy = () => {
         </section>
       </main>
 
-      <NewsletterFooter />
+      
     </div>
   );
 };

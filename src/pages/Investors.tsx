@@ -9,7 +9,6 @@ import { TrendingUp, Search, Plus, ChevronLeft, ChevronRight, Loader2 } from "lu
 import { useAuth } from "@/hooks/useAuth";
 import { InvestorCard } from "@/components/ecosystem/InvestorCard";
 import { dummyInvestors } from "@/data/investors";
-import { NewsletterFooter } from "@/components/NewsletterFooter";
 import { useEcosystemList } from "@/hooks/useEcosystem";
 
 const ITEMS_PER_PAGE = 50;
@@ -143,7 +142,7 @@ const Investors = () => {
         <meta name="description" content="Find angels, micro-VCs, and venture capital firms investing in Indian startups. Filter by stage, sector, city, and ticket size." />
       </Helmet>
       <Navbar />
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl py-8">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1600px] py-8">
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
           <div>
             <div className="inline-flex items-center gap-2 text-xs uppercase tracking-wider text-primary mb-2 font-semibold">
@@ -244,7 +243,7 @@ const Investors = () => {
           </div>
         )}
       </main>
-      <NewsletterFooter />
+      
     </div>
   );
 };

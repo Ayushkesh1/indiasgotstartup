@@ -29,7 +29,7 @@ const TrendingHero = () => {
   if (isLoading) {
     return (
       <div className="relative w-full bg-gradient-to-br from-primary/5 to-accent/5 border-b border-border">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 max-w-7xl">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 max-w-[1600px]">
           <div className="flex items-center gap-2 mb-8">
             <TrendingUp className="h-5 w-5 text-primary" />
             <h2 className="text-lg font-bold">Trending Now</h2>
@@ -62,7 +62,7 @@ const TrendingHero = () => {
 
   return (
     <div className="relative w-full bg-gradient-to-br from-primary/5 to-accent/5 border-b border-border">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 max-w-7xl">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 max-w-[1600px]">
         <div className="flex items-center gap-2 mb-8">
           <TrendingUp className="h-5 w-5 text-primary" />
           <h2 className="text-lg font-bold text-foreground">Trending Now</h2>

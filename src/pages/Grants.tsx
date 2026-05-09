@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
-import { NewsletterFooter } from "@/components/NewsletterFooter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -75,7 +74,7 @@ const Grants = () => {
       <main className="flex-1 w-full">
         {/* Hero Section */}
         <div className="w-full py-16 lg:py-20 bg-gradient-hero">
-          <div className="container mx-auto px-4 max-w-7xl text-center">
+          <div className="container mx-auto px-4 max-w-[1600px] text-center">
             <Badge variant="secondary" className="mb-4 text-xs uppercase tracking-wider font-semibold">
               <Coins className="w-3.5 h-3.5 mr-1.5 inline-block" /> Non-Dilutive Capital
             </Badge>
@@ -109,7 +108,7 @@ const Grants = () => {
         </div>
 
         {/* Grants Grid */}
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl pb-20">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1600px] pb-20">
           {/* Filters */}
           <div className="mb-8 bg-card border border-border rounded-xl p-4 shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between">
             <div className="w-full md:w-auto flex-1 overflow-hidden">
@@ -259,7 +258,7 @@ const Grants = () => {
         </div>
       </main>
 
-      <NewsletterFooter />
+      
     </div>
   );
 };

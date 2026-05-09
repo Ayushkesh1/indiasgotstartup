@@ -9,7 +9,6 @@ import { Sparkles, Search, Plus, ChevronLeft, ChevronRight, Rocket, Loader2 } fr
 import { useAuth } from "@/hooks/useAuth";
 import { StartupCard } from "@/components/ecosystem/StartupCard";
 import { dummyStartups } from "@/data/startups";
-import { NewsletterFooter } from "@/components/NewsletterFooter";
 import { useEcosystemList } from "@/hooks/useEcosystem";
 
 const ITEMS_PER_PAGE = 50;
@@ -119,7 +118,7 @@ const Startups = () => {
         <meta name="description" content="Browse and discover thousands of Indian startups across sectors, stages, and cities. Find founders, follow companies, and explore the ecosystem." />
       </Helmet>
       <Navbar />
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl py-8">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1600px] py-8">
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
           <div>
             <div className="inline-flex items-center gap-2 text-xs uppercase tracking-wider text-primary mb-2 font-semibold">
@@ -210,7 +209,7 @@ const Startups = () => {
           </div>
         )}
       </main>
-      <NewsletterFooter />
+      
     </div>
   );
 };

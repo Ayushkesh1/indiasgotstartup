@@ -3,7 +3,6 @@ import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/Navbar";
 import { useArticles } from "@/hooks/useArticles";
 import NewsCard from "@/components/NewsCard";
-import { NewsletterFooter } from "@/components/NewsletterFooter";
 import { FileText, Loader2 } from "lucide-react";
 
 const Articles = () => {
@@ -66,7 +65,7 @@ const Articles = () => {
         )}
       </main>
 
-      <NewsletterFooter />
+      
     </div>
   );
 };

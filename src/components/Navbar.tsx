@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Edit3, LogOut, User, BookMarked, TrendingUp, ArrowLeft, Users, Share2, Twitter, Linkedin, Facebook, Shield, Trophy, Wallet, Sparkles, Settings, Calendar, FileText, Lightbulb, Menu, X } from "lucide-react";
+import { Search, Edit3, LogOut, User, BookMarked, TrendingUp, ArrowLeft, Users, Share2, Twitter, Linkedin, Facebook, Shield, Trophy, Wallet, Sparkles, Settings, Calendar, FileText, Lightbulb, Menu, X, PlusCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,6 +29,7 @@ const NAV_LINKS = [
   { label: "Investors", path: "/investors" },
   { label: "Grants", path: "/grants" },
   { label: "Events", path: "/events" },
+  { label: "People", path: "/people" },
 ];
 
 const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) => {
@@ -85,11 +86,17 @@ const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) =>
     window.open(shareUrl, "_blank", "width=600,height=400");
   };
 
+  const handleSearchSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
   const isActive = (path: string) => location.pathname === path;
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/80 shadow-sm">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1600px]">
         <div className="flex h-14 items-center justify-between">
           {/* Left: Back + Logo */}
           <div className="flex items-center gap-1.5">
@@ -111,10 +118,11 @@ const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) =>
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="search"
-                placeholder="Search stories..."
+                placeholder="Search startups, investors, people, events..."
                 className="w-full pl-10 bg-muted/50 border-border/50 h-9 rounded-lg focus:bg-background transition-colors"
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
+                onKeyDown={handleSearchSubmit}
               />
             </div>
           </div>
@@ -186,14 +194,83 @@ const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) =>
 
             {user ? (
               <>
-                <Button 
-                  size="sm" 
-                  className="gap-1.5 h-8 text-sm hidden sm:flex"
-                  onClick={() => navigate("/write")}
-                >
-                  <Edit3 className="h-3.5 w-3.5" />
-                  Write
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      size="sm" 
+                      className="gap-1.5 h-8 text-sm hidden sm:flex"
+                    >
+                      <PlusCircle className="h-3.5 w-3.5" />
+                      Create
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56 rounded-xl shadow-lg border-border/60">
+                    <DropdownMenuItem onClick={() => navigate("/write")} className="cursor-pointer">
+                      <Edit3 className="mr-2 h-4 w-4" /> Write Article
+                    </DropdownMenuItem>
+                    
+                    {profile?.primary_role === 'startup' && (
+                      <>
+                        <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
+                          <FileText className="mr-2 h-4 w-4" /> Add Startup Update
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
+                          <Users className="mr-2 h-4 w-4" /> Create Hiring Post
+                        </DropdownMenuItem>
+                      </>
+                    )}
+
+                    {profile?.primary_role === 'incubator' && (
+                      <>
+                        <DropdownMenuItem onClick={() => navigate("/create-event")} className="cursor-pointer">
+                          <Calendar className="mr-2 h-4 w-4" /> Create Event
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => navigate("/create-grant")} className="cursor-pointer">
+                          <FileText className="mr-2 h-4 w-4" /> Create Grant
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
+                          <TrendingUp className="mr-2 h-4 w-4" /> Add Incubator Program
+                        </DropdownMenuItem>
+                      </>
+                    )}
+
+                    {(profile?.primary_role === 'investor' || profile?.primary_role === 'investor_vc') && (
+                      <>
+                        <DropdownMenuItem onClick={() => navigate("/create-event")} className="cursor-pointer">
+                          <Calendar className="mr-2 h-4 w-4" /> Create Event
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
+                          <TrendingUp className="mr-2 h-4 w-4" /> Add Investment Thesis
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
+                          <FileText className="mr-2 h-4 w-4" /> Portfolio Update
+                        </DropdownMenuItem>
+                      </>
+                    )}
+
+                    {profile?.primary_role === 'expert' && (
+                      <>
+                        <DropdownMenuItem onClick={() => navigate("/create-event")} className="cursor-pointer">
+                          <Calendar className="mr-2 h-4 w-4" /> Create Event
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
+                          <Sparkles className="mr-2 h-4 w-4" /> Add Service
+                        </DropdownMenuItem>
+                      </>
+                    )}
+
+                    {profile?.primary_role === 'creator' && (
+                      <>
+                        <DropdownMenuItem onClick={() => navigate("/create-event")} className="cursor-pointer">
+                          <Calendar className="mr-2 h-4 w-4" /> Create Event
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
+                          <Sparkles className="mr-2 h-4 w-4" /> Creator Program Post
+                        </DropdownMenuItem>
+                      </>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm" className="rounded-full h-8 w-8 p-0 ml-1">
@@ -208,12 +285,6 @@ const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) =>
                   <DropdownMenuContent align="end" className="w-52 rounded-xl shadow-lg border-border/60">
                     <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
                       <User className="mr-2 h-4 w-4" /> Profile
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate("/create-grant")} className="cursor-pointer">
-                      <FileText className="mr-2 h-4 w-4" /> Create Grant
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate("/create-event")} className="cursor-pointer">
-                      <Calendar className="mr-2 h-4 w-4" /> Create Event
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => navigate("/creator-program")} className="cursor-pointer">
@@ -281,10 +352,11 @@ const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) =>
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search stories..."
+              placeholder="Search startups, people..."
               className="w-full pl-10 bg-muted/50 border-border/50 h-9 rounded-lg"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
+              onKeyDown={handleSearchSubmit}
             />
           </div>
         </div>

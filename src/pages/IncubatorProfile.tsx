@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, BadgeCheck, Mail, Linkedin, Globe, Building2, Twitter, Instagram, Phone, MapPin, Map, CheckCircle2, Loader2 } from "lucide-react";
 import { dummyIncubators } from "@/data/incubators";
-import { NewsletterFooter } from "@/components/NewsletterFooter";
 import { useEcosystemBySlug, useIncubatorMentors } from "@/hooks/useEcosystem";
 
 const IncubatorProfile = () => {
@@ -289,7 +288,7 @@ const IncubatorProfile = () => {
 
         </div>
       </main>
-      <NewsletterFooter />
+      
     </div>
   );
 };

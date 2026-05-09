@@ -9,7 +9,6 @@ import {
   Phone, MapPin, Map, TrendingUp, IndianRupee, Briefcase, CheckCircle2, Loader2
 } from "lucide-react";
 import { dummyInvestors } from "@/data/investors";
-import { NewsletterFooter } from "@/components/NewsletterFooter";
 import { useEcosystemBySlug } from "@/hooks/useEcosystem";
 
 const InvestorProfile = () => {
@@ -398,7 +397,7 @@ const InvestorProfile = () => {
           </div>
         </div>
       </main>
-      <NewsletterFooter />
+      
     </div>
   );
 };

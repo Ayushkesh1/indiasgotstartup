@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TrendingUp } from "lucide-react";
 
 const Auth = () => {
@@ -15,6 +16,7 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [role, setRole] = useState("normal");
 
   useEffect(() => {
     // Check if user is already logged in
@@ -38,6 +40,7 @@ const Auth = () => {
         emailRedirectTo: redirectUrl,
         data: {
           full_name: fullName,
+          primary_role: role,
         },
       },
     });
@@ -140,6 +143,22 @@ const Auth = () => {
                       onChange={(e) => setFullName(e.target.value)}
                       required
                     />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-role">Profile Type</Label>
+                    <Select value={role} onValueChange={setRole}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select Profile Type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="startup">Startup Founder / Member</SelectItem>
+                        <SelectItem value="incubator">Incubator / Accelerator</SelectItem>
+                        <SelectItem value="investor">Investor / VC</SelectItem>
+                        <SelectItem value="expert">Ecosystem Expert</SelectItem>
+                        <SelectItem value="creator">Content Creator</SelectItem>
+                        <SelectItem value="normal">Normal User</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-email">Email</Label>

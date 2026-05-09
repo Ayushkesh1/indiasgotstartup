@@ -1,5 +1,4 @@
 import Navbar from "@/components/Navbar";
-import { NewsletterFooter } from "@/components/NewsletterFooter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ShieldCheck, Lock, Eye, FileText, Globe, AlertCircle } from "lucide-react";
@@ -208,7 +207,7 @@ const PrivacyPolicy = () => {
         </section>
       </main>
 
-      <NewsletterFooter />
+      
     </div>
   );
 };

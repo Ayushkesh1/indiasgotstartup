@@ -1,5 +1,4 @@
 import Navbar from "@/components/Navbar";
-import { NewsletterFooter } from "@/components/NewsletterFooter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -224,7 +223,7 @@ const AboutUs = () => {
         </section>
       </main>
 
-      <NewsletterFooter />
+      
     </div>
   );
 };

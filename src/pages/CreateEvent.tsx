@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/Navbar";
-import { NewsletterFooter } from "@/components/NewsletterFooter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,6 +14,9 @@ import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { SubmissionSuccessDialog } from "@/components/SubmissionSuccessDialog";
+import { useAuth } from "@/hooks/useAuth";
+import { useProfile } from "@/hooks/useProfile";
+import { AlertCircle } from "lucide-react";
 
 const CreateEvent = () => {
   const navigate = useNavigate();
@@ -22,6 +24,29 @@ const CreateEvent = () => {
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [eventDate, setEventDate] = useState<Date | undefined>(undefined);
+
+  const { user } = useAuth();
+  const { data: profile, isLoading } = useProfile(user?.id);
+
+  const allowedRoles = ['incubator', 'investor', 'investor_vc', 'expert', 'creator'];
+  const isAllowed = profile && allowedRoles.includes(profile.primary_role || '');
+
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
+  if (!isAllowed) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+        <AlertCircle className="w-16 h-16 text-destructive mb-6" />
+        <h2 className="text-2xl font-bold text-foreground mb-4">Access Denied</h2>
+        <p className="text-muted-foreground text-center max-w-md mb-8">
+          This action is not available for your profile type. Only Incubators, Investors, Experts, and Creators can host events.
+        </p>
+        <Button onClick={() => navigate("/profile")}>Go to Profile</Button>
+      </div>
+    );
+  }
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -46,18 +71,8 @@ const CreateEvent = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background relative selection:bg-purple-500/30 overflow-hidden text-foreground flex flex-col">
-      <Helmet>
-        <title>Create an Event | India's Got Startup</title>
-      </Helmet>
-
-      {/* Ambient Lighting Background */}
-      <div className="fixed top-[-10%] right-[-10%] w-[60%] h-[600px] bg-amber-500/10 blur-[150px] rounded-full pointer-events-none mix-blend-screen z-0" />
-      <div className="fixed bottom-[-10%] left-[-10%] w-[50%] h-[500px] bg-emerald-500/10 blur-[150px] rounded-full pointer-events-none mix-blend-screen z-0" />
-      
-      <Navbar />
-
-      <main className="flex-1 relative z-10 w-full container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl py-12">
+    <>
+      <div className="relative text-foreground flex flex-col">
         <button 
           onClick={() => navigate("/events")}
           className="flex items-center text-muted-foreground hover:text-foreground dark:text-white transition-colors mb-8 group w-max"
@@ -190,6 +205,66 @@ const CreateEvent = () => {
                     </SelectContent>
                   </Select>
                 </div>
+
+                <div className="space-y-3">
+                  <Label className="text-foreground/80 font-semibold flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-cyan-400" /> Location / Online Link
+                  </Label>
+                  <Input required placeholder="Address or Zoom/Meet Link..." className="bg-slate-50/80 dark:bg-black/40 border-border focus-visible:ring-cyan-500/50 h-12" />
+                </div>
+
+                <div className="space-y-3 group">
+                  <Label className="text-foreground/80 font-semibold flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-cyan-400" /> Registration Deadline
+                  </Label>
+                  <Input type="date" required className="bg-slate-50/80 dark:bg-black/40 border-border focus-visible:ring-cyan-500/50 h-12" />
+                </div>
+              </div>
+
+              {/* Luma Details */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-border pt-8 mt-8">
+                <div className="space-y-3">
+                  <Label className="text-foreground/80 font-semibold flex items-center gap-2">
+                    <Users className="w-4 h-4 text-blue-400" /> Max Attendees
+                  </Label>
+                  <Input type="number" placeholder="Leave empty for unlimited" className="bg-slate-50/80 dark:bg-black/40 border-border focus-visible:ring-blue-500/50 h-12" />
+                </div>
+
+                <div className="space-y-3">
+                  <Label className="text-foreground/80 font-semibold flex items-center gap-2">
+                    <Target className="w-4 h-4 text-green-400" /> Event Type (Price)
+                  </Label>
+                  <Select required defaultValue="Free">
+                    <SelectTrigger className="bg-slate-50/80 dark:bg-black/40 border-border h-12 focus:ring-green-500/50">
+                      <SelectValue placeholder="Select Event Price" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-neutral-900 border-border">
+                      <SelectItem value="Free">Free</SelectItem>
+                      <SelectItem value="Paid">Paid</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <Label className="text-foreground/80 font-semibold flex items-center gap-2">
+                  <AlignLeft className="w-4 h-4 text-purple-400" /> Agenda (Optional)
+                </Label>
+                <Textarea placeholder="10:00 AM - Welcome&#10;10:30 AM - Keynote&#10;11:00 AM - Networking" className="bg-slate-50/80 dark:bg-black/40 border-border focus-visible:ring-purple-500/50 min-h-[100px] resize-y" />
+              </div>
+
+              <div className="space-y-3">
+                <Label className="text-foreground/80 font-semibold flex items-center gap-2">
+                  <Users className="w-4 h-4 text-pink-400" /> Speakers (Optional)
+                </Label>
+                <Input placeholder="E.g. Rohan Desai (CEO), Ananya Sharma (VC)" className="bg-slate-50/80 dark:bg-black/40 border-border focus-visible:ring-pink-500/50 h-12" />
+              </div>
+
+              <div className="space-y-3">
+                <Label className="text-foreground/80 font-semibold flex items-center gap-2">
+                  <Users className="w-4 h-4 text-orange-400" /> Organizer Name / Profile
+                </Label>
+                <Input required placeholder="Your Name or Organization Name" className="bg-slate-50/80 dark:bg-black/40 border-border focus-visible:ring-orange-500/50 h-12" />
               </div>
 
               {/* Targets & Categories */}
@@ -249,9 +324,7 @@ const CreateEvent = () => {
             </div>
           </Card>
         </form>
-      </main>
-
-      <NewsletterFooter />
+      </div>
 
       <SubmissionSuccessDialog 
         open={isSuccessOpen} 
@@ -262,7 +335,7 @@ const CreateEvent = () => {
         title="Event Submitted!"
         message="Thank you! Your event has been submitted successfully and will be live after review."
       />
-    </div>
+    </>
   );
 };
 

@@ -6,7 +6,6 @@ import { useUserArticles } from "@/hooks/useUserArticles";
 import { useFollowerCount, useFollowingCount } from "@/hooks/useFollows";
 import Navbar from "@/components/Navbar";
 import { MediaSidebar } from "@/components/MediaSidebar";
-import { NewsletterFooter } from "@/components/NewsletterFooter";
 import FollowButton from "@/components/FollowButton";
 import NewsCard from "@/components/NewsCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -78,7 +77,7 @@ const AuthorProfile = () => {
       
       <Navbar searchQuery="" onSearchChange={() => {}} />
       
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 pb-16 pt-8 max-w-7xl animate-in fade-in duration-700 relative z-10 flex-1 w-full">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 pb-16 pt-8 max-w-[1600px] animate-in fade-in duration-700 relative z-10 flex-1 w-full">
         <div className="flex flex-col lg:flex-row gap-8">
           
           {/* Main Content Column */}
@@ -268,7 +267,7 @@ const AuthorProfile = () => {
         </div>
       </main>
 
-      <NewsletterFooter />
+      
     </div>
   );
 };

@@ -209,28 +209,28 @@ const ArticleDetail = () => {
       <ReadingProgress />
       <Navbar searchQuery="" onSearchChange={() => {}} />
 
-      <article className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="max-w-7xl mx-auto relative z-10">
+      <article className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-12">
+        <div className="max-w-[1600px] mx-auto relative z-10">
           {/* Article Header */}
-          <div className="max-w-4xl mx-auto mb-16 text-center">
+          <div className="max-w-[1200px] mx-auto mb-16 text-center px-4">
             <Badge className="mb-6 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20 border border-purple-500/30 px-5 py-2 text-sm font-bold uppercase tracking-widest shadow-[0_0_15px_rgba(168,85,247,0.2)]">{article.category}</Badge>
-            <h1 className="font-sans text-4xl md:text-6xl lg:text-7xl font-extrabold mb-8 leading-[1.1] tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white to-white/70 drop-shadow-sm">
+            <h1 className="font-sans text-3xl md:text-4xl lg:text-5xl font-extrabold mb-8 leading-[1.2] tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white to-white/70 drop-shadow-sm max-w-[900px] mx-auto">
               {article.title}
             </h1>
             {article.excerpt && (
-              <p className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed">
+              <p className="text-xl md:text-3xl text-muted-foreground mb-10 max-w-4xl mx-auto leading-relaxed">
                 {article.excerpt}
               </p>
             )}
 
             {/* Featured Image */}
             {article.featured_image_url && (
-              <div className="aspect-video overflow-hidden rounded-[2.5rem] mb-12 border border-border shadow-2xl bg-white/70 dark:bg-zinc-900/50 ring-1 ring-white/10 p-2 relative group">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10 rounded-[2rem] pointer-events-none" />
+              <div className="w-full aspect-video overflow-hidden rounded-[2.5rem] mb-12 shadow-2xl relative group bg-zinc-900/50">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10 pointer-events-none" />
                 <img
                   src={article.featured_image_url}
                   alt={article.title}
-                  className="w-full h-full object-cover rounded-[2rem] transform group-hover:scale-[1.02] transition-transform duration-1000 ease-out"
+                  className="w-full h-full object-cover transform group-hover:scale-[1.02] transition-transform duration-1000 ease-out"
                 />
               </div>
             )}
@@ -270,14 +270,9 @@ const ArticleDetail = () => {
           </div>
 
           {/* Main Content with Sidebars */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {/* Left Sidebar - Table of Contents */}
-            <aside className="hidden lg:block lg:col-span-3">
-              <TableOfContents content={contentHtml} />
-            </aside>
-
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 max-w-[1600px] mx-auto">
             {/* Article Content */}
-            <div className="lg:col-span-6 bg-white/70 dark:bg-zinc-900/20 backdrop-blur-md rounded-[2.5rem] p-6 lg:p-10 border border-border shadow-2xl">
+            <div className="lg:col-span-8 bg-white/70 dark:bg-zinc-900/20 backdrop-blur-md rounded-[2.5rem] p-6 md:p-10 lg:p-14 border border-border shadow-2xl">
               {translatedLanguage && (
                 <div className="mb-8 p-4 bg-purple-500/10 rounded-2xl border border-purple-500/20 flex items-center justify-center">
                   <p className="text-sm font-bold uppercase tracking-widest text-purple-400">
@@ -301,8 +296,11 @@ const ArticleDetail = () => {
             </div>
 
             {/* Right Sidebar - Sticky container with all sections */}
-            <aside className="lg:col-span-3">
-              <div className="sticky top-24 space-y-6 max-h-[calc(100vh-6rem)] overflow-y-auto pb-4 scrollbar-hide">
+            <aside className="lg:col-span-4">
+              <div className="sticky top-24 space-y-8 max-h-[calc(100vh-6rem)] overflow-y-auto pb-4 scrollbar-hide pr-2">
+                <div className="hidden lg:block">
+                  <TableOfContents content={contentHtml} />
+                </div>
                 <div className="bg-white/70 dark:bg-zinc-900/40 backdrop-blur-xl border border-border rounded-3xl p-6 shadow-2xl">
                   <AuthorSidebar author={article.profiles} authorId={article.author_id} />
                 </div>
@@ -327,16 +325,17 @@ const ArticleDetail = () => {
           </div>
 
           {/* Related Articles */}
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-[1600px] mx-auto">
             <RelatedArticles articles={relatedArticles || []} />
           </div>
 
           {/* Comments Section */}
-          <div className="max-w-4xl mx-auto mt-16">
+          <div className="max-w-5xl mx-auto mt-16">
             <CommentsList articleId={article.id} />
           </div>
         </div>
       </article>
+      
     </div>
   );
 };

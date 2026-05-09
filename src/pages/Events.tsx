@@ -1,7 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/Navbar";
-import { NewsletterFooter } from "@/components/NewsletterFooter";
 import { EVENTS_DATA, AppEvent } from "@/data/events";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, MapPin, Users, Zap, ExternalLink, Filter, PlusCircle } from "lucide-react";
@@ -10,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import {
   Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious,
 } from "@/components/ui/pagination";
+import { EventCard } from "@/components/ecosystem/EventCard";
 
 const Events = () => {
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
@@ -58,7 +58,7 @@ const Events = () => {
       <Navbar />
 
       {/* Page Header */}
-      <header className="pt-12 pb-8 text-center container mx-auto px-4 max-w-7xl">
+      <header className="pt-12 pb-8 text-center container mx-auto px-4 max-w-[1600px]">
         <Badge variant="secondary" className="mb-4 text-xs uppercase tracking-wider font-semibold">
           Startup Ecosystem
         </Badge>
@@ -66,7 +66,7 @@ const Events = () => {
           Discover, Connect, Innovate
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto text-base leading-relaxed mb-6">
-          Explore upcoming hackathons, tech seminars, and networking events. Find your next co-founder, pitch to investors, and level up your startup journey.
+          Discover hand-picked startup events, exclusive founder mixers, investor office hours, and deep-tech hackathons. Your ecosystem, curated.
         </p>
         <Link to="/create-event">
           <Button className="gap-2">
@@ -75,7 +75,7 @@ const Events = () => {
         </Link>
       </header>
 
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 pb-16 flex-1 w-full max-w-7xl">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 pb-16 flex-1 w-full max-w-[1600px]">
         <div className="flex flex-col lg:flex-row gap-8">
 
           {/* Filter Sidebar */}
@@ -160,58 +160,10 @@ const Events = () => {
             <div id="events-list" className="scroll-mt-24" />
 
             {paginatedEvents.length > 0 ? (
-              <div className="grid gap-5 md:grid-cols-2">
+              <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
                 {paginatedEvents.map((event, idx) => (
                   <div key={event.id} className="animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both" style={{ animationDelay: `${idx * 80}ms` }}>
-                    <div className="h-full group bg-card border border-border rounded-xl overflow-hidden flex flex-col hover:border-primary/30 hover:shadow-md transition-all duration-200">
-                      {/* Image */}
-                      <div className="relative h-44 w-full overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10" />
-                        <img src={event.imageUrl} alt={event.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-                        <div className="absolute top-3 right-3 z-20">
-                          <Badge className="bg-primary/90 text-primary-foreground border-none text-xs">{event.type}</Badge>
-                        </div>
-                      </div>
-
-                      {/* Content */}
-                      <div className="p-5 flex flex-col flex-1">
-                        <div className="flex items-center gap-2 text-primary text-sm font-medium mb-2">
-                          <Calendar className="w-3.5 h-3.5" />
-                          <span>{event.date}</span>
-                        </div>
-
-                        <h3 className="text-base font-semibold text-foreground mb-2 leading-snug group-hover:text-primary transition-colors line-clamp-2">
-                          {event.title}
-                        </h3>
-
-                        <p className="text-muted-foreground text-sm mb-4 line-clamp-2 leading-relaxed">{event.description}</p>
-
-                        <div className="space-y-2 mb-4 text-sm">
-                          <div className="flex items-center gap-2 text-foreground/70">
-                            <MapPin className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                            <span className="truncate">{event.location} ({event.locationType})</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-foreground/70">
-                            <Users className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                            <span className="truncate">{event.targetAudience.join(", ")}</span>
-                          </div>
-                        </div>
-
-                        <div className="mt-auto pt-4 border-t border-border flex items-center justify-between">
-                          <div>
-                            <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Hosted By</span>
-                            <p className="text-sm font-medium text-foreground">{event.organizer}</p>
-                          </div>
-                          <Button
-                            size="sm"
-                            className="gap-1.5"
-                            onClick={() => window.open(event.registrationLink, '_blank')}
-                          >
-                            Register <ExternalLink className="w-3 h-3" />
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
+                    <EventCard event={event} />
                   </div>
                 ))}
               </div>
@@ -260,7 +212,7 @@ const Events = () => {
         </div>
       </main>
 
-      <NewsletterFooter />
+      
     </div>
   );
 };

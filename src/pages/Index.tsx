@@ -3,7 +3,6 @@ import { useNavigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
-import { NewsletterFooter } from "@/components/NewsletterFooter";
 import { useAuth } from "@/hooks/useAuth";
 import { useEcosystemList } from "@/hooks/useEcosystem";
 import { useArticles } from "@/hooks/useArticles";
@@ -28,13 +27,14 @@ import { GRANTS_DATA } from "@/data/grants";
 import { EVENTS_DATA } from "@/data/events";
 import { StartupCard } from "@/components/ecosystem/StartupCard";
 import { InvestorCard } from "@/components/ecosystem/InvestorCard";
+import { EventCard } from "@/components/ecosystem/EventCard";
 
 const ECOSYSTEM_SECTIONS = [
   { label: "Startups", path: "/startups", icon: Rocket, count: dummyStartups.length, color: "text-blue-500", bg: "bg-blue-500/10", desc: "Discover innovative companies" },
   { label: "Investors", path: "/investors", icon: TrendingUp, count: dummyInvestors.length, color: "text-emerald-500", bg: "bg-emerald-500/10", desc: "Angels, VCs & family offices" },
   { label: "Incubators", path: "/incubators", icon: Building2, count: dummyIncubators.length, color: "text-purple-500", bg: "bg-purple-500/10", desc: "Accelerators & incubation" },
   { label: "Grants", path: "/grants", icon: Coins, count: GRANTS_DATA.length, color: "text-amber-500", bg: "bg-amber-500/10", desc: "Non-dilutive funding" },
-  { label: "Network", path: "/profile", icon: Network, count: "New", color: "text-rose-500", bg: "bg-rose-500/10", desc: "Connect with founders" },
+  { label: "People", path: "/people", icon: Users, count: "New", color: "text-rose-500", bg: "bg-rose-500/10", desc: "Connect with founders" },
 ];
 
 const Index = () => {
@@ -147,7 +147,7 @@ const Index = () => {
           2. ECOSYSTEM NAVIGATION CARDS
           ═══════════════════════════════════════════ */}
       <section className="w-full relative z-20 pb-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-[1400px] mx-auto">
+        <div className="max-w-[1600px] mx-auto w-full">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
             {ECOSYSTEM_SECTIONS.map(sec => (
               <Link
@@ -173,7 +173,7 @@ const Index = () => {
           3. LATEST STORIES
           ═══════════════════════════════════════════ */}
       <section className="w-full py-12 px-4 sm:px-6 lg:px-8 bg-muted/10 border-t border-border/50">
-        <div className="max-w-[1400px] mx-auto">
+        <div className="max-w-[1600px] mx-auto w-full">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-3xl font-bold tracking-tight">Latest Stories</h2>
             <Button variant="outline" size="sm" onClick={() => navigate("/articles")}>
@@ -206,7 +206,7 @@ const Index = () => {
           4. FEATURED STARTUPS CAROUSEL
           ═══════════════════════════════════════════ */}
       <section className="w-full py-12 px-4 sm:px-6 lg:px-8 border-t border-border/50">
-        <div className="max-w-[1400px] mx-auto">
+        <div className="max-w-[1600px] mx-auto w-full">
           <div className="flex items-center justify-between mb-10">
             <div>
               <div className="flex items-center gap-2 mb-2">
@@ -251,7 +251,7 @@ const Index = () => {
           5. ACTIVE INVESTORS CAROUSEL
           ═══════════════════════════════════════════ */}
       <section className="w-full py-12 bg-muted/10 border-t border-border/50 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-[1400px] mx-auto">
+        <div className="max-w-[1600px] mx-auto w-full">
           <div className="flex items-center justify-between mb-10">
             <div>
               <div className="flex items-center gap-2 mb-2">
@@ -292,7 +292,36 @@ const Index = () => {
         </div>
       </section>
 
-      <NewsletterFooter />
+      {/* ═══════════════════════════════════════════
+          6. PREMIUM EVENTS
+          ═══════════════════════════════════════════ */}
+      <section className="w-full py-12 border-t border-border/50 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1600px] mx-auto w-full">
+          <div className="flex items-center justify-between mb-10">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <CalendarDays className="h-6 w-6 text-purple-500" />
+                <h2 className="text-3xl font-bold tracking-tight">Premium Events</h2>
+              </div>
+              <p className="text-muted-foreground text-lg">Exclusive networking, summits, and pitch days.</p>
+            </div>
+            <Button variant="outline" size="lg" className="hidden sm:flex" onClick={() => navigate("/events")}>
+              View All Events <ArrowRight className="h-4 w-4 ml-2" />
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {EVENTS_DATA.slice(0, 3).map((event) => (
+              <EventCard key={event.id} event={event} />
+            ))}
+          </div>
+          <Button variant="outline" className="w-full mt-6 sm:hidden" onClick={() => navigate("/events")}>
+            View All Events
+          </Button>
+        </div>
+      </section>
+
+      
     </div>
   );
 };

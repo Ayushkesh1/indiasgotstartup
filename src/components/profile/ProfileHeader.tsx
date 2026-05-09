@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import FollowButton from "@/components/FollowButton";
 import AIProfileAssistant from "@/components/profile/AIProfileAssistant";
 import { Camera, Loader2, Save } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface ProfileHeaderProps {
   profile: Profile;
@@ -26,6 +27,8 @@ const ProfileHeader = ({ profile, userId, onUpdate, isUpdating, isOwnProfile = t
   const [bio, setBio] = useState(profile.bio || "");
   const [twitterHandle, setTwitterHandle] = useState(profile.twitter_handle || "");
   const [linkedinUrl, setLinkedinUrl] = useState(profile.linkedin_url || "");
+  const [email, setEmail] = useState(profile.email || "");
+  const [primaryRole, setPrimaryRole] = useState(profile.primary_role || "Normal");
   const [uploading, setUploading] = useState(false);
 
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,6 +69,8 @@ const ProfileHeader = ({ profile, userId, onUpdate, isUpdating, isOwnProfile = t
       bio: bio,
       twitter_handle: twitterHandle,
       linkedin_url: linkedinUrl,
+      email: email,
+      primary_role: primaryRole,
     });
   };
 
@@ -114,6 +119,22 @@ const ProfileHeader = ({ profile, userId, onUpdate, isUpdating, isOwnProfile = t
               />
             </div>
             <div>
+              <Label>Primary Role in Ecosystem</Label>
+              <Select value={primaryRole} onValueChange={setPrimaryRole}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select your role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Startup">Startup Founder</SelectItem>
+                  <SelectItem value="Incubator">Incubator</SelectItem>
+                  <SelectItem value="Investor">Investor</SelectItem>
+                  <SelectItem value="Expert">Expert</SelectItem>
+                  <SelectItem value="Creator">Creator</SelectItem>
+                  <SelectItem value="Normal">Normal User</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
               <div className="flex items-center justify-between mb-2">
                 <Label htmlFor="bio">Bio</Label>
                 {isOwnProfile && (
@@ -129,6 +150,16 @@ const ProfileHeader = ({ profile, userId, onUpdate, isUpdating, isOwnProfile = t
                 onChange={(e) => setBio(e.target.value)}
                 placeholder="Tell us about yourself..."
                 rows={4}
+              />
+            </div>
+            <div>
+              <Label htmlFor="email">Email Address</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="hello@example.com"
               />
             </div>
           </div>

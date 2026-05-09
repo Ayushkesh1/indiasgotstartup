@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
-import { NewsletterFooter } from "@/components/NewsletterFooter";
 import { GRANTS_DATA } from "@/data/grants";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -135,7 +134,7 @@ const GrantDetail = () => {
       
       <Navbar />
 
-      <main className="flex-1 relative z-10 w-full container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl py-12">
+      <main className="flex-1 relative z-10 w-full container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1600px] py-12">
         {/* Back Link */}
         <button 
           onClick={() => navigate("/grants")}
@@ -359,7 +358,7 @@ const GrantDetail = () => {
         </div>
       </main>
 
-      <NewsletterFooter />
+      
     </div>
   );
 };

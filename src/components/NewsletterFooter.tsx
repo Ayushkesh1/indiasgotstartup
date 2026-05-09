@@ -60,7 +60,7 @@ export const NewsletterFooter = () => {
 
   return (
     <footer className="w-full border-t border-border bg-background mt-16">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl py-12">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1600px] py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12">
           {/* Brand & Socials */}
           <div className="md:col-span-1 flex flex-col justify-between">

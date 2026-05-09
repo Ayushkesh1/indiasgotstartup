@@ -1,5 +1,4 @@
 import Navbar from "@/components/Navbar";
-import { NewsletterFooter } from "@/components/NewsletterFooter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Scale, FileText, UserCheck, ShieldAlert, Cpu, Gavel } from "lucide-react";
@@ -176,7 +175,7 @@ const TermsOfService = () => {
         </section>
       </main>
 
-      <NewsletterFooter />
+      
     </div>
   );
 };

@@ -4,6 +4,8 @@ import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import CreatorDashboard from "./CreatorDashboard";
 import { 
   CheckCircle, 
   Sparkles, 
@@ -143,6 +145,7 @@ export default function CreatorProgram() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { data: subscription } = useSubscription();
+  const [activeTab, setActiveTab] = useState("overview");
 
   const handleSelectPlan = (planId: string) => {
     if (!user) {
@@ -151,7 +154,6 @@ export default function CreatorProgram() {
     }
 
     if (planId === "basic") {
-      navigate("/creator-dashboard");
       return;
     }
 
@@ -166,8 +168,17 @@ export default function CreatorProgram() {
     <div className="min-h-screen bg-background">
       <Navbar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
       
-      <div className="container mx-auto px-4 py-12">
-        {/* Hero Section */}
+      <div className="container mx-auto px-4 py-8">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          {(user || isSubscribed) && (
+            <TabsList className="mb-8">
+              <TabsTrigger value="overview">Program Overview</TabsTrigger>
+              <TabsTrigger value="dashboard">Creator Dashboard</TabsTrigger>
+            </TabsList>
+          )}
+
+          <TabsContent value="overview" className="space-y-12">
+            {/* Hero Section */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <Badge className="mb-4 bg-gradient-to-r from-amber-500 to-orange-500 text-foreground dark:text-white border-0">
             <Sparkles className="h-3 w-3 mr-1" />
@@ -344,7 +355,7 @@ export default function CreatorProgram() {
               if (!user) {
                 navigate("/auth?redirect=/creator-program");
               } else {
-                navigate("/creator-dashboard");
+                setActiveTab("dashboard");
               }
             }}
           >
@@ -352,6 +363,14 @@ export default function CreatorProgram() {
             <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
         </div>
+          </TabsContent>
+
+          {(user || isSubscribed) && (
+            <TabsContent value="dashboard">
+              <CreatorDashboard />
+            </TabsContent>
+          )}
+        </Tabs>
       </div>
     </div>
   );

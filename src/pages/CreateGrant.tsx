@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/Navbar";
-import { NewsletterFooter } from "@/components/NewsletterFooter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,12 +14,37 @@ import { format } from "date-fns";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { SubmissionSuccessDialog } from "@/components/SubmissionSuccessDialog";
+import { useAuth } from "@/hooks/useAuth";
+import { useProfile } from "@/hooks/useProfile";
+import { AlertCircle } from "lucide-react";
 
 const CreateGrant = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
   const [deadlineDate, setDeadlineDate] = useState<Date | undefined>(undefined);
+
+  const { user } = useAuth();
+  const { data: profile, isLoading } = useProfile(user?.id);
+
+  const isAllowed = profile && profile.primary_role === 'incubator';
+
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
+  if (!isAllowed) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+        <AlertCircle className="w-16 h-16 text-destructive mb-6" />
+        <h2 className="text-2xl font-bold text-foreground mb-4">Access Denied</h2>
+        <p className="text-muted-foreground text-center max-w-md mb-8">
+          This action is not available for your profile type. Only Incubators can create grants.
+        </p>
+        <Button onClick={() => navigate("/profile")}>Go to Profile</Button>
+      </div>
+    );
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,18 +58,8 @@ const CreateGrant = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background relative selection:bg-purple-500/30 overflow-hidden text-foreground flex flex-col">
-      <Helmet>
-        <title>Post a Grant | India's Got Startup</title>
-      </Helmet>
-
-      {/* Ambient Lighting Background */}
-      <div className="fixed top-[-10%] left-[-10%] w-[60%] h-[600px] bg-purple-600/10 blur-[150px] rounded-full pointer-events-none mix-blend-screen z-0" />
-      <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[500px] bg-cyan-500/10 blur-[150px] rounded-full pointer-events-none mix-blend-screen z-0" />
-      
-      <Navbar />
-
-      <main className="flex-1 relative z-10 w-full container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl py-12">
+    <>
+      <div className="relative text-foreground flex flex-col">
         <button 
           onClick={() => navigate("/grants")}
           className="flex items-center text-muted-foreground hover:text-foreground dark:text-white transition-colors mb-8 group w-max"
@@ -224,9 +238,7 @@ const CreateGrant = () => {
             </div>
           </Card>
         </form>
-      </main>
-
-      <NewsletterFooter />
+      </div>
 
       <SubmissionSuccessDialog 
         open={isSuccessOpen} 
@@ -237,7 +249,7 @@ const CreateGrant = () => {
         title="Grant Submitted!"
         message="Thank you! Your grant has been submitted successfully. It will be reviewed and published soon."
       />
-    </div>
+    </>
   );
 };
 

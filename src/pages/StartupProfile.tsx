@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, MapPin, Globe, Linkedin, Twitter, Instagram, Youtube, Mail, Phone, Map, Briefcase, Loader2 } from "lucide-react";
 import { dummyStartups } from "@/data/startups";
-import { NewsletterFooter } from "@/components/NewsletterFooter";
 import { useEcosystemBySlug, useStartupTeam } from "@/hooks/useEcosystem";
 
 const StartupProfile = () => {
@@ -329,7 +328,7 @@ const StartupProfile = () => {
           </div>
         </div>
       </main>
-      <NewsletterFooter />
+      
     </div>
   );
 };

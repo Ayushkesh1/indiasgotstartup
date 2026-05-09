@@ -10,6 +10,7 @@ import { PageLoader } from "./components/PageLoader";
 import { PageTransition } from "./components/PageTransition";
 import StartupCompanion from "@/components/StartupCompanion";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { NewsletterFooter } from "@/components/NewsletterFooter";
 
 const Index = lazy(() => import("./pages/Index"));
 const Auth = lazy(() => import("./pages/Auth"));
@@ -23,6 +24,8 @@ const ReadingLists = lazy(() => import("./pages/ReadingLists"));
 const AdsManagement = lazy(() => import("./pages/AdsManagement"));
 const FollowingManagement = lazy(() => import("./pages/FollowingManagement"));
 const Leaderboard = lazy(() => import("./pages/Leaderboard"));
+const People = lazy(() => import("./pages/People"));
+const Search = lazy(() => import("./pages/Search"));
 const SeriesDetail = lazy(() => import("./pages/SeriesDetail"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const AdminLogin = lazy(() => import("./pages/AdminLogin"));
@@ -42,6 +45,7 @@ const SocialImpact = lazy(() => import("./pages/SocialImpact"));
 const Grants = lazy(() => import("./pages/Grants"));
 const GrantDetail = lazy(() => import("./pages/GrantDetail"));
 const Events = lazy(() => import("./pages/Events"));
+const EventDetail = lazy(() => import("./pages/EventDetail"));
 const CreateGrant = lazy(() => import("./pages/CreateGrant"));
 const CreateEvent = lazy(() => import("./pages/CreateEvent"));
 const Startups = lazy(() => import("./pages/Startups"));
@@ -75,11 +79,12 @@ const AnimatedRoutes = () => {
         <Route path="/article/:slug" element={<PageTransition><ArticleDetail /></PageTransition>} />
         <Route path="/reading-lists" element={<PageTransition><ReadingLists /></PageTransition>} />
         <Route path="/following" element={<PageTransition><FollowingManagement /></PageTransition>} />
-        <Route path="/creator-dashboard" element={<PageTransition><CreatorDashboard /></PageTransition>} />
         <Route path="/creator-program" element={<PageTransition><CreatorProgram /></PageTransition>} />
         <Route path="/creator-program/checkout" element={<PageTransition><CreatorCheckout /></PageTransition>} />
         <Route path="/subscription" element={<PageTransition><SubscriptionManagement /></PageTransition>} />
         <Route path="/leaderboard" element={<PageTransition><Leaderboard /></PageTransition>} />
+        <Route path="/search" element={<PageTransition><Search /></PageTransition>} />
+        <Route path="/people" element={<PageTransition><People /></PageTransition>} />
         <Route path="/series/:id" element={<PageTransition><SeriesDetail /></PageTransition>} />
         
         {/* Static Pages */}
@@ -94,9 +99,8 @@ const AnimatedRoutes = () => {
         <Route path="/social-impact" element={<PageTransition><SocialImpact /></PageTransition>} />
         <Route path="/grants" element={<PageTransition><Grants /></PageTransition>} />
         <Route path="/grants/:id" element={<PageTransition><GrantDetail /></PageTransition>} />
-        <Route path="/create-grant" element={<PageTransition><CreateGrant /></PageTransition>} />
         <Route path="/events" element={<PageTransition><Events /></PageTransition>} />
-        <Route path="/create-event" element={<PageTransition><CreateEvent /></PageTransition>} />
+        <Route path="/events/:id" element={<PageTransition><EventDetail /></PageTransition>} />
 
         {/* Ecosystem Directories */}
         <Route path="/startups" element={<PageTransition><Startups /></PageTransition>} />
@@ -131,6 +135,7 @@ const App = () => (
           <BrowserRouter>
             <Suspense fallback={<PageLoader />}>
               <AnimatedRoutes />
+              <NewsletterFooter />
               <StartupCompanion />
             </Suspense>
           </BrowserRouter>

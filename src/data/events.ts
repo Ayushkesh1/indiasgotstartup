@@ -1,101 +1,199 @@
+import { Person, mockPeople } from './mockPeople';
+
 export interface AppEvent {
   id: string;
   title: string;
-  type: string; // 'Hackathon', 'Seminar', 'Competition', 'Networking'
-  locationType: string; // 'Online', 'In-Person'
+  type: string; 
+  locationType: string; 
   location: string;
   date: string;
-  targetAudience: string[]; // 'Students', 'Startups', 'Investors', 'Everyone'
-  fieldOfStartup: string[]; // 'Tech', 'Fintech', 'SaaS', 'Hardware', 'BioTech', 'EdTech'
+  targetAudience: string[]; 
+  fieldOfStartup: string[]; 
   description: string;
   imageUrl: string;
   registrationLink: string;
   organizer: string;
+  
+  // New Mini-Luma fields
+  organizerProfile?: Person;
+  agenda?: { time: string; title: string; description?: string }[];
+  speakers?: Person[];
+  participants?: Person[];
+  price?: string; 
+  registrationDeadline?: string;
 }
 
 export const EVENTS_DATA: AppEvent[] = [
   {
     id: "evt_1",
-    title: "Global AI Hackathon 2026",
-    type: "Hackathon",
-    locationType: "Online",
-    location: "Virtual",
-    date: "May 15 - 17, 2026",
-    targetAudience: ["Students", "Startups"],
-    fieldOfStartup: ["Tech", "AI"],
-    description: "Join thousands of developers worldwide to build the next generation of generative AI models and applications over a thrilling 48-hour period.",
-    imageUrl: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&q=80&w=800",
+    title: "Delhi NCR Founder Meetup",
+    type: "Networking",
+    locationType: "In-Person",
+    location: "Cyber Hub, Gurugram",
+    date: "May 20, 2026 • 5:00 PM - 8:00 PM",
+    targetAudience: ["Founders", "Investors"],
+    fieldOfStartup: ["All Sectors"],
+    description: "An exclusive evening for startup founders in the Delhi NCR region to connect, share challenges, and discuss growth strategies over drinks and dinner. Limited capacity to ensure meaningful conversations.",
+    imageUrl: "https://images.unsplash.com/photo-1515169067868-5387ec356754?auto=format&fit=crop&q=80&w=1200",
     registrationLink: "https://example.com/register/1",
-    organizer: "OpenAI Foundation"
+    organizer: "NCR Startup Network",
+    organizerProfile: mockPeople[2], // Karan Singh
+    price: "Free",
+    registrationDeadline: "May 18, 2026",
+    agenda: [
+      { time: "5:00 PM", title: "Arrival & Welcome Drinks", description: "Grab a drink and settle in." },
+      { time: "6:00 PM", title: "Founder Lightning Talks", description: "3 founders share their biggest recent learnings (5 mins each)." },
+      { time: "6:30 PM", title: "Open Networking", description: "Mingle with fellow founders." },
+      { time: "8:00 PM", title: "Closing", description: "Event concludes." }
+    ],
+    speakers: [mockPeople[0], mockPeople[5]], // Rohan, Sneha
+    participants: [mockPeople[0], mockPeople[2], mockPeople[5], mockPeople[6], mockPeople[7]]
   },
   {
     id: "evt_2",
-    title: "Fintech Summit India",
-    type: "Seminar",
-    locationType: "In-Person",
-    location: "Bengaluru, India",
-    date: "June 22, 2026",
-    targetAudience: ["Startups", "Investors"],
-    fieldOfStartup: ["Fintech"],
-    description: "The premier gathering for fintech founders, banking leaders, and VCs in Asia. Discover emerging regulatory trends and decentralized finance architectures.",
-    imageUrl: "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?auto=format&fit=crop&q=80&w=800",
+    title: "AI Builders Night Bangalore",
+    type: "Workshop",
+    locationType: "Hybrid",
+    location: "Koramangala & Virtual",
+    date: "June 5, 2026 • 6:00 PM - 9:00 PM",
+    targetAudience: ["Developers", "Founders"],
+    fieldOfStartup: ["AI", "Tech"],
+    description: "Join the largest gathering of AI engineers and founders in Bangalore. We'll be diving deep into building resilient LLM applications, retrieval-augmented generation techniques, and demoing new internal tools.",
+    imageUrl: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&q=80&w=1200",
     registrationLink: "https://example.com/register/2",
-    organizer: "FinTech India Core"
+    organizer: "Bangalore AI Club",
+    organizerProfile: mockPeople[5], // Sneha Reddy
+    price: "Paid - ₹500",
+    registrationDeadline: "June 3, 2026",
+    agenda: [
+      { time: "6:00 PM", title: "Registration & Snacks" },
+      { time: "6:30 PM", title: "Keynote: The State of Indic LLMs", description: "Exploring language models tailored for Indian languages." },
+      { time: "7:15 PM", title: "Live Code: RAG from Scratch", description: "Hands-on session building a RAG pipeline." },
+      { time: "8:15 PM", title: "Demo Day & Networking", description: "Showcase what you are building." }
+    ],
+    speakers: [mockPeople[5]],
+    participants: [mockPeople[1], mockPeople[4], mockPeople[5], mockPeople[7]]
   },
   {
     id: "evt_3",
-    title: "Hardware Innovators Challenge",
+    title: "Startup Pitch Evening Mumbai",
     type: "Competition",
     locationType: "In-Person",
-    location: "IIT Bombay, Mumbai",
-    date: "July 10, 2026",
-    targetAudience: ["Students", "Startups"],
-    fieldOfStartup: ["Hardware", "Tech"],
-    description: "A pitch competition specifically designed for hardware deeptech startups. Compete for a total prize pool of ₹50 Lakhs and direct acceleration.",
-    imageUrl: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800",
+    location: "BKC, Mumbai",
+    date: "July 15, 2026 • 4:00 PM - 8:00 PM",
+    targetAudience: ["Founders", "Investors"],
+    fieldOfStartup: ["Fintech", "D2C", "SaaS"],
+    description: "Watch 10 curated early-stage startups pitch live to a panel of top-tier VCs and angel investors. A great opportunity to witness fundraising in action and network with the Mumbai venture ecosystem.",
+    imageUrl: "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?auto=format&fit=crop&q=80&w=1200",
     registrationLink: "https://example.com/register/3",
-    organizer: "DeepTech Partners"
+    organizer: "Mumbai Angels",
+    organizerProfile: mockPeople[1], // Ananya Sharma
+    price: "Free for Investors, ₹1000 for Attendees",
+    registrationDeadline: "July 10, 2026",
+    agenda: [
+      { time: "4:00 PM", title: "Doors Open & High Tea" },
+      { time: "5:00 PM", title: "Pitch Session 1", description: "5 startups pitch for 5 minutes each, followed by Q&A." },
+      { time: "6:15 PM", title: "Break" },
+      { time: "6:30 PM", title: "Pitch Session 2", description: "Remaining 5 startups pitch." },
+      { time: "7:45 PM", title: "Networking Dinner" }
+    ],
+    speakers: [mockPeople[1], mockPeople[6]], // Ananya, Aditya
+    participants: [mockPeople[0], mockPeople[1], mockPeople[2], mockPeople[6], mockPeople[7]]
   },
   {
     id: "evt_4",
-    title: "SaaS Builders Networking Meetup",
-    type: "Networking",
-    locationType: "In-Person",
-    location: "Delhi NCR",
-    date: "August 05, 2026",
-    targetAudience: ["Startups"],
-    fieldOfStartup: ["SaaS", "Tech"],
-    description: "An exclusive, invite-only evening for SaaS founders crossing $1M ARR. Discuss go-to-market strategies and scaling challenges over drinks.",
-    imageUrl: "https://images.unsplash.com/photo-1515169067868-5387ec356754?auto=format&fit=crop&q=80&w=800",
+    title: "D2C Brand Growth Workshop",
+    type: "Workshop",
+    locationType: "Online",
+    location: "Virtual",
+    date: "August 10, 2026 • 2:00 PM - 5:00 PM",
+    targetAudience: ["Founders", "Marketers"],
+    fieldOfStartup: ["D2C", "E-commerce"],
+    description: "A comprehensive virtual workshop on scaling Direct-to-Consumer brands in India. Covering performance marketing, retention strategies, and optimizing supply chains.",
+    imageUrl: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&q=80&w=1200",
     registrationLink: "https://example.com/register/4",
-    organizer: "SaaSBooster"
+    organizer: "GrowthX",
+    organizerProfile: mockPeople[2], // Karan Singh
+    price: "Paid - ₹2000",
+    registrationDeadline: "August 9, 2026",
+    agenda: [
+      { time: "2:00 PM", title: "Mastering Meta Ads for D2C" },
+      { time: "3:30 PM", title: "Retention is the new Acquisition", description: "Email & WhatsApp marketing teardowns." },
+      { time: "4:30 PM", title: "Q&A Session" }
+    ],
+    speakers: [mockPeople[2], mockPeople[4]], // Karan, Vikram
+    participants: [mockPeople[2], mockPeople[4], mockPeople[7]]
   },
   {
     id: "evt_5",
-    title: "EdTech Disruptors Conference",
-    type: "Seminar",
-    locationType: "Hybrid",
-    location: "Hyderabad & Virtual",
-    date: "September 12, 2026",
-    targetAudience: ["Startups", "Everyone"],
-    fieldOfStartup: ["EdTech"],
-    description: "Explaining the future of immersive learning. Hear from top educators and technologists building VR classrooms and AI tutors.",
-    imageUrl: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&q=80&w=800",
+    title: "Women in Startups Mixer",
+    type: "Networking",
+    locationType: "In-Person",
+    location: "Indiranagar, Bangalore",
+    date: "September 5, 2026 • 6:30 PM - 9:30 PM",
+    targetAudience: ["Founders", "Investors", "Operators"],
+    fieldOfStartup: ["All Sectors"],
+    description: "An evening dedicated to celebrating and connecting women building the Indian startup ecosystem. Join us for inspiring stories, mentorship opportunities, and powerful networking.",
+    imageUrl: "https://images.unsplash.com/photo-1530497610245-94d3c16cda28?auto=format&fit=crop&q=80&w=1200",
     registrationLink: "https://example.com/register/5",
-    organizer: "EduFuture Org"
+    organizer: "Women in Tech India",
+    organizerProfile: mockPeople[3], // Meera Patel
+    price: "Free",
+    registrationDeadline: "September 1, 2026",
+    agenda: [
+      { time: "6:30 PM", title: "Welcome & Introductions" },
+      { time: "7:00 PM", title: "Panel: Navigating Fundraising as a Female Founder" },
+      { time: "8:00 PM", title: "Mixer & Dinner" }
+    ],
+    speakers: [mockPeople[1], mockPeople[3], mockPeople[5]], // Ananya, Meera, Sneha
+    participants: [mockPeople[1], mockPeople[3], mockPeople[5], mockPeople[7]]
   },
   {
     id: "evt_6",
-    title: "BioTech Research Symposium",
-    type: "Seminar",
+    title: "Incubator Open House",
+    type: "Open House",
     locationType: "In-Person",
-    location: "Chennai, India",
-    date: "October 01, 2026",
-    targetAudience: ["Students", "Investors"],
-    fieldOfStartup: ["BioTech"],
-    description: "Focused on CRISPR, cellular agriculture, and longevity startups. Connect researchers transitioning from academic labs to commercial ventures.",
-    imageUrl: "https://images.unsplash.com/photo-1530497610245-94d3c16cda28?auto=format&fit=crop&q=80&w=800",
+    location: "T-Hub, Hyderabad",
+    date: "October 12, 2026 • 10:00 AM - 4:00 PM",
+    targetAudience: ["Students", "Early-stage Founders"],
+    fieldOfStartup: ["Tech", "DeepTech", "Hardware"],
+    description: "Tour the facilities, meet the mentors, and learn how our incubation programs can accelerate your startup journey from prototype to product-market fit.",
+    imageUrl: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1200",
     registrationLink: "https://example.com/register/6",
-    organizer: "BioIncubator Labs"
+    organizer: "T-Hub Innovations",
+    organizerProfile: mockPeople[3], // Meera Patel
+    price: "Free",
+    registrationDeadline: "October 10, 2026",
+    agenda: [
+      { time: "10:00 AM", title: "Facility Tour" },
+      { time: "11:30 AM", title: "Program Overview Session" },
+      { time: "1:00 PM", title: "Networking Lunch" },
+      { time: "2:00 PM", title: "1-on-1 Mentorship Slots (Pre-booked)" }
+    ],
+    speakers: [mockPeople[3]],
+    participants: [mockPeople[3], mockPeople[7], mockPeople[0]]
+  },
+  {
+    id: "evt_7",
+    title: "Investor Office Hours",
+    type: "Office Hours",
+    locationType: "Online",
+    location: "Virtual",
+    date: "November 2, 2026 • 3:00 PM - 5:00 PM",
+    targetAudience: ["Founders"],
+    fieldOfStartup: ["Seed Stage", "All Sectors"],
+    description: "Book a 15-minute slot to pitch your startup or get advice directly from active angel investors and VCs. Registration does not guarantee a slot; selected startups will be notified.",
+    imageUrl: "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?auto=format&fit=crop&q=80&w=1200",
+    registrationLink: "https://example.com/register/7",
+    organizer: "Angel Network India",
+    organizerProfile: mockPeople[6], // Aditya Verma
+    price: "Free",
+    registrationDeadline: "October 25, 2026",
+    agenda: [
+      { time: "3:00 PM", title: "Virtual Waiting Room Opens" },
+      { time: "3:15 PM", title: "1-on-1 Sessions Begin" }
+    ],
+    speakers: [mockPeople[1], mockPeople[6]], // Ananya, Aditya
+    participants: [mockPeople[1], mockPeople[6]]
   }
 ];

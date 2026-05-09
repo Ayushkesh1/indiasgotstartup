@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
-import { NewsletterFooter } from "@/components/NewsletterFooter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -215,7 +214,7 @@ const HelpCenter = () => {
       </section>
       </main>
 
-      <NewsletterFooter />
+      
     </div>
   );
 };

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "@/components/Navbar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -47,9 +46,8 @@ export default function CreatorDashboard() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-background">
-        <Navbar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
-        <div className="container mx-auto px-4 py-8">
+      <div className="w-full">
+        <div className="container mx-auto py-8">
           <Skeleton className="h-8 w-64 mb-8" />
           <div className="grid gap-6 md:grid-cols-4">
             {[1, 2, 3, 4].map((i) => (
@@ -109,10 +107,8 @@ export default function CreatorDashboard() {
   const boostedArticlesCount = articlePerformance?.filter(a => a.is_boosted).length || 0;
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
-      
-      <div className="container mx-auto px-4 py-8">
+    <div className="w-full">
+      <div className="container mx-auto py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>

@@ -9,6 +9,8 @@ export interface Profile {
   avatar_url: string | null;
   twitter_handle: string | null;
   linkedin_url: string | null;
+  primary_role: string | null;
+  email: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -19,15 +21,42 @@ export function useProfile(userId: string | undefined) {
     queryFn: async () => {
       if (!userId) throw new Error("User ID required");
       
-      // Use profiles_public view for public access (bypasses RLS restrictions)
+      // Use select(*) to avoid "column does not exist" crashes if schema is out of sync
+      let profileData = null;
+      
       const { data, error } = await supabase
-        .from("profiles_public")
-        .select("id, full_name, bio, avatar_url, twitter_handle, linkedin_url, created_at, updated_at")
+        .from("profiles")
+        .select("*")
         .eq("id", userId)
         .maybeSingle();
 
-      if (error) throw error;
-      return data as Profile | null;
+      if (!error && data) {
+        profileData = data;
+      } else {
+        // Fallback to profiles_public view if profiles fails
+        const { data: pubData, error: pubError } = await supabase
+          .from("profiles_public")
+          .select("*")
+          .eq("id", userId)
+          .maybeSingle();
+
+        if (pubError) throw pubError;
+        profileData = pubData;
+      }
+
+      if (!profileData) return null;
+
+      // If primary_role is missing from the database schema, fallback to JWT metadata
+      if (profileData.primary_role === undefined) {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user?.id === userId) {
+          profileData.primary_role = session.user.user_metadata?.primary_role || 'normal';
+        } else {
+          profileData.primary_role = 'normal';
+        }
+      }
+
+      return profileData as Profile;
     },
     enabled: !!userId,
   });

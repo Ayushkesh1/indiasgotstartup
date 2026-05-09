@@ -66,7 +66,7 @@ export default function AdminLogin() {
       <Navbar />
 
       <main className="bg-gradient-subtle">
-        <div className="container mx-auto grid min-h-[calc(100vh-3.5rem)] max-w-7xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8 lg:py-12">
+        <div className="container mx-auto grid min-h-[calc(100vh-3.5rem)] max-w-[1600px] gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8 lg:py-12">
           <section className="relative overflow-hidden rounded-3xl border border-border bg-card/70 p-8 shadow-lg backdrop-blur-sm lg:p-10">
             <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-r from-primary/20 via-accent/10 to-transparent" />
 
