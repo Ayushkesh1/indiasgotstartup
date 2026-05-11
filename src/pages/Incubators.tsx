@@ -5,17 +5,18 @@ import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Building2, Search, Plus, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { Building2, Search, Plus, ChevronLeft, ChevronRight, Loader2, Edit3 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { IncubatorCard } from "@/components/ecosystem/IncubatorCard";
-import { dummyIncubators } from "@/data/incubators";
 import { useEcosystemList } from "@/hooks/useEcosystem";
+import { useUserEntity } from "@/hooks/useUserEntity";
 
 const ITEMS_PER_PAGE = 50;
 
 const Incubators = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { data: userEntity } = useUserEntity(user?.id, "incubators");
   
   const { data: dbIncubators, isLoading } = useEcosystemList("incubators");
 
@@ -25,7 +26,7 @@ const Incubators = () => {
   const [sector, setSector] = useState("all");
   const [page, setPage] = useState(1);
 
-  // Merge dummy and DB data
+  // Use DB data
   const allIncubators = useMemo(() => {
     const mappedDbIncubators = (dbIncubators || []).map((i: any) => {
       let grantAvailable = false;
@@ -50,10 +51,7 @@ const Incubators = () => {
       };
     });
     
-    // Combine and deduplicate by slug
-    const combined = [...mappedDbIncubators, ...dummyIncubators];
-    const unique = Array.from(new Map(combined.map(item => [item.slug, item])).values());
-    return unique;
+    return mappedDbIncubators;
   }, [dbIncubators]);
 
   // Extract unique values for filters
@@ -121,9 +119,15 @@ const Incubators = () => {
             <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-2">Explore Incubators</h1>
             <p className="text-muted-foreground">Find the right launchpad for your startup with our comprehensive directory.</p>
           </div>
-          <Button onClick={() => navigate(user ? "/incubators/submit" : "/auth")} className="gap-2 shrink-0">
-            <Plus className="h-4 w-4" /> Add Incubator
-          </Button>
+          {userEntity ? (
+            <Button onClick={() => navigate(`/incubators/${userEntity.slug}`)} variant="outline" className="gap-2 shrink-0 border-primary/20 text-primary hover:bg-primary/10">
+              <Edit3 className="h-4 w-4" /> Edit Incubator
+            </Button>
+          ) : (
+            <Button onClick={() => navigate(user ? "/incubators/submit" : "/auth")} className="gap-2 shrink-0">
+              <Plus className="h-4 w-4" /> Add Incubator
+            </Button>
+          )}
         </header>
 
         <div className="bg-card border border-border/50 rounded-xl p-4 mb-8 space-y-4 shadow-sm">

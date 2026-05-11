@@ -14,8 +14,8 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { TeamMemberSection, TeamMemberInput, ImageUploadPreview, MultiSelectGrid, OpenRolesSection, OpenRoleInput } from "@/components/ecosystem/DynamicFormFields";
 import { Building, MapPin, Globe, Award, Users, Briefcase } from "lucide-react";
+import { ECOSYSTEM_STAGES } from "@/constants/ecosystem";
 
-const STAGES = ["Ideation", "Prototype", "MVP", "Early Traction", "Revenue", "Scaling"];
 const SCHEMES = ["Startup India Seed Fund Scheme", "NIDHI PRAYAS", "NIDHI EIR", "TIDE 2.0", "MeitY Startup Hub", "Other"];
 
 const SubmitIncubator = () => {
@@ -233,7 +233,7 @@ const SubmitIncubator = () => {
 
               <div className="space-y-3">
                 <Label>Stages Supported</Label>
-                <MultiSelectGrid options={STAGES} selected={selectedStages} onChange={setSelectedStages} />
+                <MultiSelectGrid options={ECOSYSTEM_STAGES.map(s => s.label)} selected={selectedStages} onChange={setSelectedStages} />
               </div>
 
               <div className="space-y-2">

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Edit3, LogOut, User, BookMarked, TrendingUp, ArrowLeft, Users, Share2, Twitter, Linkedin, Facebook, Shield, Trophy, Wallet, Sparkles, Settings, Calendar, FileText, Lightbulb, Menu, X, PlusCircle } from "lucide-react";
+import { Search, Edit3, LogOut, User, BookMarked, TrendingUp, ArrowLeft, Users, Share2, Twitter, Linkedin, Facebook, Shield, Trophy, Wallet, Sparkles, Settings, Calendar, FileText, Menu, X, PlusCircle, Moon, Sun } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,6 +17,9 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useProfile } from "@/hooks/useProfile";
 import { useAdminSession } from "@/hooks/useAdminSession";
 import { useTheme } from "@/components/ThemeProvider";
+import { useUniversalSearch } from "@/hooks/useUniversalSearch";
+import { SearchSuggestions } from "@/components/search/SearchSuggestions";
+import { useRef, useEffect } from "react";
 
 interface NavbarProps {
   searchQuery?: string;
@@ -42,6 +45,29 @@ const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) =>
   const { toast } = useToast();
   const { theme, setTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  // Local search state to ensure Navbar search works even without props
+  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  // Sync with prop if it changes
+  useEffect(() => {
+    setLocalSearchQuery(searchQuery);
+  }, [searchQuery]);
+
+  const { data: searchResults, isLoading: isSearching } = useUniversalSearch(localSearchQuery);
+
+  const searchRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   // Show admin link if user has admin role OR is logged in via admin session
   const showAdminLink = roleData?.isAdmin || isAdminSession;
@@ -87,8 +113,19 @@ const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) =>
   };
 
   const handleSearchSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    if (e.key === 'Enter' && localSearchQuery.trim()) {
+      setShowSuggestions(false);
+      navigate(`/search?q=${encodeURIComponent(localSearchQuery.trim())}`);
+    }
+  };
+
+  const handleSearchChange = (val: string) => {
+    setLocalSearchQuery(val);
+    onSearchChange(val);
+    if (val.length >= 2) {
+      setShowSuggestions(true);
+    } else {
+      setShowSuggestions(false);
     }
   };
 
@@ -112,18 +149,26 @@ const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) =>
             </Link>
           </div>
 
-          {/* Center: Search (desktop) */}
           <div className="hidden md:flex flex-1 max-w-md mx-6">
-            <div className="relative w-full">
+            <div className="relative w-full" ref={searchRef}>
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="search"
                 placeholder="Search startups, investors, people, events..."
                 className="w-full pl-10 bg-muted/50 border-border/50 h-9 rounded-lg focus:bg-background transition-colors"
-                value={searchQuery}
-                onChange={(e) => onSearchChange(e.target.value)}
+                value={localSearchQuery}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                onFocus={() => localSearchQuery.length >= 2 && setShowSuggestions(true)}
                 onKeyDown={handleSearchSubmit}
               />
+              {showSuggestions && (
+                <SearchSuggestions 
+                  results={searchResults} 
+                  isLoading={isSearching} 
+                  query={localSearchQuery}
+                  onSelect={() => setShowSuggestions(false)} 
+                />
+              )}
             </div>
           </div>
 
@@ -148,20 +193,16 @@ const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) =>
               ))}
             </div>
 
-            {/* Theme toggle */}
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="h-8 w-8"
+
+
+            {/* Theme Toggle */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 mr-1"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             >
-              <Lightbulb 
-                className={`h-4 w-4 transition-all duration-300 ${
-                  theme === 'light' 
-                    ? 'text-amber-500 fill-amber-500' 
-                    : 'text-muted-foreground'
-                }`} 
-              />
+              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </Button>
 
             {/* Share */}
@@ -208,8 +249,14 @@ const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) =>
                     <DropdownMenuItem onClick={() => navigate("/write")} className="cursor-pointer">
                       <Edit3 className="mr-2 h-4 w-4" /> Write Article
                     </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/events/create")} className="cursor-pointer">
+                      <Calendar className="mr-2 h-4 w-4" /> Create Event
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/grants/create")} className="cursor-pointer">
+                      <FileText className="mr-2 h-4 w-4" /> Create Grant
+                    </DropdownMenuItem>
                     
-                    {profile?.primary_role === 'startup' && (
+                    {(profile?.primary_role === 'startup' || isAdminSession) && (
                       <>
                         <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
                           <FileText className="mr-2 h-4 w-4" /> Add Startup Update
@@ -220,25 +267,16 @@ const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) =>
                       </>
                     )}
 
-                    {profile?.primary_role === 'incubator' && (
+                    {(profile?.primary_role === 'incubator' || isAdminSession) && (
                       <>
-                        <DropdownMenuItem onClick={() => navigate("/create-event")} className="cursor-pointer">
-                          <Calendar className="mr-2 h-4 w-4" /> Create Event
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => navigate("/create-grant")} className="cursor-pointer">
-                          <FileText className="mr-2 h-4 w-4" /> Create Grant
-                        </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
                           <TrendingUp className="mr-2 h-4 w-4" /> Add Incubator Program
                         </DropdownMenuItem>
                       </>
                     )}
 
-                    {(profile?.primary_role === 'investor' || profile?.primary_role === 'investor_vc') && (
+                    {(profile?.primary_role === 'investor' || profile?.primary_role === 'investor_vc' || isAdminSession) && (
                       <>
-                        <DropdownMenuItem onClick={() => navigate("/create-event")} className="cursor-pointer">
-                          <Calendar className="mr-2 h-4 w-4" /> Create Event
-                        </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
                           <TrendingUp className="mr-2 h-4 w-4" /> Add Investment Thesis
                         </DropdownMenuItem>
@@ -248,22 +286,16 @@ const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) =>
                       </>
                     )}
 
-                    {profile?.primary_role === 'expert' && (
+                    {(profile?.primary_role === 'expert' || isAdminSession) && (
                       <>
-                        <DropdownMenuItem onClick={() => navigate("/create-event")} className="cursor-pointer">
-                          <Calendar className="mr-2 h-4 w-4" /> Create Event
-                        </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
                           <Sparkles className="mr-2 h-4 w-4" /> Add Service
                         </DropdownMenuItem>
                       </>
                     )}
 
-                    {profile?.primary_role === 'creator' && (
+                    {(profile?.primary_role === 'creator' || isAdminSession) && (
                       <>
-                        <DropdownMenuItem onClick={() => navigate("/create-event")} className="cursor-pointer">
-                          <Calendar className="mr-2 h-4 w-4" /> Create Event
-                        </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
                           <Sparkles className="mr-2 h-4 w-4" /> Creator Program Post
                         </DropdownMenuItem>
@@ -354,10 +386,18 @@ const Navbar = ({ searchQuery = "", onSearchChange = () => {} }: NavbarProps) =>
               type="search"
               placeholder="Search startups, people..."
               className="w-full pl-10 bg-muted/50 border-border/50 h-9 rounded-lg"
-              value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
+              value={localSearchQuery}
+              onChange={(e) => handleSearchChange(e.target.value)}
               onKeyDown={handleSearchSubmit}
             />
+            {showSuggestions && (
+              <SearchSuggestions 
+                results={searchResults} 
+                isLoading={isSearching} 
+                query={localSearchQuery}
+                onSelect={() => setShowSuggestions(false)} 
+              />
+            )}
           </div>
         </div>
 

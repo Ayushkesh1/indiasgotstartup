@@ -59,7 +59,16 @@ const InvestorProfile = lazy(() => import("./pages/InvestorProfile"));
 const SubmitInvestor = lazy(() => import("./pages/SubmitInvestor"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
 
 // Helper Component to animate routes
 const AnimatedRoutes = () => {
@@ -98,8 +107,10 @@ const AnimatedRoutes = () => {
         <Route path="/cookies" element={<PageTransition><CookiePolicy /></PageTransition>} />
         <Route path="/social-impact" element={<PageTransition><SocialImpact /></PageTransition>} />
         <Route path="/grants" element={<PageTransition><Grants /></PageTransition>} />
+        <Route path="/grants/create" element={<PageTransition><CreateGrant /></PageTransition>} />
         <Route path="/grants/:id" element={<PageTransition><GrantDetail /></PageTransition>} />
         <Route path="/events" element={<PageTransition><Events /></PageTransition>} />
+        <Route path="/events/create" element={<PageTransition><CreateEvent /></PageTransition>} />
         <Route path="/events/:id" element={<PageTransition><EventDetail /></PageTransition>} />
 
         {/* Ecosystem Directories */}

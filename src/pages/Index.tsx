@@ -20,19 +20,20 @@ import {
   ArrowRight, Users, Briefcase, Network, MessageCircle
 } from "lucide-react";
 
-import { dummyStartups } from "@/data/startups";
-import { dummyInvestors } from "@/data/investors";
-import { dummyIncubators } from "@/data/incubators";
+
 import { GRANTS_DATA } from "@/data/grants";
 import { EVENTS_DATA } from "@/data/events";
 import { StartupCard } from "@/components/ecosystem/StartupCard";
 import { InvestorCard } from "@/components/ecosystem/InvestorCard";
 import { EventCard } from "@/components/ecosystem/EventCard";
+import { useUniversalSearch } from "@/hooks/useUniversalSearch";
+import { SearchSuggestions } from "@/components/search/SearchSuggestions";
+import { useRef } from "react";
 
 const ECOSYSTEM_SECTIONS = [
-  { label: "Startups", path: "/startups", icon: Rocket, count: dummyStartups.length, color: "text-blue-500", bg: "bg-blue-500/10", desc: "Discover innovative companies" },
-  { label: "Investors", path: "/investors", icon: TrendingUp, count: dummyInvestors.length, color: "text-emerald-500", bg: "bg-emerald-500/10", desc: "Angels, VCs & family offices" },
-  { label: "Incubators", path: "/incubators", icon: Building2, count: dummyIncubators.length, color: "text-purple-500", bg: "bg-purple-500/10", desc: "Accelerators & incubation" },
+  { label: "Startups", path: "/startups", icon: Rocket, count: "New", color: "text-blue-500", bg: "bg-blue-500/10", desc: "Discover innovative companies" },
+  { label: "Investors", path: "/investors", icon: TrendingUp, count: "New", color: "text-emerald-500", bg: "bg-emerald-500/10", desc: "Angels, VCs & family offices" },
+  { label: "Incubators", path: "/incubators", icon: Building2, count: "New", color: "text-purple-500", bg: "bg-purple-500/10", desc: "Accelerators & incubation" },
   { label: "Grants", path: "/grants", icon: Coins, count: GRANTS_DATA.length, color: "text-amber-500", bg: "bg-amber-500/10", desc: "Non-dilutive funding" },
   { label: "People", path: "/people", icon: Users, count: "New", color: "text-rose-500", bg: "bg-rose-500/10", desc: "Connect with founders" },
 ];
@@ -40,7 +41,21 @@ const ECOSYSTEM_SECTIONS = [
 const Index = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const { user } = useAuth();
+  
+  const { data: searchResults, isLoading: isSearching } = useUniversalSearch(searchQuery);
+  const heroSearchRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (heroSearchRef.current && !heroSearchRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   // Fetch db items to check what user owns
   const { data: dbStartups } = useEcosystemList("startups");
@@ -67,7 +82,7 @@ const Index = () => {
       id: s.id, slug: s.slug, name: s.name, shortDescription: s.tagline || s.description,
       city: s.city, state: s.state, sector: s.sector, logo: s.logo_url
     }));
-    return [...db, ...dummyStartups].slice(0, 10);
+    return db.slice(0, 10);
   }, [dbStartups]);
 
   const mergedInvestors = useMemo(() => {
@@ -78,13 +93,13 @@ const Index = () => {
       ticketSizeMax: i.ticket_size_max ? `₹${(i.ticket_size_max/10000000).toFixed(1)}Cr` : null,
       isVerified: true
     }));
-    return [...db, ...dummyInvestors].slice(0, 10);
+    return db.slice(0, 10);
   }, [dbInvestors]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/startups?q=${encodeURIComponent(searchQuery.trim())}`);
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
 
@@ -100,7 +115,7 @@ const Index = () => {
       {/* ═══════════════════════════════════════════
           1. PREMIUM HERO & SEARCH
           ═══════════════════════════════════════════ */}
-      <section className="w-full pt-28 pb-20 relative bg-gradient-to-b from-primary/5 via-background to-background flex flex-col items-center justify-center text-center px-4">
+      <section className="w-full pt-28 pb-20 relative z-30 bg-gradient-to-b from-primary/5 via-background to-background flex flex-col items-center justify-center text-center px-4">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[400px] bg-primary/10 blur-[120px] rounded-full pointer-events-none" />
         
         <div className="relative z-10 w-full max-w-5xl mx-auto space-y-8">
@@ -123,14 +138,19 @@ const Index = () => {
             Discover rising startups, connect with active investors, apply for top incubators, and hire the best talent across India.
           </p>
 
-          <form onSubmit={handleSearch} className="max-w-2xl mx-auto w-full relative mt-10">
+          <form onSubmit={handleSearch} className="max-w-2xl mx-auto w-full relative mt-10" ref={heroSearchRef}>
             <div className="relative flex items-center bg-card border border-border/60 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl hover:border-primary/40 transition-all duration-300">
               <Search className="absolute left-5 h-6 w-6 text-muted-foreground" />
               <input
                 type="text"
                 placeholder="Search for startups, investors, sectors, cities..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  if (e.target.value.length >= 2) setShowSuggestions(true);
+                  else setShowSuggestions(false);
+                }}
+                onFocus={() => searchQuery.length >= 2 && setShowSuggestions(true)}
                 className="w-full bg-transparent h-16 pl-14 pr-32 text-lg outline-none placeholder:text-muted-foreground/70"
               />
               <div className="absolute right-2">
@@ -139,6 +159,14 @@ const Index = () => {
                 </Button>
               </div>
             </div>
+            {showSuggestions && (
+              <SearchSuggestions 
+                results={searchResults} 
+                isLoading={isSearching} 
+                query={searchQuery}
+                onSelect={() => setShowSuggestions(false)} 
+              />
+            )}
           </form>
         </div>
       </section>

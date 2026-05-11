@@ -9,9 +9,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { formatDistanceToNow } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { 
-  Shield, UserCog, Trash2, Search, Link as LinkIcon, Activity, 
-  Ban, ShieldAlert, KeyRound, MailCheck, AlertTriangle, FileText, IndianRupee, Eye, TrendingUp, CheckCircle2, Clock
+  Ban, ShieldAlert, KeyRound, MailCheck, AlertTriangle, FileText, IndianRupee, Eye, TrendingUp, CheckCircle2, Clock, Download
 } from "lucide-react";
+import { exportToCSV } from "@/lib/exportUtils";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -83,6 +83,9 @@ export function UserManagementTable() {
                onChange={(e) => setSearchQuery(e.target.value)}
              />
           </div>
+          <Button variant="outline" onClick={() => exportToCSV(users || [], "users_export.csv")} disabled={!users || users.length === 0} className="border-zinc-800">
+            <Download className="w-4 h-4 mr-2" /> Export
+          </Button>
           <Button variant="outline" onClick={() => setShowMergeModal(true)} className="border-cyan-900 text-cyan-500 hover:bg-cyan-950">
             <LinkIcon className="w-4 h-4 mr-2" /> Merge Duplicates
           </Button>

@@ -2,12 +2,15 @@ import { useState, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/Navbar";
 import { Search, Users, MapPin, Briefcase, Filter } from "lucide-react";
-import { mockPeople, RoleType } from "@/data/mockPeople";
+export type RoleType = "Startup" | "Incubator" | "Investor" | "Expert" | "Creator" | "Normal";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Loader2 } from "lucide-react";
 
 const ROLES: RoleType[] = ["Startup", "Incubator", "Investor", "Expert", "Creator", "Normal"];
 
@@ -17,15 +20,33 @@ const People = () => {
   const { user } = useAuth();
   const [connectionStates, setConnectionStates] = useState<Record<string, "connect" | "pending" | "connected">>({});
 
-  const filteredPeople = useMemo(() => {
-    return mockPeople.filter(person => {
-      const matchesSearch = person.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                            person.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                            person.company?.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesRole = selectedRole === "All" || person.role === selectedRole;
+  const { data: people, isLoading } = useQuery({
+    queryKey: ["people-list"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles_public")
+        .select("*")
+        .limit(100);
+      if (error) throw error;
+      return data || [];
+    }
+  });
+
+  const filteredPeople: any[] = useMemo(() => {
+    if (!people) return [];
+    return people.filter(p => {
+      const q = searchQuery.toLowerCase();
+      const matchesSearch = !searchQuery || 
+        (p.full_name && p.full_name.toLowerCase().includes(q)) ||
+        (p.bio && p.bio.toLowerCase().includes(q)) ||
+        (p.username && p.username.toLowerCase().includes(q));
+      
+      const matchesRole = selectedRole === "All" || 
+        (p.primary_role && p.primary_role.toLowerCase() === selectedRole.toLowerCase());
+      
       return matchesSearch && matchesRole;
     });
-  }, [searchQuery, selectedRole]);
+  }, [people, searchQuery, selectedRole]);
 
   const handleConnect = (id: string) => {
     if (!user) {
@@ -108,11 +129,22 @@ const People = () => {
           <div className="lg:col-span-3 space-y-6">
             <div className="flex justify-between items-center bg-card/50 border border-border/50 p-4 rounded-xl">
               <p className="text-muted-foreground font-medium">
-                Showing <span className="text-foreground font-bold">{filteredPeople.length}</span> professionals
+                {isLoading ? (
+                  <span className="flex items-center gap-2"><Loader2 className="h-4 w-4 animate-spin" /> Loading members...</span>
+                ) : (
+                  <>Showing <span className="text-foreground font-bold">{filteredPeople.length}</span> professionals</>
+                )}
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {filteredPeople.length === 0 && !isLoading && (
+                <div className="col-span-full py-20 text-center border border-dashed border-border rounded-xl bg-card/30">
+                  <Users className="h-10 w-10 text-muted-foreground mx-auto mb-4 opacity-50" />
+                  <h3 className="text-lg font-semibold mb-2">No people found</h3>
+                  <p className="text-muted-foreground">Try adjusting your search or filters.</p>
+                </div>
+              )}
               {filteredPeople.map((person) => {
                 const connState = connectionStates[person.id] || "connect";
                 
@@ -123,7 +155,7 @@ const People = () => {
                       <div className="flex justify-between items-start mb-4">
                         <Avatar className="h-20 w-20 border-4 border-card -mt-10 bg-muted">
                           <AvatarImage src={person.avatar_url} />
-                          <AvatarFallback>{person.name.charAt(0)}</AvatarFallback>
+                          <AvatarFallback>{(person.full_name || person.username || "A").charAt(0)}</AvatarFallback>
                         </Avatar>
                         <Badge variant="outline" className="mt-2 bg-background/50 backdrop-blur-sm">
                           {person.role}
@@ -133,8 +165,8 @@ const People = () => {
                       <div className="mb-4 flex-1">
                         <Link to={`/user/${person.id}`} className="hover:underline">
                           <h3 className="text-xl font-bold flex items-center gap-1.5">
-                            {person.name}
-                            {person.isVerified && (
+                            {person.full_name || person.username || "Anonymous"}
+                            {person.is_verified && (
                               <svg className="w-4 h-4 text-blue-500 fill-current" viewBox="0 0 20 20">
                                 <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" />
                               </svg>
@@ -142,11 +174,11 @@ const People = () => {
                           </h3>
                         </Link>
                         <p className="text-sm font-medium text-foreground mt-1">
-                          {person.title} {person.company && `at ${person.company}`}
+                          {person.title || person.primary_role || "Member"} {person.company && `at ${person.company}`}
                         </p>
                         <div className="flex items-center gap-3 mt-3 text-xs text-muted-foreground">
-                          <span className="flex items-center gap-1"><MapPin className="h-3 w-3"/> {person.location}</span>
-                          <span className="flex items-center gap-1"><Users className="h-3 w-3"/> {person.followersCount} followers</span>
+                          <span className="flex items-center gap-1"><MapPin className="h-3 w-3"/> {person.city || "India"}</span>
+                          <span className="flex items-center gap-1"><Users className="h-3 w-3"/> {person.followers_count || 0} followers</span>
                         </div>
                         <p className="text-sm text-muted-foreground mt-4 line-clamp-2">
                           {person.bio}
@@ -154,7 +186,7 @@ const People = () => {
                       </div>
                       
                       <div className="flex flex-wrap gap-1.5 mb-5">
-                        {person.tags.slice(0, 3).map(tag => (
+                        {person.tags && person.tags.slice(0, 3).map((tag: string) => (
                           <span key={tag} className="text-[10px] font-medium px-2 py-1 bg-muted rounded-md text-muted-foreground">
                             {tag}
                           </span>

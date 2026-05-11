@@ -255,7 +255,7 @@ const Advertise = () => {
                     className="bg-slate-50/80 dark:bg-black/40 border-border focus-visible:ring-orange-500/50 text-foreground dark:text-white placeholder:text-zinc-600 rounded-xl resize-none"
                   />
                 </div>
-                <Button type="submit" className="w-full h-14 text-lg font-bold bg-white text-black hover:bg-zinc-200 gap-3 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] transition-all duration-300 transform hover:-translate-y-1">
+                <Button type="submit" className="w-full h-14 text-lg font-bold btn-premium text-white gap-3 rounded-xl transition-all duration-300 transform hover:-translate-y-1">
                   <Mail className="h-5 w-5" />
                   Submit Inquiry
                 </Button>

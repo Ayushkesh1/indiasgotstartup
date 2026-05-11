@@ -87,7 +87,7 @@ const TrendingHero = () => {
             
             <div className="space-y-6 mt-6 shrink-0">
               <div className="flex items-center gap-4">
-                <Button onClick={handleRead} size="lg" className="h-12 px-8 rounded-full font-bold shadow-xl hover:shadow-primary/25 transition-all text-sm uppercase tracking-widest bg-primary hover:bg-primary/90">
+                <Button onClick={handleRead} size="lg" className="h-12 px-8 rounded-full font-bold shadow-xl transition-all text-sm uppercase tracking-widest btn-premium text-white">
                   Read Article
                 </Button>
                 <div className="flex gap-2">

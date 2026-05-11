@@ -63,7 +63,7 @@ export function EventCard({ event }: { event: AppEvent }) {
               {attendeeCount} attending
             </span>
             <Button
-              className="gap-2 font-bold rounded-full px-6 bg-foreground text-background hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+              className="gap-2 font-bold rounded-full px-6 transition-all duration-300"
             >
               RSVP <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Button>

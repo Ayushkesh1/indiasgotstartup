@@ -154,7 +154,7 @@ const Careers = () => {
                         </span>
                       </div>
                     </div>
-                    <Button className="h-12 w-full md:w-auto px-8 font-bold bg-white text-black hover:bg-zinc-200 gap-3 border-0 shadow-[0_0_15px_rgba(255,255,255,0.2)] hover:shadow-[0_0_25px_rgba(255,255,255,0.4)] group-hover:-translate-y-1 transition-all duration-300 rounded-xl">
+                    <Button className="h-12 w-full md:w-auto px-8 font-bold btn-premium text-white gap-3 border-0 group-hover:-translate-y-1 transition-all duration-300 rounded-xl">
                       Apply Now <ArrowRight className="h-4 w-4" />
                     </Button>
                   </div>

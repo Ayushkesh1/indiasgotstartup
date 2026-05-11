@@ -140,6 +140,25 @@ export default function SubscriptionManagement() {
       <Navbar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
       
       <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="mb-6">
+          <div className="bg-gradient-to-r from-purple-500/10 via-primary/10 to-amber-500/10 border border-primary/20 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-[0_0_15px_rgba(168,85,247,0.1)]">
+            <div className="flex items-center gap-3">
+              <div className="bg-primary/20 p-2 rounded-lg shrink-0">
+                <Sparkles className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-primary text-base">Premium Beta Launch Offer</h3>
+                <p className="text-sm text-foreground/80 mt-0.5">Upgrade now to secure lifetime beta pricing and exclusive ecosystem founder badges.</p>
+              </div>
+            </div>
+            {!isSubscribed && (
+              <Button size="sm" onClick={() => navigate("/creator-program")} className="shrink-0 w-full sm:w-auto btn-premium text-white">
+                Claim Offer
+              </Button>
+            )}
+          </div>
+        </div>
+
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Subscription Management</h1>
           <p className="text-muted-foreground">

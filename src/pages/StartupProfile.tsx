@@ -5,17 +5,15 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, MapPin, Globe, Linkedin, Twitter, Instagram, Youtube, Mail, Phone, Map, Briefcase, Loader2 } from "lucide-react";
-import { dummyStartups } from "@/data/startups";
+
 import { useEcosystemBySlug, useStartupTeam } from "@/hooks/useEcosystem";
+import { GET_STAGE_LABEL } from "@/constants/ecosystem";
 
 const StartupProfile = () => {
   const { slug } = useParams<{ slug: string }>();
   
   const { data: dbStartup, isLoading } = useEcosystemBySlug("startups", slug);
   const { data: dbTeam } = useStartupTeam(dbStartup?.id);
-
-  const dummy = dummyStartups.find(startup => startup.slug === slug);
-  
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center">
@@ -52,7 +50,7 @@ const StartupProfile = () => {
       city: dbStartup.city,
       state: dbStartup.state,
       sector: dbStartup.sector,
-      currentStage: dbStartup.stage ? dbStartup.stage.replace(/_/g, ' ') : "",
+      currentStage: dbStartup.stage ? GET_STAGE_LABEL(dbStartup.stage) : "",
       website: dbStartup.website_url,
       email: dbStartup.email,
       phone: dbStartup.phone,
@@ -66,8 +64,6 @@ const StartupProfile = () => {
       },
       teamMembers: dbTeam || []
     };
-  } else if (dummy) {
-    s = dummy;
   }
 
   if (!s) {
@@ -131,17 +127,17 @@ const StartupProfile = () => {
                     </Button>
                   )}
                   {s.socials?.twitter && (
-                    <Button asChild size="sm" variant="outline" size="icon">
+                    <Button asChild variant="outline" size="icon">
                       <a href={s.socials.twitter} target="_blank" rel="noopener noreferrer"><Twitter className="h-4 w-4" /></a>
                     </Button>
                   )}
                   {s.socials?.instagram && (
-                    <Button asChild size="sm" variant="outline" size="icon">
+                    <Button asChild variant="outline" size="icon">
                       <a href={s.socials.instagram} target="_blank" rel="noopener noreferrer"><Instagram className="h-4 w-4" /></a>
                     </Button>
                   )}
                   {s.socials?.youtube && (
-                    <Button asChild size="sm" variant="outline" size="icon">
+                    <Button asChild variant="outline" size="icon">
                       <a href={s.socials.youtube} target="_blank" rel="noopener noreferrer"><Youtube className="h-4 w-4" /></a>
                     </Button>
                   )}

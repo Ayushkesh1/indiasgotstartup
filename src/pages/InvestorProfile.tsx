@@ -8,15 +8,13 @@ import {
   ArrowLeft, BadgeCheck, Mail, Linkedin, Globe, Twitter,
   Phone, MapPin, Map, TrendingUp, IndianRupee, Briefcase, CheckCircle2, Loader2
 } from "lucide-react";
-import { dummyInvestors } from "@/data/investors";
+
 import { useEcosystemBySlug } from "@/hooks/useEcosystem";
 
 const InvestorProfile = () => {
   const { slug } = useParams<{ slug: string }>();
   
   const { data: dbInvestor, isLoading } = useEcosystemBySlug("investors", slug);
-  const dummy = dummyInvestors.find(i => i.slug === slug);
-
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center">
@@ -73,8 +71,6 @@ const InvestorProfile = () => {
       notableInvestments: extraData.portfolio_companies ? extraData.portfolio_companies.split(",").map((s: string) => s.trim()) : [],
       teamMembers: extraData.team_members || []
     };
-  } else if (dummy) {
-    inv = dummy;
   }
 
   if (!inv) {
@@ -159,7 +155,7 @@ const InvestorProfile = () => {
                     </Button>
                   )}
                   {inv.socials?.twitter && (
-                    <Button asChild size="sm" variant="outline" size="icon">
+                    <Button asChild variant="outline" size="icon">
                       <a href={inv.socials.twitter} target="_blank" rel="noopener noreferrer">
                         <Twitter className="h-4 w-4" />
                       </a>

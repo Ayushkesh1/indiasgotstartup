@@ -68,7 +68,7 @@ const Events = () => {
         <p className="text-muted-foreground max-w-2xl mx-auto text-base leading-relaxed mb-6">
           Discover hand-picked startup events, exclusive founder mixers, investor office hours, and deep-tech hackathons. Your ecosystem, curated.
         </p>
-        <Link to="/create-event">
+        <Link to="/events/create">
           <Button className="gap-2">
             <PlusCircle className="h-4 w-4" /> Host an Event
           </Button>

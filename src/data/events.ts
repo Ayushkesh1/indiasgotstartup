@@ -37,7 +37,7 @@ export const EVENTS_DATA: AppEvent[] = [
     imageUrl: "https://images.unsplash.com/photo-1515169067868-5387ec356754?auto=format&fit=crop&q=80&w=1200",
     registrationLink: "https://example.com/register/1",
     organizer: "NCR Startup Network",
-    organizerProfile: mockPeople[2], // Karan Singh
+    organizerProfile: undefined,
     price: "Free",
     registrationDeadline: "May 18, 2026",
     agenda: [
@@ -46,8 +46,8 @@ export const EVENTS_DATA: AppEvent[] = [
       { time: "6:30 PM", title: "Open Networking", description: "Mingle with fellow founders." },
       { time: "8:00 PM", title: "Closing", description: "Event concludes." }
     ],
-    speakers: [mockPeople[0], mockPeople[5]], // Rohan, Sneha
-    participants: [mockPeople[0], mockPeople[2], mockPeople[5], mockPeople[6], mockPeople[7]]
+    speakers: [],
+    participants: []
   },
   {
     id: "evt_2",
@@ -62,7 +62,7 @@ export const EVENTS_DATA: AppEvent[] = [
     imageUrl: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&q=80&w=1200",
     registrationLink: "https://example.com/register/2",
     organizer: "Bangalore AI Club",
-    organizerProfile: mockPeople[5], // Sneha Reddy
+    organizerProfile: undefined,
     price: "Paid - ₹500",
     registrationDeadline: "June 3, 2026",
     agenda: [
@@ -71,8 +71,8 @@ export const EVENTS_DATA: AppEvent[] = [
       { time: "7:15 PM", title: "Live Code: RAG from Scratch", description: "Hands-on session building a RAG pipeline." },
       { time: "8:15 PM", title: "Demo Day & Networking", description: "Showcase what you are building." }
     ],
-    speakers: [mockPeople[5]],
-    participants: [mockPeople[1], mockPeople[4], mockPeople[5], mockPeople[7]]
+    speakers: [],
+    participants: []
   },
   {
     id: "evt_3",
@@ -87,7 +87,7 @@ export const EVENTS_DATA: AppEvent[] = [
     imageUrl: "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?auto=format&fit=crop&q=80&w=1200",
     registrationLink: "https://example.com/register/3",
     organizer: "Mumbai Angels",
-    organizerProfile: mockPeople[1], // Ananya Sharma
+    organizerProfile: undefined,
     price: "Free for Investors, ₹1000 for Attendees",
     registrationDeadline: "July 10, 2026",
     agenda: [
@@ -97,8 +97,8 @@ export const EVENTS_DATA: AppEvent[] = [
       { time: "6:30 PM", title: "Pitch Session 2", description: "Remaining 5 startups pitch." },
       { time: "7:45 PM", title: "Networking Dinner" }
     ],
-    speakers: [mockPeople[1], mockPeople[6]], // Ananya, Aditya
-    participants: [mockPeople[0], mockPeople[1], mockPeople[2], mockPeople[6], mockPeople[7]]
+    speakers: [],
+    participants: []
   },
   {
     id: "evt_4",
@@ -113,7 +113,7 @@ export const EVENTS_DATA: AppEvent[] = [
     imageUrl: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&q=80&w=1200",
     registrationLink: "https://example.com/register/4",
     organizer: "GrowthX",
-    organizerProfile: mockPeople[2], // Karan Singh
+    organizerProfile: undefined,
     price: "Paid - ₹2000",
     registrationDeadline: "August 9, 2026",
     agenda: [
@@ -121,8 +121,8 @@ export const EVENTS_DATA: AppEvent[] = [
       { time: "3:30 PM", title: "Retention is the new Acquisition", description: "Email & WhatsApp marketing teardowns." },
       { time: "4:30 PM", title: "Q&A Session" }
     ],
-    speakers: [mockPeople[2], mockPeople[4]], // Karan, Vikram
-    participants: [mockPeople[2], mockPeople[4], mockPeople[7]]
+    speakers: [],
+    participants: []
   },
   {
     id: "evt_5",
@@ -137,7 +137,7 @@ export const EVENTS_DATA: AppEvent[] = [
     imageUrl: "https://images.unsplash.com/photo-1530497610245-94d3c16cda28?auto=format&fit=crop&q=80&w=1200",
     registrationLink: "https://example.com/register/5",
     organizer: "Women in Tech India",
-    organizerProfile: mockPeople[3], // Meera Patel
+    organizerProfile: undefined,
     price: "Free",
     registrationDeadline: "September 1, 2026",
     agenda: [
@@ -145,8 +145,8 @@ export const EVENTS_DATA: AppEvent[] = [
       { time: "7:00 PM", title: "Panel: Navigating Fundraising as a Female Founder" },
       { time: "8:00 PM", title: "Mixer & Dinner" }
     ],
-    speakers: [mockPeople[1], mockPeople[3], mockPeople[5]], // Ananya, Meera, Sneha
-    participants: [mockPeople[1], mockPeople[3], mockPeople[5], mockPeople[7]]
+    speakers: [],
+    participants: []
   },
   {
     id: "evt_6",
@@ -161,7 +161,7 @@ export const EVENTS_DATA: AppEvent[] = [
     imageUrl: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1200",
     registrationLink: "https://example.com/register/6",
     organizer: "T-Hub Innovations",
-    organizerProfile: mockPeople[3], // Meera Patel
+    organizerProfile: undefined,
     price: "Free",
     registrationDeadline: "October 10, 2026",
     agenda: [
@@ -170,8 +170,8 @@ export const EVENTS_DATA: AppEvent[] = [
       { time: "1:00 PM", title: "Networking Lunch" },
       { time: "2:00 PM", title: "1-on-1 Mentorship Slots (Pre-booked)" }
     ],
-    speakers: [mockPeople[3]],
-    participants: [mockPeople[3], mockPeople[7], mockPeople[0]]
+    speakers: [],
+    participants: []
   },
   {
     id: "evt_7",
@@ -186,14 +186,14 @@ export const EVENTS_DATA: AppEvent[] = [
     imageUrl: "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?auto=format&fit=crop&q=80&w=1200",
     registrationLink: "https://example.com/register/7",
     organizer: "Angel Network India",
-    organizerProfile: mockPeople[6], // Aditya Verma
+    organizerProfile: undefined,
     price: "Free",
     registrationDeadline: "October 25, 2026",
     agenda: [
       { time: "3:00 PM", title: "Virtual Waiting Room Opens" },
       { time: "3:15 PM", title: "1-on-1 Sessions Begin" }
     ],
-    speakers: [mockPeople[1], mockPeople[6]], // Ananya, Aditya
-    participants: [mockPeople[1], mockPeople[6]]
+    speakers: [],
+    participants: []
   }
 ];

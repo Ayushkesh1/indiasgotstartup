@@ -15,8 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { TeamMemberSection, TeamMemberInput, OpenRolesSection, OpenRoleInput, ImageUploadPreview } from "@/components/ecosystem/DynamicFormFields";
 import { Rocket, Building2, Users, Briefcase, Globe, MapPin } from "lucide-react";
-
-const STAGES = ["Ideation", "Prototype", "MVP", "Early Traction", "Revenue", "Scaling"];
+import { ECOSYSTEM_STAGES } from "@/constants/ecosystem";
 
 const SubmitStartup = () => {
   const { user, loading } = useAuth();
@@ -100,7 +99,7 @@ const SubmitStartup = () => {
         city: form.city,
         state: form.state,
         sector: form.sector,
-        stage: form.stage.toLowerCase().replace(/ /g, '_'),
+        stage: form.stage as any, // stage is now correctly set to the enum value from the select
         is_hiring: form.is_hiring,
         status: 'approved', // Auto approve for demo purposes
       };
@@ -222,7 +221,7 @@ const SubmitStartup = () => {
                   <Select value={form.stage} onValueChange={(v) => set("stage", v)}>
                     <SelectTrigger><SelectValue placeholder="Select stage" /></SelectTrigger>
                     <SelectContent>
-                      {STAGES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                      {ECOSYSTEM_STAGES.map((s) => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>

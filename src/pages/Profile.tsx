@@ -324,7 +324,7 @@ const Profile = () => {
                 <p className="text-muted-foreground">Manage your event participation{isNormal ? "." : " and hosting."}</p>
               </div>
               {!isNormal && (
-                <Button onClick={() => navigate('/create-event')} className="gap-2">
+                <Button onClick={() => navigate('/events/create')} className="gap-2">
                   <PlusCircle className="w-4 h-4" /> Create Event
                 </Button>
               )}
@@ -379,7 +379,7 @@ const Profile = () => {
                 <h2 className="text-2xl font-bold mb-2">My Grants</h2>
                 <p className="text-muted-foreground">Manage your funding opportunities.</p>
               </div>
-              <Button onClick={() => navigate('/create-grant')} className="gap-2">
+              <Button onClick={() => navigate('/grants/create')} className="gap-2">
                 <PlusCircle className="w-4 h-4" /> Create Grant
               </Button>
             </div>

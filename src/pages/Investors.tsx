@@ -5,10 +5,11 @@ import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { TrendingUp, Search, Plus, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { TrendingUp, Search, Plus, ChevronLeft, ChevronRight, Loader2, Edit3 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { InvestorCard } from "@/components/ecosystem/InvestorCard";
-import { dummyInvestors } from "@/data/investors";
+import { useUserEntity } from "@/hooks/useUserEntity";
+
 import { useEcosystemList } from "@/hooks/useEcosystem";
 
 const ITEMS_PER_PAGE = 50;
@@ -19,6 +20,7 @@ const STAGES = ["Pre-Seed", "Seed", "Series A", "Series B", "Growth"];
 const Investors = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { data: userEntity } = useUserEntity(user?.id, "investors");
 
   const { data: dbInvestors, isLoading } = useEcosystemList("investors");
 
@@ -29,7 +31,7 @@ const Investors = () => {
   const [stage, setStage] = useState("all");
   const [page, setPage] = useState(1);
 
-  // Merge dummy and DB data
+  // Use DB data
   const allInvestors = useMemo(() => {
     const mappedDbInvestors = (dbInvestors || []).map((inv: any) => {
       let extraData: any = {};
@@ -65,9 +67,7 @@ const Investors = () => {
       };
     });
 
-    const combined = [...mappedDbInvestors, ...dummyInvestors];
-    const unique = Array.from(new Map(combined.map(item => [item.slug, item])).values());
-    return unique;
+    return mappedDbInvestors;
   }, [dbInvestors]);
 
   // Extract unique values for filters
@@ -151,9 +151,15 @@ const Investors = () => {
             <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-2">Investors Backing India</h1>
             <p className="text-muted-foreground">Angels, VCs, and family offices — filter by type, stage, sector, and city.</p>
           </div>
-          <Button onClick={() => navigate(user ? "/investors/submit" : "/auth")} className="gap-2 shrink-0">
-            <Plus className="h-4 w-4" /> Submit Investor
-          </Button>
+          {userEntity ? (
+            <Button onClick={() => navigate(`/investors/${userEntity.slug}`)} variant="outline" className="gap-2 shrink-0 border-primary/20 text-primary hover:bg-primary/10">
+              <Edit3 className="h-4 w-4" /> Edit Profile
+            </Button>
+          ) : (
+            <Button onClick={() => navigate(user ? "/investors/submit" : "/auth")} className="gap-2 shrink-0">
+              <Plus className="h-4 w-4" /> Add Investor
+            </Button>
+          )}
         </header>
 
         <div className="bg-card border border-border/50 rounded-xl p-4 mb-8 space-y-4 shadow-sm">

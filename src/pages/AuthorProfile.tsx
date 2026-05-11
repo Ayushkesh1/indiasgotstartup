@@ -58,7 +58,7 @@ const AuthorProfile = () => {
             <p className="text-muted-foreground mb-8 px-4">
               The author profile you're looking for doesn't exist or has fragmented across the mainframe.
             </p>
-            <Button onClick={() => navigate("/")} className="rounded-full bg-white text-black hover:bg-zinc-200 font-bold uppercase tracking-widest px-8 shadow-[0_0_20px_rgba(255,255,255,0.3)]">
+            <Button onClick={() => navigate("/")} className="rounded-full btn-premium text-white font-bold uppercase tracking-widest px-8">
               Back to Hub
             </Button>
           </div>

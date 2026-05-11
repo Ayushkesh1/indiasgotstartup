@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { SubmissionSuccessDialog } from "@/components/SubmissionSuccessDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
+import { useAdminSession } from "@/hooks/useAdminSession";
 import { AlertCircle } from "lucide-react";
 
 const CreateGrant = () => {
@@ -26,8 +27,11 @@ const CreateGrant = () => {
 
   const { user } = useAuth();
   const { data: profile, isLoading } = useProfile(user?.id);
+  const { isAuthenticated: isAdminSession } = useAdminSession();
+  const hasAdminStorage = !!localStorage.getItem("admin_session");
+  const isAdmin = isAdminSession || hasAdminStorage;
 
-  const isAllowed = profile && profile.primary_role === 'incubator';
+  const isAllowed = isAdmin || (profile && ['admin', 'incubator', 'investor'].includes(profile.primary_role || ''));
 
   if (isLoading) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
@@ -39,7 +43,7 @@ const CreateGrant = () => {
         <AlertCircle className="w-16 h-16 text-destructive mb-6" />
         <h2 className="text-2xl font-bold text-foreground mb-4">Access Denied</h2>
         <p className="text-muted-foreground text-center max-w-md mb-8">
-          This action is not available for your profile type. Only Incubators can create grants.
+          This action is not available for your profile type. Only Incubators, Investors, and Admins can create grants.
         </p>
         <Button onClick={() => navigate("/profile")}>Go to Profile</Button>
       </div>

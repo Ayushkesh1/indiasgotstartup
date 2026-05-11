@@ -101,7 +101,7 @@ const Grants = () => {
             </div>
             <div className="mt-6 sm:hidden">
               <Button asChild>
-                <Link to="/create-grant">Post a Grant</Link>
+                <Link to="/grants/create">Post a Grant</Link>
               </Button>
             </div>
           </div>
@@ -165,7 +165,7 @@ const Grants = () => {
             </div>
             <div className="flex items-center gap-3">
               <Button asChild variant="outline" size="sm" className="hidden sm:flex">
-                <Link to="/create-grant">Post a Grant</Link>
+                <Link to="/grants/create">Post a Grant</Link>
               </Button>
               <span className="text-sm font-medium text-muted-foreground bg-muted px-3 py-1 rounded-md">
                 {filteredGrants.length} result{filteredGrants.length !== 1 ? 's' : ''}

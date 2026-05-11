@@ -2,7 +2,21 @@ import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { EVENTS_DATA, AppEvent } from "@/data/events";
-import { Person } from "@/data/mockPeople";
+export interface Person {
+  id: string;
+  name: string;
+  role: string;
+  title: string;
+  company?: string;
+  avatar_url: string;
+  bio: string;
+  location: string;
+  followersCount: number;
+  followingCount: number;
+  connectionsCount: number;
+  isVerified: boolean;
+  tags: string[];
+}
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -236,7 +250,7 @@ const EventDetail = () => {
                       className={`w-full h-14 rounded-2xl text-lg font-bold transition-all ${
                         isRegistered 
                           ? 'bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 border border-emerald-500/30' 
-                          : 'bg-foreground text-background hover:bg-primary hover:text-primary-foreground'
+                          : ''
                       }`}
                     >
                       {isRegistered ? (

@@ -10,10 +10,12 @@ import { PartnersManagement } from "@/components/admin/PartnersManagement";
 import { CareersManagement } from "@/components/admin/CareersManagement";
 import { ContactQueriesManagement } from "@/components/admin/ContactQueriesManagement";
 import { TeamManagement } from "@/components/admin/TeamManagement";
+import { EcosystemManagement } from "@/components/admin/EcosystemManagement";
+import { DataEntryPanel } from "@/components/admin/DataEntryPanel";
 import { AdminSessionGuard } from "@/components/admin/AdminSessionGuard";
 import { useAdminSession } from "@/hooks/useAdminSession";
 import { Button } from "@/components/ui/button";
-import { Shield, Mail, Users, FileText, BarChart, IndianRupee, Handshake, Briefcase, MessageSquare, LogOut } from "lucide-react";
+import { Shield, Mail, Users, FileText, BarChart, IndianRupee, Handshake, Briefcase, MessageSquare, LogOut, Globe, Database } from "lucide-react";
 import { useState } from "react";
 
 export default function AdminDashboard() {
@@ -42,6 +44,14 @@ export default function AdminDashboard() {
 
           <Tabs defaultValue="analytics" className="space-y-6">
             <TabsList className="flex flex-wrap h-auto gap-2 bg-background/40 backdrop-blur-md border border-primary/20 p-2 rounded-xl shadow-[0_0_20px_rgba(var(--primary),0.1)]">
+              <TabsTrigger value="data-entry" className="gap-2 data-[state=active]:bg-primary/20 data-[state=active]:text-primary data-[state=active]:shadow-[0_0_10px_rgba(var(--primary),0.3)] transition-all">
+                <Database className="h-4 w-4" />
+                Data Entry
+              </TabsTrigger>
+              <TabsTrigger value="ecosystem" className="gap-2 data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-400 data-[state=active]:shadow-[0_0_10px_rgba(168,85,247,0.3)] transition-all">
+                <Globe className="h-4 w-4" />
+                Ecosystem
+              </TabsTrigger>
               <TabsTrigger value="revenue" className="gap-2 data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400 data-[state=active]:shadow-[0_0_10px_rgba(34,197,94,0.3)] transition-all">
                 <IndianRupee className="h-4 w-4" />
                 Revenue
@@ -84,6 +94,8 @@ export default function AdminDashboard() {
               </TabsTrigger>
             </TabsList>
 
+            <TabsContent value="data-entry"><DataEntryPanel /></TabsContent>
+            <TabsContent value="ecosystem"><EcosystemManagement /></TabsContent>
             <TabsContent value="revenue"><AdminRevenuePanel /></TabsContent>
             <TabsContent value="partners"><PartnersManagement /></TabsContent>
             <TabsContent value="careers"><CareersManagement /></TabsContent>

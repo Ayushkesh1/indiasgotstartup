@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { SubmissionSuccessDialog } from "@/components/SubmissionSuccessDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
+import { useAdminSession } from "@/hooks/useAdminSession";
 import { AlertCircle } from "lucide-react";
 
 const CreateEvent = () => {
@@ -27,9 +28,11 @@ const CreateEvent = () => {
 
   const { user } = useAuth();
   const { data: profile, isLoading } = useProfile(user?.id);
-
-  const allowedRoles = ['incubator', 'investor', 'investor_vc', 'expert', 'creator'];
-  const isAllowed = profile && allowedRoles.includes(profile.primary_role || '');
+  const { isAuthenticated: isAdminSession } = useAdminSession();
+  const hasAdminStorage = !!localStorage.getItem("admin_session");
+  const isAdmin = isAdminSession || hasAdminStorage;
+  const allowedRoles = ['admin', 'incubator', 'investor', 'investor_vc', 'expert', 'creator', 'startup'];
+  const isAllowed = isAdmin || (profile && allowedRoles.includes(profile.primary_role || ''));
 
   if (isLoading) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
@@ -41,7 +44,7 @@ const CreateEvent = () => {
         <AlertCircle className="w-16 h-16 text-destructive mb-6" />
         <h2 className="text-2xl font-bold text-foreground mb-4">Access Denied</h2>
         <p className="text-muted-foreground text-center max-w-md mb-8">
-          This action is not available for your profile type. Only Incubators, Investors, Experts, and Creators can host events.
+          This action is not available for your profile type. Only Incubators, Investors, Startups, and Creators can host events.
         </p>
         <Button onClick={() => navigate("/profile")}>Go to Profile</Button>
       </div>

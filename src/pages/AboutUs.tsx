@@ -212,7 +212,7 @@ const AboutUs = () => {
               there's a place for you at India's Got Startup.
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
-              <Button asChild className="h-14 px-10 text-lg font-bold bg-white text-black hover:bg-zinc-200 transition-colors rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:scale-105 active:scale-95 duration-300">
+              <Button asChild className="h-14 px-10 text-lg font-bold btn-premium text-white transition-colors rounded-xl hover:scale-105 active:scale-95 duration-300">
                 <Link to="/auth">Get Started</Link>
               </Button>
               <Button asChild variant="outline" className="h-14 px-10 text-lg font-bold bg-neutral-900 text-foreground dark:text-white border-border hover:bg-neutral-800 hover:text-foreground dark:text-white transition-all rounded-xl hover:scale-105 active:scale-95 duration-300">

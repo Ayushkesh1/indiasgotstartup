@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, BadgeCheck, Mail, Linkedin, Globe, Building2, Twitter, Instagram, Phone, MapPin, Map, CheckCircle2, Loader2 } from "lucide-react";
-import { dummyIncubators } from "@/data/incubators";
+
 import { useEcosystemBySlug, useIncubatorMentors } from "@/hooks/useEcosystem";
 
 const IncubatorProfile = () => {
@@ -13,9 +13,6 @@ const IncubatorProfile = () => {
   
   const { data: dbIncubator, isLoading } = useEcosystemBySlug("incubators", slug);
   const { data: dbMentors } = useIncubatorMentors(dbIncubator?.id);
-
-  const dummy = dummyIncubators.find((inc) => inc.slug === slug);
-  
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center">
@@ -64,8 +61,6 @@ const IncubatorProfile = () => {
       badges: badges,
       teamMembers: dbMentors || []
     };
-  } else if (dummy) {
-    i = dummy;
   }
 
   if (!i) {
@@ -128,12 +123,12 @@ const IncubatorProfile = () => {
                     </Button>
                   )}
                   {i.socials?.twitter && (
-                    <Button asChild size="sm" variant="outline" size="icon">
+                    <Button asChild variant="outline" size="icon">
                       <a href={i.socials.twitter} target="_blank" rel="noopener noreferrer"><Twitter className="h-4 w-4" /></a>
                     </Button>
                   )}
                   {i.socials?.email && (
-                    <Button asChild size="sm" variant="outline" size="icon">
+                    <Button asChild variant="outline" size="icon">
                       <a href={`mailto:${i.socials.email}`}><Mail className="h-4 w-4" /></a>
                     </Button>
                   )}

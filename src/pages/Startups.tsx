@@ -5,17 +5,18 @@ import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Sparkles, Search, Plus, ChevronLeft, ChevronRight, Rocket, Loader2 } from "lucide-react";
+import { Sparkles, Search, Plus, ChevronLeft, ChevronRight, Rocket, Loader2, Edit3 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { StartupCard } from "@/components/ecosystem/StartupCard";
-import { dummyStartups } from "@/data/startups";
 import { useEcosystemList } from "@/hooks/useEcosystem";
+import { useUserEntity } from "@/hooks/useUserEntity";
 
 const ITEMS_PER_PAGE = 50;
 
 const Startups = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { data: userEntity } = useUserEntity(user?.id, "startups");
   
   const { data: dbStartups, isLoading } = useEcosystemList("startups");
 
@@ -25,7 +26,7 @@ const Startups = () => {
   const [sector, setSector] = useState("all");
   const [page, setPage] = useState(1);
 
-  // Merge dummy and DB data
+  // Use DB data
   const allStartups = useMemo(() => {
     const mappedDbStartups = (dbStartups || []).map((s: any) => ({
       id: s.id,
@@ -39,10 +40,7 @@ const Startups = () => {
       teamMembers: [] // We don't fetch team on list page
     }));
     
-    // Combine and deduplicate by slug
-    const combined = [...mappedDbStartups, ...dummyStartups];
-    const unique = Array.from(new Map(combined.map(item => [item.slug, item])).values());
-    return unique;
+    return mappedDbStartups;
   }, [dbStartups]);
 
   // Extract unique values for filters
@@ -127,9 +125,15 @@ const Startups = () => {
             <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-2">Discover Indian Startups</h1>
             <p className="text-muted-foreground">Search across sectors, stages, and cities — built by India's startup community.</p>
           </div>
-          <Button onClick={() => navigate(user ? "/startups/submit" : "/auth")} className="gap-2 shrink-0">
-            <Plus className="h-4 w-4" /> Add Startup
-          </Button>
+          {userEntity ? (
+            <Button onClick={() => navigate(`/startups/${userEntity.slug}`)} variant="outline" className="gap-2 shrink-0 border-primary/20 text-primary hover:bg-primary/10">
+              <Edit3 className="h-4 w-4" /> Edit Startup
+            </Button>
+          ) : (
+            <Button onClick={() => navigate(user ? "/startups/submit" : "/auth")} className="gap-2 shrink-0">
+              <Plus className="h-4 w-4" /> Add Startup
+            </Button>
+          )}
         </header>
 
         <div className="bg-card border border-border/50 rounded-xl p-4 mb-8 space-y-4 shadow-sm">

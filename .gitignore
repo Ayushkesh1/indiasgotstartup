@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Scratch and Helper Files
+check_db.*
+cleanup-ui.js
+scratch.html
+
